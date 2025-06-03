@@ -1,5 +1,5 @@
-import { PreloadScene } from "./scenes/PreloadScene.js";
-import { PlayScene } from "./scenes/PlayScene.js";
+import { PreloadScene } from "./src/scenes/PreloadScene.js";
+import { PlayScene } from "./src/scenes/PlayScene.js";
 
 
 const GAME_WIDTH = 1024;
