@@ -26,7 +26,7 @@ export class DrawPile extends Phaser.Physics.Arcade.Image{
     createPileRect(x, y){
         this.rectangle = new Phaser.Geom.Rectangle(x, y, this.displayWidth, this.displayHeight); //rect 
         this.graphics.clear();
-        this.graphics.lineStyle(2, 0xff00ff);
+        //this.graphics.lineStyle(2, 0xffffff);
         this.graphics.strokeRectShape(this.rectangle);
     }
     

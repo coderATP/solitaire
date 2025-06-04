@@ -15,8 +15,8 @@ export class DiscardPile extends Phaser.Physics.Arcade.Image{
             .setScale(this.config.zoomFactor)
             .setPosition(x, y)
             .setInteractive({draggable})
-            .setVisible(false)
-            
+            .setVisible(true)
+            .setData({x, y})
         //Rectangle area
         this.createPileRect(x, y); 
         
@@ -28,6 +28,27 @@ export class DiscardPile extends Phaser.Physics.Arcade.Image{
         this.graphics.clear();
         //this.graphics.lineStyle(2, 0xff00ff);
         this.graphics.strokeRectShape(this.rectangle);
+    }
+    
+    handleDragEvent(){
+        this.on("dragstart", (pointer, dragX, dragY)=>{
+            
+        })
+        this.on("drag", (pointer, dragX, dragY)=>{
+            this
+                .setPosition(dragX, dragY)
+                .setAlpha(0.8)
+                .setDepth(1)
+            
+        })
+        this.on("dragend", (pointer, dragX, dragY)=>{
+            this
+                .setDepth(0)
+                .setAlpha(1)
+                .setPosition(this.getData("x"), this.getData("y"))
+            
+        })  
+        return this;
     }
     
 }
