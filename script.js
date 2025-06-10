@@ -2,9 +2,9 @@ import { PreloadScene } from "./src/scenes/PreloadScene.js";
 import { PlayScene } from "./src/scenes/PlayScene.js";
 
 
-const GAME_WIDTH = 1024;
-const GAME_HEIGHT = 576;
-const ZOOM_FACTOR = 2.3
+const GAME_WIDTH = innerWidth;
+const GAME_HEIGHT = innerHeight;
+const ZOOM_FACTOR = 1
 
 
 const SHARED_CONFIG = {
@@ -23,7 +23,7 @@ const SHARED_CONFIG = {
         x: ( ( GAME_WIDTH - (GAME_WIDTH/ZOOM_FACTOR) ) / 2 ) + (GAME_WIDTH/ZOOM_FACTOR),
         y: ( (GAME_HEIGHT - (GAME_HEIGHT/ZOOM_FACTOR) ) / 2 ) + (GAME_HEIGHT/ZOOM_FACTOR),
     },
-    debug: false
+    debug: true
 };
 
 const config= {

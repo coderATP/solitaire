@@ -1,8 +1,5 @@
 import { BaseScene } from "./BaseScene.js";
-import { DrawPile } from "../piles/Draw.js";
-import { DiscardPile } from "../piles/Discard.js";
-import { FoundationPile } from "../piles/Foundation.js";
-import { TableauPile } from "../piles/Tableau.js";
+import { Solitaire } from "./Solitaire.js";
 
 
 export class PlayScene extends BaseScene{
@@ -12,57 +9,149 @@ export class PlayScene extends BaseScene{
         
     }
     
-    create(){
-        const margin = 10;
-        
-        //draw pile
-        this.drawPiles = [];
-        for(let i = 0; i < 3; ++i){
-            this.drawPile = new DrawPile(this, 0, 0, "cards")
-                .createCard(margin+i*5, 5, false); //draw pile 
+    createCard(type, x, y){
+        const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0);
+        return card
+    }
+    createPileRect(x, y, w, h){
+        const rect = new Phaser.Geom.Rectangle(x, y, w, h);
+        this.graphics.strokeRectShape(rect);
+        return rect;
+    }
+    createDropZone(zoneType, x, y, w, h){
+        const zone = this.add.zone(x, y, w, h).setRectangleDropZone(w+30, h+30).setDepth(-200).setName(zoneType).setOrigin(0);
+        if(this.config.debug){
+            this.add.rectangle(x, y, w, h, 0x09144ff, 0.0).setDepth(200).setOrigin(0);
         }
+        return zone;
+    }
+    
+    handleDragEvent(){
+        this.input.on("drag", (pointer, gameobject, dragX, dragY)=>{
+            //change position for a single card
+            gameobject.setPosition(dragX, dragY);
+            //change position for a stack of cards from tableau 
+            if(gameobject.name === "tableauPileCard"){
+                gameobject.setPosition(dragX, dragY)
+                const pileIndex = gameobject.getData("pileIndex");
+                const cardIndex = gameobject.getData("cardIndex");
+                
+                const pile = this.solitaire.tableauPile.cards[pileIndex];
+                pile.setDepth(10)
+                gameobject.setDepth(10)
+                if(cardIndex < pile.length - 1){
+                    for(let i = 0; i < pile.length-cardIndex; ++i){
+                        const card = pile.list[i+cardIndex];
+                        card.setPosition(dragX, dragY+i*20)
+                            .setDepth(2)
+                    }
+                    
+                }
+            } 
 
-        //discard pile
-        this.discardPile = new DiscardPile(this, 0, 0, "cards")
-            .createCard(this.drawPile.x + this.drawPile.displayWidth + 20, this.drawPile.y, true) //discard pile
-            .handleDragEvent()
-        //foundation pile
-        this.foundationPiles = [];
-        for(let i = 3; i >= 0; --i){
-            let foundationPile = new FoundationPile(this, 0, 0, "cards")
-            const padding = foundationPile.displayWidth + 10;
-                foundationPile.createCard(this.config.width - ( (i* padding) + foundationPile.displayWidth) - margin, this.drawPile.y, false);
-                
-            this.foundationPiles.push(foundationPile);
-        }
-        //tableau piles
-        this.tableauPiles = [];
-        for(let i = 0; i < 7; ++i){
-           
-            const marginLeft = 100, marginRight = 100, marginTop = 40;
-            const cardsWidthTotal = this.drawPile.displayWidth*7;
-            const availableWidthTotal = this.config.width - marginLeft - marginRight;
-            const availablePaddingSpaceTotal = availableWidthTotal - cardsWidthTotal;
-                
-            const padding = availablePaddingSpaceTotal/6; 
-            //7 containers, one for each tableau pile
-          
-            const container = this.add.container()
-            for(let j = 0; j < i+1; ++j){
-                const tableauPile = new TableauPile(this, 0, 0, "cards")
-                    .createCard(
-                        i* (padding + this.drawPile.displayWidth) + marginLeft,
-                        this.drawPile.y + this.drawPile.displayHeight + marginTop +j * 20,
-                        true,
-                        j,
-                        i
-                    )
- 
-                container.add(tableauPile); 
+        })
+        this.input.on("dragend", (pointer, gameobject, dropped)=>{
+          //  gameobject.setPosition(gameobject.getData("x"), gameobject.getData("y")); 
+           //for invalid moves, snap back to original location
+            if(gameobject.name === "foundationPileCard"){
+                if(!dropped)
+                    this.solitaire.foundationPile.handleMoveToEmptySpace(gameobject);
+                    return;
             }
+            else if(gameobject.name === "tableauPileCard"){
+                if(!dropped){
+                    this.solitaire.tableauPile.handleMoveToEmptySpace(gameobject);
+                    return;
+                }
+                const pileIndex = gameobject.getData("pileIndex");
+                const cardIndex = gameobject.getData("cardIndex");
+                
+                const pile = this.solitaire.tableauPile.cards[pileIndex];
+                pile.setDepth(0);
+                gameobject.setDepth(0)
+                if(cardIndex < pile.length - 1){
+                    for(let i = 0; i < pile.length-cardIndex; ++i){
+                        const card = pile.list[i+cardIndex];
+                        card.setPosition(card.getData("x"), card.getData("y"))
+                            .setDepth(0)
+                    }
+                }
+                
+                
+            }
+        })
+        return this;
+    }
+    
+    handleDropEvent(){
+        this.input.on("drop", (pointer, gameobject, dropZone)=>{
+           
+            switch(dropZone.name){
+                case "foundationPileZone":{
+                    //discard to foundation
+                    if(gameobject.name === "discardPileCard"){
+                       this.solitaire.discardPile.handleMoveCardToFoundation(gameobject, dropZone)
+                    }
+                    //tableau to foundation
+                    else if(gameobject.name === "tableauPileCard"){
+                       this.solitaire.tableauPile.handleMoveCardToFoundation(gameobject, dropZone)
+                    }
+                    //foundation to foundation
+                    else if(gameobject.name === "foundationPileCard"){
+                       this.solitaire.foundationPile.handleMoveCardToFoundation(gameobject, dropZone)
+                    }  
+                break;
+                }
+                //discard to tableau
+                case "tableauPileZone":{
+                    if(gameobject.name === "discardPileCard"){
+                       this.solitaire.discardPile.handleMoveCardToTableau(gameobject, dropZone)
+                    }
+                    //tableau to tableau
+                    else if(gameobject.name === "tableauPileCard"){
+                       this.solitaire.tableauPile.handleMoveCardToTableau(gameobject, dropZone)
+                    }
+                    //foundation to tableau
+                    else if(gameobject.name === "foundationPileCard"){
+                       this.solitaire.foundationPile.handleMoveCardToTableau(gameobject, dropZone)
+                    } 
+                break;
+                }
+                case "discardPileZone":{
 
-            this.tableauPiles.push(container)
-        }
+                break;
+                }  
+            }
+        })
+        return this;
+    }
+    
+    handleClickEvent(){
+        //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
+        this.solitaire.drawPile.cards.forEach(card=>{
+            card.on("pointerdown", (pointer, gameobject)=>{
+                this.solitaire.drawPile.handleMoveCardToDiscard(card);
+            })
+        })
+        return this;
+    }
+    
+    revealCard(card){
         
+    }
+    create(){
+        //graphics creation
+        this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
+        //solitaire
+        this.solitaire = new Solitaire(this);
+        this.solitaire.newGame();
+  
+        //piles creation
+
+        //events
+        this.handleDragEvent().handleDropEvent().handleClickEvent();
+    }
+    update(time, delta){
+       
     }
 }
