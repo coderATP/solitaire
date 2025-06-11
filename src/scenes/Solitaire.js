@@ -34,16 +34,16 @@ export class Solitaire{
             
             const startFrame = Object.values(Solitaire.CARD_START_FRAMES)[i];
             for(let j = 0; j < 13; ++j){
-               const card = this.scene.createCard("null", 0, 0, false)
+               const card = this.scene.createCard("null", 0, 0)
                    .setOrigin(0)
                    .setFrame(52)
+                   .setDepth(0)
                    .setData({
                        frame: startFrame + j,
                        value: j+1,
                        suit: Solitaire.CARD_SUITS[i],
                        colour: Object.values(Solitaire.CARD_COLOURS)[i]
                    })
- 
                this.deck.push(card);
             }
         }
@@ -65,16 +65,26 @@ export class Solitaire{
         const tempDeck = this.deck;
         //TO-DO: remove 24 cards from deck and place them into draw-pile
         this.drawPileData = this.drawPile.getBiodata();
-        this.drawPile.cards = tempDeck.splice(0, 24);
-        //set their properties
-        this.drawPile.cards.forEach((card, i)=>{
-            card.setPosition(this.drawPileData.x, this.drawPileData.y)
-                .setDepth(i)
+        
+        let tempDrawPile = tempDeck.splice(0, 24);
+        
+        for(let i = 0; i < 24; ++i){
+            const tempCard = tempDrawPile[i];
+            const card = this.scene.createCard("drawPileCard", 0, 0)
+                .setDepth(0)
                 .setFrame(52)
                 .setInteractive({draggable: false})
-                .setName("drawPileCard")
+            card.setData({
+                frame: tempCard.getData("frame"),
+                colour: tempCard.getData("colour"),
+                value: tempCard.getData("value"),
+                suit: tempCard.getData("suit")
+            });
             card.setData({x: card.x, y: card.y})
-        });
+           
+            this.drawPile.container.add(card);
+            tempDrawPile[i].destroy();
+        }
         
         //TO-DO: distribute remaining 28 cards from deck onto the tableau piles
         //logic: move 1 card into the 1st container, 2 cards into the 2nd container, 3 cards into the third...

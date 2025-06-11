@@ -19,7 +19,8 @@ export class PlayScene extends BaseScene{
         return rect;
     }
     createDropZone(zoneType, x, y, w, h){
-        const zone = this.add.zone(x, y, w, h).setRectangleDropZone(w+30, h+30).setDepth(-200).setName(zoneType).setOrigin(0);
+        const zone = this.add.zone(x, y, w, h).setRectangleDropZone(w+30, h+30).setDepth(-2)
+        .setName(zoneType).setOrigin(0);
         if(this.config.debug){
             this.add.rectangle(x, y, w, h, 0x09144ff, 0.0).setDepth(200).setOrigin(0);
         }
@@ -55,12 +56,17 @@ export class PlayScene extends BaseScene{
            //for invalid moves, snap back to original location
             if(gameobject.name === "foundationPileCard"){
                 if(!dropped)
-                    this.solitaire.foundationPile.handleMoveToEmptySpace(gameobject);
+                    this.solitaire.foundationPile.handleMoveCardToEmptySpace(gameobject);
                     return;
             }
+            else if(gameobject.name === "discardPileCard"){
+                if(!dropped)
+                    this.solitaire.discardPile.handleMoveCardToEmptySpace(gameobject);
+                    return;
+            } 
             else if(gameobject.name === "tableauPileCard"){
                 if(!dropped){
-                    this.solitaire.tableauPile.handleMoveToEmptySpace(gameobject);
+                    this.solitaire.tableauPile.handleMoveCardToEmptySpace(gameobject);
                     return;
                 }
                 const pileIndex = gameobject.getData("pileIndex");
@@ -114,25 +120,57 @@ export class PlayScene extends BaseScene{
                     //foundation to tableau
                     else if(gameobject.name === "foundationPileCard"){
                        this.solitaire.foundationPile.handleMoveCardToTableau(gameobject, dropZone)
-                    } 
+                    }
                 break;
                 }
                 case "discardPileZone":{
-
+                    if(gameobject.name === "tableauPileCard"){
+                        this.solitaire.tableauPile.handleMoveCardToDiscard(gameobject, dropZone);
+                    }
+                    else if(gameobject.name === "foundationPileCard"){
+                        this.solitaire.foundationPile.handleMoveCardToDiscard(gameobject, );
+                    }
+                    else if(gameobject.name === "discardPileCard"){
+                        this.solitaire.discardPile.handleMoveCardToDiscard(gameobject, );
+                    }  
                 break;
-                }  
+                }
+                case "drawPileZone":{
+                    if(gameobject.name === "tableauPileCard"){
+                        this.solitaire.tableauPile.handleMoveCardToDraw(gameobject, dropZone);
+                    }
+                    else if(gameobject.name === "foundationPileCard"){
+                        this.solitaire.foundationPile.handleMoveCardToDraw(gameobject, );
+                    }
+                    else if(gameobject.name === "discardPileCard"){
+                        this.solitaire.discardPile.handleMoveCardToDraw(gameobject, );
+                    }  
+                break;
+                } 
             }
         })
         return this;
     }
     
     handleClickEvent(){
+        const drawPile = this.solitaire.drawPile;
+
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
-        this.solitaire.drawPile.cards.forEach(card=>{
-            card.on("pointerdown", (pointer, gameobject)=>{
+        
+        drawPile.container.list.forEach(card=>{
+            card.on("pointerup", (pointer, gameobject)=>{
                 this.solitaire.drawPile.handleMoveCardToDiscard(card);
             })
         })
+        drawPile.zone.on("pointerup", (pointer, gameobject)=>{
+            this.solitaire.discardPile.returnToDrawPile(gameobject);
+        drawPile.container.list.forEach(card=>{
+            card.on("pointerup", (pointer, gameobject)=>{
+                this.solitaire.drawPile.handleMoveCardToDiscard(card);
+            })
+        }) 
+        })
+        
         return this;
     }
     

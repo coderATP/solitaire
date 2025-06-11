@@ -17,12 +17,24 @@ export class DiscardPile{
        
        //drop zone
        this.zone = this.scene.createDropZone("discardPileZone", rect.x, rect.y, rect.width, rect.height);
-   
+       this.container = this.scene.add.container(this.zone.x, this.zone.y);
        return this;
     }
     getBiodata(){
         return{x: 10, y: 20, displayWidth: 37, displayHeight: 52};
     }
+    handleMoveCardToEmptySpace(card){
+        console.log("invalid move: cannot place on empty space");
+        card.setPosition(card.getData("x"), card.getData("y"));
+    }
+    handleMoveCardToDraw(card){
+        console.log("invalid move: cannot place on draw pile");
+        card.setPosition(card.getData("x"), card.getData("y"));
+    }
+    handleMoveCardToDiscard(card){
+        card.setPosition(card.getData(card.getData("x")), card.getData("y"));
+    }
+ 
     handleMoveCardToFoundation(card, dropZone){
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
@@ -51,7 +63,6 @@ export class DiscardPile{
          
         targetPile.add(newCard);
         card.destroy();
-        
         return this;
     } 
     handleMoveCardToTableau(card, dropZone){
@@ -77,10 +88,33 @@ export class DiscardPile{
             pileIndex: targetPileIndex,
             cardIndex: targetPile.length
         })
-        
         targetPile.add(newCard);
         card.destroy();
-      
+        return this;
+    }
+    
+    returnToDrawPile(){
+        const drawPile = this.scene.solitaire.drawPile;
+        
+        if(drawPile.cards.length > 0) return;
+        
+        for( let i =  0; i < this.container.length; ++i){
+            const card = this.container.list[i];
+            const newCard = this.scene.createCard("drawPileCard", 0, 0);
+            newCard
+            .setFrame(card.getData("frame"))
+            .setInteractive({draggable: false})
+            .setData({
+                frame: card.getData("frame"),
+                value: card.getData("value"),
+                suit: card.getData("suit"),
+                colour: card.getData("colour"),
+                x: newCard.x,
+                y: newCard.y,
+            })
+            drawPile.container.add(newCard);
+        }
+        this.container.list = [];
         return this;
     }
 }

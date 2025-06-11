@@ -37,7 +37,6 @@ export class TableauPile{
             
             this.scene.add.rectangle(this.zone.x, this.zone.y, this.zone.width, this.zone.height, 0xff4000, 0.3)
                 .setOrigin(0)
-                .setDepth(1)
         }
         return this;
     }
@@ -57,7 +56,7 @@ export class TableauPile{
         return {y, displayWidth, displayHeight, marginRight, marginLeft, marginTop, padding}
     }
     
-    handleMoveToEmptySpace(card){
+    handleMoveCardToEmptySpace(card){
         console.log("cannot place on empty space");
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
@@ -75,7 +74,8 @@ export class TableauPile{
         }
         return;
     }
-    handleMoveCardToTableau(card, dropZone){
+    
+    isCardValidToMoveToTableau(card, dropZone){
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
         const targetPileIndex = dropZone.getData("pileIndex");
@@ -83,7 +83,48 @@ export class TableauPile{
         const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
         const numberOfCardsToMove = sourcePile.length - cardIndex;
         let cardsToMove;
-     
+      
+        const cardValue = card.getData("value");
+        const cardSuit = card.getData("suit");
+        const cardColour = card.getData("colour");
+       
+        //TO-DO: only king (data value = 13) can move to empty tableaus
+        if(targetPile.list.length === 0){
+            if(cardValue === 13){
+                return true;
+            }
+            return false;
+        }
+        //TO-DO: only card with value 1 less than that of the last card on the target pile can be successfully moved
+        const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
+        if(cardValue === lastCardInTargetPile.getData("value")-1 &&
+           cardColour !== lastCardInTargetPile.getData("colour")
+        ){
+            
+            return true;
+        }
+    }
+    
+    handleMoveCardToTableau(card, dropZone){
+
+        const cardIndex = card.getData("cardIndex");
+        const pileIndex = card.getData("pileIndex");
+        const targetPileIndex = dropZone.getData("pileIndex");
+        const sourcePile = this.scene.solitaire.tableauPile.cards[pileIndex];
+        const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
+        const numberOfCardsToMove = sourcePile.length - cardIndex;
+        let cardsToMove;
+        
+        const isValid = this.isCardValidToMoveToTableau(card, dropZone);
+        console.log(isValid)
+        if(!isValid){
+            for(let i = 0; i < numberOfCardsToMove; ++i){
+                cardsToMove = sourcePile.list[i+cardIndex];
+                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
+                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+            }
+            return;
+        } 
         //TO-DO: if player drops on the same pile return its position
         //logic: simply reset the position of the card(s)
         if(pileIndex === targetPileIndex){
@@ -101,7 +142,8 @@ export class TableauPile{
                 return;
             }
         }
-
+        //TO-DO: if player takes an invalid card
+        
         //TO-DO: move multiple cards at a time
         //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
 
@@ -134,6 +176,12 @@ export class TableauPile{
        
         return this;
     }
+    handleMoveCardToDiscard(card, dropZone){
+        this.handleMoveCardToEmptySpace(card);
+    }
+    handleMoveCardToDraw(card, dropZone){
+        this.handleMoveCardToEmptySpace(card);
+    } 
     handleMoveCardToFoundation(card, dropZone){
         //TO-DO: move a valid card to foundation
         //only one card can be moved at a time from the tableau to foundation

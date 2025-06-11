@@ -9,9 +9,12 @@ export class DrawPile{
     create(){
        
        //pile rectangle 
-       this.scene.createPileRect(this.getBiodata().x, this.getBiodata().y, this.getBiodata().displayWidth, this.getBiodata().displayHeight);
+       this.rect = this.scene.createPileRect(this.getBiodata().x, this.getBiodata().y, this.getBiodata().displayWidth, this.getBiodata().displayHeight);
        //drop zone
        this.zone = this.scene.createDropZone("drawPileZone", this.getBiodata().x, this.getBiodata().y, this.getBiodata().displayWidth, this.getBiodata().displayHeight);
+       //container
+       this.container = this.scene.add.container(this.zone.x, this.zone.y);
+       this.cards.push(this.container)
        return this;
     }
     
@@ -20,7 +23,7 @@ export class DrawPile{
     }
     handleMoveCardToDiscard(card){
         const targetPile = this.scene.solitaire.discardPile.cards;
-        const newCard = this.scene.createCard("discardPileCard", this.scene.solitaire.discardPile.zone.x, this.scene.solitaire.discardPile.zone.y);
+        const newCard = this.scene.createCard("discardPileCard", 0,0);
         newCard
             .setInteractive({draggable: true})
             .setFrame(card.getData("frame"))
@@ -33,8 +36,9 @@ export class DrawPile{
                 y: newCard.y,
                 cardIndex: targetPile.length
             })
-        this.scene.solitaire.discardPile.cards.push(newCard);
+        this.scene.solitaire.discardPile.container.add(newCard);
         card.destroy();
+        this.cards.pop();
     }
 
 }
