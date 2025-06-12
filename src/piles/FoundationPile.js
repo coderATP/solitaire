@@ -55,6 +55,12 @@ export class FoundationPile{
     }
     
     handleMoveCardToTableau(card, dropZone){
+        const isValid = this.isCardValidToMoveToTableau(card, dropZone);
+        
+        if(!isValid){
+            card.setPosition(0,0);
+            return;
+        } 
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
         const targetPileIndex = dropZone.getData("pileIndex");
@@ -95,8 +101,42 @@ export class FoundationPile{
     handleMoveCardToDraw(card, dropZone){
         console.log("invalid move: cannot place on draw pile");
         card.setPosition(0, 0);
-    } 
+    }
+    isCardValidToMoveToTableau(card, dropZone){
+        const targetPileIndex = dropZone.getData("pileIndex");
+        const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
+      
+        const cardValue = card.getData("value");
+        const cardSuit = card.getData("suit");
+        const cardColour = card.getData("colour");
+       
+        //TO-DO: only king (data value = 13) can move to empty tableaus
+        if(targetPile.list.length === 0){
+            if(cardValue === 13){
+                return true;
+            }
+            else{
+                alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
+                return false;
+            }
+        }
+        //idea: for a card/stack to be successfully dropped onto a target pile,
+        //1. the card being dragged must have a value 1 less than that of the last card on the target pile.
+        //2. it's colour must not be the same with the last card on the target pile
+        const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
+        if(cardValue === lastCardInTargetPile.getData("value")-1 &&
+           cardColour !== lastCardInTargetPile.getData("colour")
+        ){
+            return true;
+        }
+        else{
+            alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
+            return false;
+        }
+    }
+      
     handleMoveCardToFoundation(card, dropZone){
+
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
         const targetPileIndex = dropZone.getData("pileIndex"); 

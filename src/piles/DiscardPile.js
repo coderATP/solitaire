@@ -18,6 +18,7 @@ export class DiscardPile{
        //drop zone
        this.zone = this.scene.createDropZone("discardPileZone", rect.x, rect.y, rect.width, rect.height);
        this.container = this.scene.add.container(this.zone.x, this.zone.y);
+       this.cards.push(this.container);
        return this;
     }
     getBiodata(){
@@ -71,6 +72,12 @@ export class DiscardPile{
         const targetPileIndex = dropZone.getData("pileIndex");
         const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
         
+        //If movement is invalid, return early
+        const isValid = this.isCardValidToMoveToTableau(card, dropZone);
+        if(!isValid){
+            card.setPosition(0,0);
+            return;
+        }
         //TO-DO: move card from foundation to tableau
         //idea: create a new card, add it to the target pile and destroy the original card being moved
         const newCard = this.scene.createCard("tableauPileCard", 0, targetPile.length *20);
@@ -93,6 +100,39 @@ export class DiscardPile{
         return this;
     }
     
+    isCardValidToMoveToTableau(card, dropZone){
+        const targetPileIndex = dropZone.getData("pileIndex");
+        const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
+      
+        const cardValue = card.getData("value");
+        const cardSuit = card.getData("suit");
+        const cardColour = card.getData("colour");
+       
+        //TO-DO: only king (data value = 13) can move to empty tableaus
+        if(targetPile.list.length === 0){
+            if(cardValue === 13){
+                return true;
+            }
+            else{
+                alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
+                return false;
+            }
+        }
+        //idea: for a card/stack to be successfully dropped onto a target pile,
+        //1. the card being dragged must have a value 1 less than that of the last card on the target pile.
+        //2. it's colour must not be the same with the last card on the target pile
+        const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
+        if(cardValue === lastCardInTargetPile.getData("value")-1 &&
+           cardColour !== lastCardInTargetPile.getData("colour")
+        ){
+            return true;
+        }
+        else{
+            alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
+            return false;
+        }
+    }
+     
     returnToDrawPile(){
         const drawPile = this.scene.solitaire.drawPile;
         
@@ -102,7 +142,7 @@ export class DiscardPile{
             const card = this.container.list[i];
             const newCard = this.scene.createCard("drawPileCard", 0, 0);
             newCard
-            .setFrame(card.getData("frame"))
+            .setFrame(52)
             .setInteractive({draggable: false})
             .setData({
                 frame: card.getData("frame"),

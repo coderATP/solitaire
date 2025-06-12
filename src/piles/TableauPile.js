@@ -93,15 +93,43 @@ export class TableauPile{
             if(cardValue === 13){
                 return true;
             }
-            return false;
+            else{
+                alert("only KINGS can be the first to be dropped onto an empty pile")
+                return false;
+            }
         }
-        //TO-DO: only card with value 1 less than that of the last card on the target pile can be successfully moved
+        //idea: for a card/stack to be successfully dropped onto a target pile,
+        //1. the card being dragged must have a value 1 less than that of the last card on the target pile.
+        //2. it's colour must not be the same with the last card on the target pile
+        //The two conditions must be met even before a stack can be moved
+        // if it is a stack,
+            //1.the succeeding cards must be less than each other by a value of 1,
+            //2. the succeeding cards must also have alternating colours
         const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
         if(cardValue === lastCardInTargetPile.getData("value")-1 &&
            cardColour !== lastCardInTargetPile.getData("colour")
         ){
-            
-            return true;
+            for(let i = 0; i < numberOfCardsToMove; ++i){
+                const preceedingCardOnStack = sourcePile.list[i+cardIndex]; 
+                const succeedingCardOnStack = sourcePile.list[i+cardIndex+1];
+                
+                //return true early if it's only one card being moved 
+                if(numberOfCardsToMove === 1) return true;
+                //for multiple cards
+                if(preceedingCardOnStack.getData("value") === succeedingCardOnStack.getData("value")-1 &&
+                    preceedingCardOnStack.getData("colour") !== succeedingCardOnStack.getData("colour")
+                ){
+                    return true;
+                }
+                else {
+                    //alert("MOVEMENT RULES TO PLACE MULTIPLE CARDS:\n1. cards must have ALTERNATING COLOURS.\n 2. subsequent cards must be greater than each other from top to bottom by a value of 1. they must also have alternating colours.\n 3. the topmost card must have opposite colour and value less than 1 to the last card on drop-zone");
+                    return false;
+                }
+            }
+        }
+        else{
+          //  alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
+            return false;
         }
     }
     
@@ -116,7 +144,10 @@ export class TableauPile{
         let cardsToMove;
         
         const isValid = this.isCardValidToMoveToTableau(card, dropZone);
-        console.log(isValid)
+        
+        //if card(s) does/do not meet validity conditions to move to another pile, it/they is/are returned to the source pile
+        //code is returned early
+        //logic: simply reset the position of the card(s) 
         if(!isValid){
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];
@@ -124,8 +155,10 @@ export class TableauPile{
                 cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
             }
             return;
-        } 
-        //TO-DO: if player drops on the same pile return its position
+        }
+        
+        //VALID MOVEMENTS->
+        //1. but player drops on the same pile return its position
         //logic: simply reset the position of the card(s)
         if(pileIndex === targetPileIndex){
             if(numberOfCardsToMove===1){
@@ -142,8 +175,8 @@ export class TableauPile{
                 return;
             }
         }
-        //TO-DO: if player takes an invalid card
         
+        //2. player drops on a new pile
         //TO-DO: move multiple cards at a time
         //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
 
@@ -167,7 +200,6 @@ export class TableauPile{
 
             targetPile.add(cardGameObject);
         }
-        
         
         //remove card(s) from source pile
         for(let i = 0; i < numberOfCardsToMove; ++i){

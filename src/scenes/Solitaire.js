@@ -101,7 +101,7 @@ export class Solitaire{
         //...the code above eventually leaves 4 more cards in the deck,
         //so they are added to the last pile as shown in the forEach() method below:->
         tempDeck.forEach(card=>{
-            this.tableauPile.cards[6].add(card)
+            this.tableauPile.cards[6].add(card);
         })
         //set their properties
         this.tableauPile.cards.forEach((container, i)=>{
@@ -111,7 +111,16 @@ export class Solitaire{
                     .setFrame(card.getData("frame"))
                     .setInteractive({draggable: true})
                     .setName("tableauPileCard")
-                card.setData({x: card.x, y: card.y, pileIndex: i, cardIndex: j}) 
+                card.setData({
+                    frame: card.getData("frame"),
+                    colour: card.getData("colour"),
+                    value: card.getData("value"),
+                    suit: card.getData("suit"),
+                    x: card.x,
+                    y: card.y,
+                    pileIndex: i,
+                    cardIndex: j 
+                }); 
             })
         }) 
     }
