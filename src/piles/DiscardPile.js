@@ -43,6 +43,12 @@ export class DiscardPile{
         const sourcePile = this.scene.solitaire.foundationPile.cards[pileIndex];
         const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
         
+        const isValid = this.isCardValidToMoveToFoundation(card, dropZone);
+        
+        if(!isValid){
+            card.setPosition(0,0);
+            return;
+        }
         if(pileIndex === targetPileIndex ) return;
         //TO-DO: move card from foundation to foundation
         //idea: do not bother moving if targetPile is not empty
@@ -100,6 +106,38 @@ export class DiscardPile{
         return this;
     }
     
+    isCardValidToMoveToFoundation(card, dropZone){
+        const targetPileIndex = dropZone.getData("pileIndex");
+        const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
+      
+        const cardValue = card.getData("value");
+        const cardSuit = card.getData("suit");
+        const cardColour = card.getData("colour");
+       
+        //TO-DO: only aces (data value = 1) can move to empty tableaus
+        if(targetPile.list.length === 0){
+            if(cardValue === 1){
+                return true;
+            }
+            else{
+                alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+                return false;
+            }
+        }
+        //idea: for a card to be successfully dropped onto a target pile,
+        //1. the card being dragged must have a value 1 more than that of the last card on the target pile.
+        //2. it's suit same with the last card on the target pile
+        const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
+        if(cardValue === lastCardInTargetPile.getData("value")+1 &&
+           cardSuit === lastCardInTargetPile.getData("suit")
+        ){
+            return true;
+        }
+        else{
+            alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
+            return false;
+        }
+    } 
     isCardValidToMoveToTableau(card, dropZone){
         const targetPileIndex = dropZone.getData("pileIndex");
         const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
@@ -107,7 +145,7 @@ export class DiscardPile{
         const cardValue = card.getData("value");
         const cardSuit = card.getData("suit");
         const cardColour = card.getData("colour");
-       
+        
         //TO-DO: only king (data value = 13) can move to empty tableaus
         if(targetPile.list.length === 0){
             if(cardValue === 13){
@@ -136,14 +174,15 @@ export class DiscardPile{
     returnToDrawPile(){
         const drawPile = this.scene.solitaire.drawPile;
         
-        if(drawPile.cards.length > 0) return;
-        
+        if(drawPile.container.length > 0) return;
+        //drawPile.container = null;
         for( let i =  0; i < this.container.length; ++i){
             const card = this.container.list[i];
             const newCard = this.scene.createCard("drawPileCard", 0, 0);
             newCard
             .setFrame(52)
             .setInteractive({draggable: false})
+            .setDepth(5)
             .setData({
                 frame: card.getData("frame"),
                 value: card.getData("value"),
@@ -155,6 +194,8 @@ export class DiscardPile{
             drawPile.container.add(newCard);
         }
         this.container.list = [];
+        drawPile.container.list.reverse();
+        drawPile.zone.setDepth(-1)
         return this;
     }
 }

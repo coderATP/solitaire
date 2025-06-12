@@ -134,9 +134,45 @@ export class FoundationPile{
             return false;
         }
     }
-      
-    handleMoveCardToFoundation(card, dropZone){
 
+    isCardValidToMoveToFoundation(card, dropZone){
+        const targetPileIndex = dropZone.getData("pileIndex");
+        const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
+      
+        const cardValue = card.getData("value");
+        const cardSuit = card.getData("suit");
+        const cardColour = card.getData("colour");
+       
+        //TO-DO: only aces (data value = 1) can move to empty tableaus
+        if(targetPile.list.length === 0){
+            if(cardValue !== 1){
+                alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+                console.log("card value: ",cardValue);
+                return false;
+            }
+        //idea: for a card to be successfully dropped onto a target pile,
+        //1. the card being dragged must have a value 1 more than that of the last card on the target pile.
+        //2. it's suit same with the last card on the target pile 
+        }
+        else{
+            const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
+            if(cardValue !== lastCardInTargetPile.getData("value")+1 ||
+               cardSuit !== lastCardInTargetPile.getData("suit")
+            ){
+                alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
+                return false;
+            } 
+        }
+
+        return true;
+    }
+    
+    handleMoveCardToFoundation(card, dropZone){
+        const isValid = this.isCardValidToMoveToFoundation(card, dropZone);
+        if(!isValid){
+            card.setPosition(0,0);
+            return;
+        }
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
         const targetPileIndex = dropZone.getData("pileIndex"); 

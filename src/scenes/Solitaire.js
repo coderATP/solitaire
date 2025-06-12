@@ -28,6 +28,7 @@ export class Solitaire{
         this.tableauPile = new TableauPile(scene).create();
         
         this.deck = [];
+        this.deck2 = [];
     }
     createDeck(){
         for(let i = 0; i < Solitaire.CARD_SUITS.length; ++i ){
@@ -45,6 +46,7 @@ export class Solitaire{
                        colour: Object.values(Solitaire.CARD_COLOURS)[i]
                    })
                this.deck.push(card);
+             //  this.deck2.push(card);
             }
         }
     }
@@ -59,17 +61,18 @@ export class Solitaire{
         }
         this.deck = tempDeck;
         tempDeck = [];
+        return this.deck;
     }
     
     distributeDeckCardsToPiles(){
-        const tempDeck = this.deck;
+        let tempDeck = this.deck;
         //TO-DO: remove 24 cards from deck and place them into draw-pile
         this.drawPileData = this.drawPile.getBiodata();
         
-        let tempDrawPile = tempDeck.splice(0, 24);
-        
+        let drawPileCards = tempDeck.splice(0, 24);
+        this.drawPile.container = this.scene.add.container(this.drawPile.rect.x, this.drawPile.rect.y);
         for(let i = 0; i < 24; ++i){
-            const tempCard = tempDrawPile[i];
+            const tempCard = drawPileCards[i];
             const card = this.scene.createCard("drawPileCard", 0, 0)
                 .setDepth(0)
                 .setFrame(52)
@@ -83,9 +86,11 @@ export class Solitaire{
             card.setData({x: card.x, y: card.y})
            
             this.drawPile.container.add(card);
-            tempDrawPile[i].destroy();
+            drawPileCards[i].destroy();
         }
+        this.drawPile.cards.push(this.drawPile.container);
         
+ 
         //TO-DO: distribute remaining 28 cards from deck onto the tableau piles
         //logic: move 1 card into the 1st container, 2 cards into the 2nd container, 3 cards into the third...
         //using the array.splice() function.
@@ -94,11 +99,11 @@ export class Solitaire{
         for(let i = 0; i < 7; ++i){
             const container = this.scene.add.container(this.tableauData.marginLeft + i* (this.tableauData.padding+this.tableauData.displayWidth), this.tableauData.marginTop); 
             for(let j = 0; j < i+1; ++j){
-                container.add(tempDeck.splice(j, 1))
+                container.add(tempDeck.splice(i, 1))
             }
             this.tableauPile.cards.push(container);
         }
-        //...the code above eventually leaves 4 more cards in the deck,
+        //...the code above eventually leaves 3 more cards in the deck,
         //so they are added to the last pile as shown in the forEach() method below:->
         tempDeck.forEach(card=>{
             this.tableauPile.cards[6].add(card);
@@ -107,8 +112,8 @@ export class Solitaire{
         this.tableauPile.cards.forEach((container, i)=>{
             container.list.forEach((card, j)=>{
                 card.setPosition(0, j*20)
-                    .setDepth(i)
-                    .setFrame(card.getData("frame"))
+                    .setDepth(0)
+                    .setFrame(52)
                     .setInteractive({draggable: true})
                     .setName("tableauPileCard")
                 card.setData({
@@ -122,11 +127,23 @@ export class Solitaire{
                     cardIndex: j 
                 }); 
             })
-        }) 
+            //flip topmost card in container
+            this.flipTopmostCardInTableau(container);
+        })
+        tempDeck = [];
+        this.deck = [];
+    }
+    flipTopmostCardInTableau(tableauPile){
+        //return if container is empty
+        if(tableauPile.list.length === 0) return;
+        const topmostCard = tableauPile.list[tableauPile.list.length-1];
+        const cardFrame = topmostCard.getData("frame");
+        topmostCard.setFrame(cardFrame);
     }
     newGame(){
         this.createDeck();
-        this.shuffleDeck()
+        this.deck = this.shuffleDeck();
         this.distributeDeckCardsToPiles();
+        console.log (this.deck)
     }
 }

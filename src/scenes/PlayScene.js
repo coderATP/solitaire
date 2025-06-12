@@ -156,21 +156,14 @@ export class PlayScene extends BaseScene{
         const drawPile = this.solitaire.drawPile;
 
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
-        
-        drawPile.container.list.forEach(card=>{
-            card.on("pointerup", (pointer, gameobject)=>{
-                this.solitaire.drawPile.handleMoveCardToDiscard(card);
-            })
+        this.input.on("pointerdown", (pointer, gameobject)=>{
+            if(gameobject[0].name === "drawPileCard"){
+                this.solitaire.drawPile.handleMoveCardToDiscard(gameobject[0]); 
+            }
+            else if(gameobject[0].name === "drawPileZone"){
+                this.solitaire.discardPile.returnToDrawPile();
+            }
         })
-        drawPile.zone.on("pointerup", (pointer, gameobject)=>{
-            this.solitaire.discardPile.returnToDrawPile(gameobject);
-        drawPile.container.list.forEach(card=>{
-            card.on("pointerup", (pointer, gameobject)=>{
-                this.solitaire.drawPile.handleMoveCardToDiscard(card);
-            })
-        }) 
-        })
-        
         return this;
     }
     
@@ -183,13 +176,10 @@ export class PlayScene extends BaseScene{
         //solitaire
         this.solitaire = new Solitaire(this);
         this.solitaire.newGame();
-  
-        //piles creation
-
         //events
-        this.handleDragEvent().handleDropEvent().handleClickEvent();
+       this.handleDragEvent().handleDropEvent().handleClickEvent();
     }
     update(time, delta){
-       
+
     }
 }
