@@ -18,29 +18,9 @@ export class DrawPile{
     }
     
     getBiodata(){
-        return{x: 10, y: 20, displayWidth: 37, displayHeight: 52};
+        return{x: 0, y: 50, displayWidth: 37, displayHeight: 52};
     }
     
-    handleMoveCardToDiscard(card){
-        const targetPile = this.scene.solitaire.discardPile.container;
-        const newCard = this.scene.createCard("discardPileCard", 0,0);
-        newCard
-            .setInteractive({draggable: true})
-            .setFrame(card.getData("frame"))
-            .setData({
-                frame: card.getData("frame"),
-                value: card.getData("value"),
-                suit: card.getData("suit"),
-                colour: card.getData("colour"),
-                x: newCard.x,
-                y: newCard.y,
-                cardIndex: targetPile.length
-            })
-        targetPile.add(newCard);
-        card.destroy();
-        this.cards.pop();
-        //this.updateTopmostTwoCardsPosition();
-    }
     updateTopmostTwoCardsPosition(){
         if(this.container.list.length > 0){
             if(this.container.list[1]){

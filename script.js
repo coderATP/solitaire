@@ -4,7 +4,7 @@ import { PlayScene } from "./src/scenes/PlayScene.js";
 
 const GAME_WIDTH = innerWidth;
 const GAME_HEIGHT = innerHeight;
-const ZOOM_FACTOR = 1
+const ZOOM_FACTOR = 1.38
 
 
 const SHARED_CONFIG = {
@@ -30,6 +30,7 @@ const config= {
     type: Phaser.AUTO,
     ...SHARED_CONFIG, 
     parent: "gameWrapper",
+    backgroundColor: 0x00aa00,
     scale: {
          mode: Phaser.Scale.Fit,
          autoCenter: Phaser.Scale.CENTER_BOTH,

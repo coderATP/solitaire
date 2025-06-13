@@ -46,11 +46,11 @@ export class FoundationPile{
     }
     getBiodata(){
         return{x: 10,
-            y: 20,
-            displayWidth: 37,
-            displayHeight: 52,
-            padding: 37 + 5,
-            marginRight: 10
+            y: 50,
+            displayWidth: 37*this.config.zoomFactor,
+            displayHeight: 52*this.config.zoomFactor,
+            padding: 37*this.config.zoomFactor + 5,
+            marginRight: 0
         };
     }
     

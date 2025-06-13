@@ -15,7 +15,7 @@ export class TableauPile{
             displayWidth: 37 * this.config.zoomFactor
         }
         
-        let marginLeft = 20, marginRight = 20, marginTop = this.getBioData().y + this.getBioData().displayHeight + 20;
+        let marginLeft = 0, marginRight = 0, marginTop = this.getBioData().y + this.getBioData().displayHeight + 100;
         const availableWidthTotal = this.config.width - (marginLeft + marginRight);
         const cardsWidthTotal = card.displayWidth * 7;
         const availablePaddingSpaceTotal = availableWidthTotal - cardsWidthTotal;
@@ -24,8 +24,8 @@ export class TableauPile{
         for(let i = 0; i < 7; ++i){
             //7 zone gameobjects
              this.zone = this.scene.add.zone(
-                 marginLeft + i* (padding+card.displayWidth),
-                 marginTop+marginTop*2,
+                 marginLeft+i* (padding+card.displayWidth),
+                 marginTop,
                 card.displayWidth,
                 this.config.height - marginTop
             );
@@ -42,11 +42,11 @@ export class TableauPile{
     }
     
     getBioData(){
-        let y = 20,
+        let y = 50,
              displayHeight= 52 * this.config.zoomFactor,
              displayWidth= 37 * this.config.zoomFactor;
         
-        let marginLeft = 20, marginRight = 20, marginTop = y + displayHeight + 200;
+        let marginLeft = 0, marginRight = 0, marginTop = y + displayHeight + 100;
         
         const availableWidthTotal = this.config.width - (marginLeft + marginRight);
         const cardsWidthTotal = displayWidth * 7;

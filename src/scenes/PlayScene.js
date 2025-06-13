@@ -1,4 +1,5 @@
 import { BaseScene } from "./BaseScene.js";
+import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
 import { Solitaire } from "./Solitaire.js";
 
 
@@ -7,10 +8,15 @@ export class PlayScene extends BaseScene{
         super("PlayScene", config);
         this.config = config;
         
+        //tracking undo and redo actions 
+        this.moves = [];
+        this.totalMoves = 0;
+        this.movesToRedo = 0;
+        this.movesToUndo = 0;
     }
     
     createCard(type, x, y){
-        const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0);
+        const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0).setScale(this.config.zoomFactor);
         return card
     }
     createPileRect(x, y, w, h){
@@ -157,20 +163,49 @@ export class PlayScene extends BaseScene{
 
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
         this.input.on("pointerdown", (pointer, gameobject)=>{
+            //return if click on empty space
+            if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
-                this.solitaire.drawPile.handleMoveCardToDiscard(gameobject[0]); 
+                const command = new DrawToDiscard(this, gameobject[0], null);
+                command.execute();
+                this.moves.push(command);
+                this.movesToUndo++;
+                this.movesToRedo = 0;
             }
             else if(gameobject[0].name === "drawPileZone"){
                 this.solitaire.discardPile.returnToDrawPile();
             }
+            else if(gameobject[0].name === "undoButton"){
+                const command = this.moves.pop();
+                if(!command) return;
+                command.undo();
+                this.movesToUndo--;
+                this.movesToRedo++;
+            }
+            else if(gameobject[0].name === "redoButton"){
+                if(this.movesToRedo === 0) return;
+                const command = new DrawToDiscard(this, gameobject[0], null);
+                command.redo();
+                this.moves.push(command);
+                this.movesToUndo++;
+                this.movesToRedo--;
+            }  
         })
         return this;
     }
     
-    revealCard(card){
-        
-    }
     create(){
+        //buttons
+        this.undoButton = this.add.text(0,0, "undo",
+            {font: "30px Arial"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("undoButton");
+        this.redoButton = this.add.text(this.undoButton.width*3,0, "redo",
+            {font: "30px Arial"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("redoButton") 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
         //solitaire
