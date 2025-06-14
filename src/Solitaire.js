@@ -1,7 +1,7 @@
-import { DrawPile } from "../piles/DrawPile.js";
-import { DiscardPile } from "../piles/DiscardPile.js";
-import { FoundationPile } from "../piles/FoundationPile.js";
-import { TableauPile } from "../piles/TableauPile.js";
+import { DrawPile } from "./piles/DrawPile.js";
+import { DiscardPile } from "./piles/DiscardPile.js";
+import { FoundationPile } from "./piles/FoundationPile.js";
+import { TableauPile } from "./piles/TableauPile.js";
 
 
 export class Solitaire{

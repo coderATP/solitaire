@@ -1,18 +1,14 @@
 import { BaseScene } from "./BaseScene.js";
+import { CommandHandler } from "../CommandHandler.js";
 import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
-import { Solitaire } from "./Solitaire.js";
+import { Solitaire } from "../Solitaire.js";
 
 
 export class PlayScene extends BaseScene{
     constructor(config){
         super("PlayScene", config);
         this.config = config;
-        
-        //tracking undo and redo actions 
-        this.moves = [];
-        this.totalMoves = 0;
-        this.movesToRedo = 0;
-        this.movesToUndo = 0;
+        this.commandHandler = new CommandHandler();
     }
     
     createCard(type, x, y){
@@ -167,28 +163,18 @@ export class PlayScene extends BaseScene{
             if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
                 const command = new DrawToDiscard(this, gameobject[0], null);
-                command.execute();
-                this.moves.push(command);
-                this.movesToUndo++;
-                this.movesToRedo = 0;
+                this.commandHandler.execute(command);
             }
             else if(gameobject[0].name === "drawPileZone"){
                 this.solitaire.discardPile.returnToDrawPile();
             }
             else if(gameobject[0].name === "undoButton"){
-                const command = this.moves.pop();
-                if(!command) return;
-                command.undo();
-                this.movesToUndo--;
-                this.movesToRedo++;
+                this.commandHandler.undo();
+
             }
             else if(gameobject[0].name === "redoButton"){
-                if(this.movesToRedo === 0) return;
                 const command = new DrawToDiscard(this, gameobject[0], null);
-                command.redo();
-                this.moves.push(command);
-                this.movesToUndo++;
-                this.movesToRedo--;
+                this.commandHandler.redo(command);
             }  
         })
         return this;
@@ -211,6 +197,7 @@ export class PlayScene extends BaseScene{
         //solitaire
         this.solitaire = new Solitaire(this);
         this.solitaire.newGame();
+
         //events
        this.handleDragEvent().handleDropEvent().handleClickEvent();
     }
