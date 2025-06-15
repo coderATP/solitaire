@@ -1,13 +1,13 @@
-import { DiscardMovement } from "./DiscardMovement.js";
+import { FoundationMovement } from "./FoundationMovement.js";
 
-export class DiscardToTableau extends DiscardMovement{
+export class FoundationToTableau extends FoundationMovement{
     constructor (scene, card, dropZone){
         super(scene, card, dropZone);
-        this.id = "discardToTableau"
+        this.id = "foundationToTableau"
     }
     
     execute(){
-        const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToTableau(this.card, this.dropZone);
+        const isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToTableau(this.card, this.dropZone);
         
         if(!isValid){
             this.card.setPosition(0,0);
@@ -16,7 +16,7 @@ export class DiscardToTableau extends DiscardMovement{
         const cardIndex = this.card.getData("cardIndex");
         const pileIndex = this.card.getData("pileIndex");
         const targetPileIndex = this.dropZone.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.discardPile.container;
+        const sourcePile = this.scene.solitaire.foundationPile.cards[pileIndex];
         const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
         
         //TO-DO: move card from foundation to tableau
@@ -58,9 +58,9 @@ export class DiscardToTableau extends DiscardMovement{
     
     undo(command){
         const sourcePile = this.scene.solitaire.tableauPile.cards[command.originalCardData.currentPileIndex];
-        const targetPile = this.scene.solitaire.discardPile.container;
+        const targetPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.originalPileIndex];
         
-        const newCard = this.scene.createCard("discardPileCard", 0, 0);
+        const newCard = this.scene.createCard("foundationPileCard", 0, 0);
         
         newCard
         .setFrame(command.originalCardData.frame)

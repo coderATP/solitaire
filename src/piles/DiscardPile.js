@@ -25,17 +25,16 @@ export class DiscardPile{
         return{y: 50, displayWidth: 37*this.config.zoomFactor, displayHeight: 52*this.config.zoomFactor};
     }
     handleMoveCardToEmptySpace(card){
-        console.log("invalid move: cannot place on empty space");
+        //console.log("invalid move: cannot place on empty space");
         card.setPosition(card.getData("x"), card.getData("y"));
     }
     handleMoveCardToDraw(card){
-        console.log("invalid move: cannot place on draw pile");
+       // console.log("invalid move: cannot place on draw pile");
         card.setPosition(card.getData("x"), card.getData("y"));
     }
     handleMoveCardToDiscard(card){
         card.setPosition(card.getData(card.getData("x")), card.getData("y"));
     }
- 
     handleMoveCardToFoundation(card, dropZone){
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
@@ -105,7 +104,6 @@ export class DiscardPile{
         card.destroy();
         return this;
     }
-    
     isCardValidToMoveToFoundation(card, dropZone){
         const targetPileIndex = dropZone.getData("pileIndex");
         const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
@@ -120,7 +118,7 @@ export class DiscardPile{
                 return true;
             }
             else{
-                alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+              //  alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
                 return false;
             }
         }
@@ -134,7 +132,7 @@ export class DiscardPile{
             return true;
         }
         else{
-            alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
+           // alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
             return false;
         }
     } 
@@ -152,7 +150,7 @@ export class DiscardPile{
                 return true;
             }
             else{
-                alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
+               // alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
                 return false;
             }
         }
@@ -166,11 +164,10 @@ export class DiscardPile{
             return true;
         }
         else{
-            alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
+          //  alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
             return false;
         }
     }
-     
     returnToDrawPile(){
         const drawPile = this.scene.solitaire.drawPile;
         

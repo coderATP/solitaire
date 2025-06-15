@@ -59,7 +59,7 @@ export class FoundationToFoundation extends FoundationMovement{
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
             suit: this.card.getData("suit"),
-            colour: this.card.getData("colour"), 
+            colour: this.card.getData("colour"),
         }
         targetPile.add(this.originalCard);
         this.card.destroy() // sourcePile.list.pop() does not work

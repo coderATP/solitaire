@@ -127,18 +127,12 @@ export class Solitaire{
                 }); 
             })
             //flip topmost card in container
-            this.flipTopmostCardInTableau(container);
+            this.tableauPile.showTopmostCardInTableau(container);
         })
         tempDeck = [];
         this.deck = [];
     }
-    flipTopmostCardInTableau(tableauPile){
-        //return if container is empty
-        if(tableauPile.list.length === 0) return;
-        const topmostCard = tableauPile.list[tableauPile.list.length-1];
-        const cardFrame = topmostCard.getData("frame");
-        topmostCard.setFrame(cardFrame);
-    }
+    
     newGame(){
         this.createDeck();
         this.deck = this.shuffleDeck();

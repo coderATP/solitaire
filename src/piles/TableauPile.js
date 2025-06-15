@@ -6,7 +6,6 @@ export class TableauPile{
         this.cards = [];
         this.dropZones = [];
     }
-    
     create(){
         //3 cards
         let card, tableauCard;
@@ -35,12 +34,11 @@ export class TableauPile{
             .setName("tableauPileZone")
             .setData({pileIndex: i})
             
-            this.scene.add.rectangle(this.zone.x, this.zone.y, this.zone.width, this.zone.height, 0xff4000, 0.3)
+            this.scene.add.rectangle(this.zone.x, this.zone.y, this.zone.width, this.zone.height, 0xff4000, 0.0)
                 .setOrigin(0)
         }
         return this;
     }
-    
     getBioData(){
         let y = 50,
              displayHeight= 52 * this.config.zoomFactor,
@@ -55,9 +53,8 @@ export class TableauPile{
         
         return {y, displayWidth, displayHeight, marginRight, marginLeft, marginTop, padding}
     }
-    
     handleMoveCardToEmptySpace(card){
-        console.log("cannot place on empty space");
+        //console.log("cannot place on empty space");
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
  
@@ -74,7 +71,6 @@ export class TableauPile{
         }
         return;
     }
-    
     isCardValidToMoveToFoundation(card, dropZone){
         const cardIndex = card.getData("cardIndex");
         const pileIndex = card.getData("pileIndex");
@@ -89,13 +85,13 @@ export class TableauPile{
        
        //accept drop onto foundation pile if it's only one card
        if(numberOfCardsToMove > 1){
-           alert("you can only drop one card onto foundation")
+           //alert("you can only drop one card onto foundation")
            return false;
        }
         //TO-DO: only aces (data value = 0) can move to empty tableaus
         if(targetPile.list.length === 0){
             if(cardValue !== 1){
-                alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+               // alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
                 return false;
             }else return true;
         }
@@ -107,9 +103,9 @@ export class TableauPile{
             if(cardValue !== lastCardInTargetPile.getData("value")+1 ||
                cardSuit !== lastCardInTargetPile.getData("suit")
             ){
-                alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1 higher to be successfully placed");
-                console.log("values: ", cardValue, lastCardInTargetPile.getData('value'));
-                console.log("suit: ", cardSuit, lastCardInTargetPile.getData('suit'));
+              //  alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1 higher to be successfully placed");
+              //  console.log("values: ", cardValue, lastCardInTargetPile.getData('value'));
+               // console.log("suit: ", cardSuit, lastCardInTargetPile.getData('suit'));
  
                 return false;
             } 
@@ -168,7 +164,6 @@ export class TableauPile{
         //if all else fails, card(s) cannot be moved, return false;
         return false;
     }
-    
     handleMoveCardToTableau(card, dropZone){
 
         const cardIndex = card.getData("cardIndex");
@@ -185,7 +180,7 @@ export class TableauPile{
         //code is returned early
         //logic: simply reset the position of the card(s) 
         if(!isValid){
-            alert("not a valid move")
+            //alert("not a valid move")
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];
                 cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
@@ -298,5 +293,16 @@ export class TableauPile{
  
         return this;
     }
+    showTopmostCardInTableau(targetPile){
+        //return if container is empty
+        if(targetPile.list.length === 0) return;
+        const topmostCard = targetPile.list[targetPile.list.length-1];
+        const cardFrame = topmostCard.getData("frame");
+        topmostCard.setFrame(cardFrame);
+    }
+    hideTopmostCardInTableau(targetPile){
+        const topmostCard = targetPile.list[targetPile.list.length-1];
+        topmostCard&& topmostCard.setFrame(52);
+    }  
 
 }

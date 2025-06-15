@@ -6,7 +6,6 @@ export class FoundationPile{
         this.cards = [];
         this.dropZones = [];
     }
-    
     create(){
         
         for(let i = 3; i >= 0; --i){
@@ -53,7 +52,6 @@ export class FoundationPile{
             marginRight: 0
         };
     }
-    
     handleMoveCardToTableau(card, dropZone){
         const isValid = this.isCardValidToMoveToTableau(card, dropZone);
         
@@ -90,16 +88,15 @@ export class FoundationPile{
       
         return this;
     }
-    
     handleMoveCardToEmptySpace(card){
         card.setPosition(0, 0);
     }
     handleMoveCardToDiscard(card){
-        console.log("invalid move: cannot place from foundation to discard");
+       // console.log("invalid move: cannot place from foundation to discard");
         card.setPosition(0, 0); 
     }
     handleMoveCardToDraw(card, dropZone){
-        console.log("invalid move: cannot place on draw pile");
+        //console.log("invalid move: cannot place on draw pile");
         card.setPosition(0, 0);
     }
     isCardValidToMoveToTableau(card, dropZone){
@@ -116,7 +113,7 @@ export class FoundationPile{
                 return true;
             }
             else{
-                alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
+               // alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
                 return false;
             }
         }
@@ -130,11 +127,10 @@ export class FoundationPile{
             return true;
         }
         else{
-            alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
+           // alert("MOVEMENT RULE:\n1.same card colour cannot be placed on each other\n2. CARD VALUES should differ by 1");
             return false;
         }
     }
-
     isCardValidToMoveToFoundation(card, dropZone){
         const targetPileIndex = dropZone.getData("pileIndex");
         const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
@@ -146,8 +142,8 @@ export class FoundationPile{
         //TO-DO: only aces (data value = 1) can move to empty tableaus
         if(targetPile.list.length === 0){
             if(cardValue !== 1){
-                alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
-                console.log("card value: ",cardValue);
+               // alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+               // console.log("card value: ",cardValue);
                 return false;
             }
         //idea: for a card to be successfully dropped onto a target pile,
@@ -159,14 +155,13 @@ export class FoundationPile{
             if(cardValue !== lastCardInTargetPile.getData("value")+1 ||
                cardSuit !== lastCardInTargetPile.getData("suit")
             ){
-                alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
+               // alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
                 return false;
             } 
         }
 
         return true;
     }
-    
     handleMoveCardToFoundation(card, dropZone){
         const isValid = this.isCardValidToMoveToFoundation(card, dropZone);
         if(!isValid){
@@ -212,5 +207,4 @@ export class FoundationPile{
         
         return this;
     } 
-
 }

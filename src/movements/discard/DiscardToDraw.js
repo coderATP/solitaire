@@ -1,9 +1,9 @@
 import { DiscardMovement } from "./DiscardMovement.js";
 
-export class DiscardToDrawAll extends DiscardMovement{
+export class DiscardToDraw extends DiscardMovement{
     constructor(scene, card, dropZone){
         super(scene, card, dropZone);
-        this.id = "discardToDrawAll";
+        this.id = "discardToDraw";
     }
     
     execute(){

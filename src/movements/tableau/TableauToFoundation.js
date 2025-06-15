@@ -59,12 +59,13 @@ export class TableauToFoundation extends TableauMovement{
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
             suit: this.card.getData("suit"),
-            colour: this.card.getData("colour"), 
-        } 
+            colour: this.card.getData("colour"),
+            wasPenultimateCardRevealed: sourcePile.list[sourcePile.list.length-2]&& sourcePile.list[sourcePile.list.length-2].getData("frame") > 51 
+        }
         targetPile.add(newCard);
         this.card.destroy();
         //sourcePile.list.pop(); //card.destroy() also works
-        this.scene.solitaire.flipTopmostCardInTableau(sourcePile);
+        this.scene.solitaire.tableauPile.showTopmostCardInTableau(sourcePile);
  
         return this; 
     }
@@ -90,10 +91,10 @@ export class TableauToFoundation extends TableauMovement{
             cardIndex: targetPile.length
         })
         
+        //hide card above again
+        this.scene.solitaire.tableauPile.hideTopmostCardInTableau(targetPile);
         targetPile.add(newCard);
-      //  this.card.destroy();
         sourcePile.list.pop(); //card.destroy() also works
-      //  this.scene.solitaire.flipTopmostCardInTableau(sourcePile);
   
         return this;
     }

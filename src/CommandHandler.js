@@ -1,8 +1,14 @@
-import { DiscardToDrawAll} from "./movements/discard/DiscardToDraw.js";
 import { DrawToDiscard } from "./movements/draw/DrawToDiscard.js";
+
+import { DiscardToDraw} from "./movements/discard/DiscardToDraw.js";
 import { DiscardToFoundation} from "./movements/discard/DiscardToFoundation.js";
+import { DiscardToTableau } from "./movements/discard/DiscardToTableau.js";
+
 import { FoundationToFoundation} from "./movements/foundation/FoundationToFoundation.js";
+import { FoundationToTableau } from "./movements/foundation/FoundationToTableau.js";
+
 import { TableauToFoundation} from "./movements/tableau/TableauToFoundation.js";
+import { TableauToTableau} from "./movements/tableau/TableauToTableau.js";
 
 
 export class CommandHandler{
@@ -35,8 +41,8 @@ export class CommandHandler{
             this.movesToUndo--;
         }
 
-        else if(command.id === "discardToDrawAll"){
-            new DiscardToDrawAll(this.scene, null, null).undo();
+        else if(command.id === "discardToDraw"){
+            new DiscardToDraw(this.scene, null, null).undo();
             this.movesToUndo--;
         } 
         else if(command.id === "discardToFoundation"){
@@ -44,16 +50,25 @@ export class CommandHandler{
             this.movesToUndo--; 
         }
         else if(command.id === "discardToTableau"){
-            
+            new DiscardToTableau(this.scene, null, null).undo(command);
+            this.movesToUndo--;  
         }
         else if(command.id === "foundationToFoundation"){
             new FoundationToFoundation(this.scene, null, null).undo(command);
             this.movesToUndo--;
         }
+        else if(command.id === "foundationToTableau"){
+            new FoundationToTableau(this.scene, null, null).undo(command);
+            this.movesToUndo--;
+        } 
         else if(command.id === "tableauToFoundation"){
             new TableauToFoundation(this.scene, null, null).undo(command);
             this.movesToUndo--;
-        } 
+        }
+        else if(command.id === "tableauToTableau"){
+            new TableauToTableau(this.scene, null, null).undo(command);
+            this.movesToUndo--;
+        }
     
     }
 }

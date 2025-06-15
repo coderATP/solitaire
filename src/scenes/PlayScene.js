@@ -1,11 +1,16 @@
 import { BaseScene } from "./BaseScene.js";
+//command handler for card movements
 import { CommandHandler } from "../CommandHandler.js";
-import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
-import { DiscardToDrawAll } from "../movements/discard/DiscardToDraw.js";
-import { DiscardToFoundation } from "../movements/discard/DiscardToFoundation.js";
-import { FoundationToFoundation } from "../movements/foundation/FoundationToFoundation.js";
-import { TableauToFoundation } from "../movements/tableau/TableauToFoundation.js";
 
+//card movements
+import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
+import { DiscardToDraw } from "../movements/discard/DiscardToDraw.js";
+import { DiscardToFoundation } from "../movements/discard/DiscardToFoundation.js";
+import { DiscardToTableau } from "../movements/discard/DiscardToTableau.js";
+import { FoundationToFoundation } from "../movements/foundation/FoundationToFoundation.js";
+import { FoundationToTableau } from "../movements/foundation/FoundationToTableau.js";
+import { TableauToFoundation } from "../movements/tableau/TableauToFoundation.js";
+import { TableauToTableau } from "../movements/tableau/TableauToTableau.js";
 import { Solitaire } from "../Solitaire.js";
 
 
@@ -45,17 +50,26 @@ export class PlayScene extends BaseScene{
                 const cardIndex = gameobject.getData("cardIndex");
                 
                 const pile = this.solitaire.tableauPile.cards[pileIndex];
-                pile.setDepth(10)
-                gameobject.setDepth(10)
+                pile.setDepth(10);
                 if(cardIndex < pile.length - 1){
                     for(let i = 0; i < pile.length-cardIndex; ++i){
                         const card = pile.list[i+cardIndex];
                         card.setPosition(dragX, dragY+i*20)
-                            .setDepth(2)
+                            .setDepth(10).setAlpha(0.8)
                     }
                     
                 }
-            } 
+            }
+            else if(gameobject.name === "foundationPileCard"){
+                const pile = this.solitaire.foundationPile.cards[gameobject.getData("pileIndex")];
+                pile.setDepth(10);
+                gameobject.setDepth(10).setAlpha(0.7);
+            }
+            else if(gameobject.name === "discardPileCard"){
+                const pile = this.solitaire.discardPile.cards[0];
+                pile.setDepth(10);
+                gameobject.setDepth(10).setAlpha(0.7);
+            }
 
         })
         this.input.on("dragend", (pointer, gameobject, dropped)=>{
@@ -98,8 +112,9 @@ export class PlayScene extends BaseScene{
     
     handleDropEvent(){
         this.input.on("drop", (pointer, gameobject, dropZone)=>{
-           
+           gameobject.setDepth(0).setAlpha(1);
             switch(dropZone.name){
+                //FOUNDATION DROP ZONE
                 case "foundationPileZone":{
                     //discard to foundation
                     if(gameobject.name === "discardPileCard"){
@@ -121,28 +136,39 @@ export class PlayScene extends BaseScene{
                     }  
                 break;
                 }
-                //discard to tableau
+                //TABLEAU DROP ZONE
                 case "tableauPileZone":{
+                    //discard to tableau 
                     if(gameobject.name === "discardPileCard"){
-                       this.solitaire.discardPile.handleMoveCardToTableau(gameobject, dropZone)
+                        const command = new DiscardToTableau(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                       //this.solitaire.discardPile.handleMoveCardToTableau(gameobject, dropZone)
                     }
                     //tableau to tableau
                     else if(gameobject.name === "tableauPileCard"){
-                       this.solitaire.tableauPile.handleMoveCardToTableau(gameobject, dropZone)
+                        const command = new TableauToTableau(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                      // this.solitaire.tableauPile.handleMoveCardToTableau(gameobject, dropZone)
                     }
                     //foundation to tableau
                     else if(gameobject.name === "foundationPileCard"){
-                       this.solitaire.foundationPile.handleMoveCardToTableau(gameobject, dropZone)
+                        const command = new FoundationToTableau(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                      // this.solitaire.foundationPile.handleMoveCardToTableau(gameobject, dropZone)
                     }
                 break;
                 }
+                //DISCARD PILE ZONE
                 case "discardPileZone":{
+                    //tableau to discard
                     if(gameobject.name === "tableauPileCard"){
                         this.solitaire.tableauPile.handleMoveCardToDiscard(gameobject, dropZone);
                     }
+                    //foundation to discard
                     else if(gameobject.name === "foundationPileCard"){
                         this.solitaire.foundationPile.handleMoveCardToDiscard(gameobject, );
                     }
+                    //discard going to discardxxxx
                     else if(gameobject.name === "discardPileCard"){
                         this.solitaire.discardPile.handleMoveCardToDiscard(gameobject, );
                     }  
@@ -177,7 +203,7 @@ export class PlayScene extends BaseScene{
                 this.commandHandler.execute(command);
             }
             else if(gameobject[0].name === "drawPileZone"){
-                const command = new DiscardToDrawAll(this, null, null);
+                const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
                 //this.solitaire.discardPile.returnToDrawPile();
             }
