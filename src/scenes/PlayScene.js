@@ -1,6 +1,11 @@
 import { BaseScene } from "./BaseScene.js";
 import { CommandHandler } from "../CommandHandler.js";
 import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
+import { DiscardToDrawAll } from "../movements/discard/DiscardToDraw.js";
+import { DiscardToFoundation } from "../movements/discard/DiscardToFoundation.js";
+import { FoundationToFoundation } from "../movements/foundation/FoundationToFoundation.js";
+import { TableauToFoundation } from "../movements/tableau/TableauToFoundation.js";
+
 import { Solitaire } from "../Solitaire.js";
 
 
@@ -8,7 +13,7 @@ export class PlayScene extends BaseScene{
     constructor(config){
         super("PlayScene", config);
         this.config = config;
-        this.commandHandler = new CommandHandler();
+        this.commandHandler = new CommandHandler(this);
     }
     
     createCard(type, x, y){
@@ -98,15 +103,21 @@ export class PlayScene extends BaseScene{
                 case "foundationPileZone":{
                     //discard to foundation
                     if(gameobject.name === "discardPileCard"){
-                       this.solitaire.discardPile.handleMoveCardToFoundation(gameobject, dropZone)
+                        const command = new DiscardToFoundation(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                      // this.solitaire.discardPile.handleMoveCardToFoundation(gameobject, dropZone)
                     }
                     //tableau to foundation
                     else if(gameobject.name === "tableauPileCard"){
-                       this.solitaire.tableauPile.handleMoveCardToFoundation(gameobject, dropZone)
+                        const command = new TableauToFoundation(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                       //this.solitaire.tableauPile.handleMoveCardToFoundation(gameobject, dropZone)
                     }
                     //foundation to foundation
                     else if(gameobject.name === "foundationPileCard"){
-                       this.solitaire.foundationPile.handleMoveCardToFoundation(gameobject, dropZone)
+                        const command = new FoundationToFoundation(this, gameobject, dropZone);
+                        this.commandHandler.execute(command);
+                       //this.solitaire.foundationPile.handleMoveCardToFoundation(gameobject, dropZone)
                     }  
                 break;
                 }
@@ -166,16 +177,13 @@ export class PlayScene extends BaseScene{
                 this.commandHandler.execute(command);
             }
             else if(gameobject[0].name === "drawPileZone"){
-                this.solitaire.discardPile.returnToDrawPile();
+                const command = new DiscardToDrawAll(this, null, null);
+                this.commandHandler.execute(command);
+                //this.solitaire.discardPile.returnToDrawPile();
             }
             else if(gameobject[0].name === "undoButton"){
                 this.commandHandler.undo();
-
             }
-            else if(gameobject[0].name === "redoButton"){
-                const command = new DrawToDiscard(this, gameobject[0], null);
-                this.commandHandler.redo(command);
-            }  
         })
         return this;
     }
@@ -187,11 +195,6 @@ export class PlayScene extends BaseScene{
             .setOrigin(0)
             .setInteractive()
             .setName("undoButton");
-        this.redoButton = this.add.text(this.undoButton.width*3,0, "redo",
-            {font: "30px Arial"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("redoButton") 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
         //solitaire

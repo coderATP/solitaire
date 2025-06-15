@@ -6,3 +6,6 @@ a Solitaire game made with phaser 3
 3. title screen, apart from preload screen
 4. leaderboard
 5. undo and redo actions
+drawToDiscard and undo
+discardToDrawAll and undo
+

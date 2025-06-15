@@ -1,33 +1,43 @@
-import { DiscardMovement } from "./DiscardMovement.js";
+import { FoundationMovement } from "./FoundationMovement.js";
 
 
-export class DiscardToFoundation extends DiscardMovement{
+export class FoundationToFoundation extends FoundationMovement{
     constructor(scene, card, dropZone){
-        super(scene, card, dropZone);
-        this.id = "discardToFoundation";
+        super(scene, card, dropZone)
+        this.id = "foundationToFoundation";
     }
     
     execute(){
-        const pileIndex = this.card.getData("pileIndex");
-        const targetPileIndex = this.dropZone.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.foundationPile.cards[pileIndex];
-        const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
-        
-        //i created a reference to the present dropZone for later when i need to undo a move
-        this.oldDropZone = this.dropZone;
-        
-        const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
-        
+        const isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         if(!isValid){
             this.card.setPosition(0,0);
             return;
         }
-        if(pileIndex === targetPileIndex ) return;
+        const pileIndex = this.card.getData("pileIndex");
+        const targetPileIndex = this.dropZone.getData("pileIndex"); 
+
+        const sourcePile = this.scene.solitaire.foundationPile.cards[pileIndex];
+        const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
+        
+        if(pileIndex === targetPileIndex ){
+            this.card.setPosition(0,0);
+            return;
+        }
         //TO-DO: move card from foundation to foundation
         //idea: do not bother moving if targetPile is not empty
+        if(targetPile.length !== 0){
+            this.card.setPosition(0,0);
+            return;
+        }
+        
+        //create a reference to current dropZone, and old card pileIndex
+        //you'll need it when you want to undo a move
+        this.currentPileIndex = this.dropZone.getData("pileIndex");
+        this.originalPileIndex = pileIndex;
+        
         //idea: create a new card, add it to the target pile and destroy the original card being moved
-        this.newCard = this.scene.createCard("foundationPileCard", 0, 0)
-        this.newCard
+        this.originalCard = this.scene.createCard("foundationPileCard", 0, 0)
+        this.originalCard
         .setInteractive({draggable: true})
         .setFrame(this.card.getData("frame"))
         .setData({
@@ -35,40 +45,35 @@ export class DiscardToFoundation extends DiscardMovement{
             value: this.card.getData("value"),
             suit: this.card.getData("suit"),
             colour: this.card.getData("colour"),
-            x: this.newCard.x,
-            y: this.newCard.y,
+            x: targetPile.x,
+            y: targetPile.y,
             pileIndex: targetPileIndex,
             cardIndex: targetPile.length
         })
-        
         this.originalCardData = {
             x: targetPile.x,
             y: targetPile.y,
-            originalPileIndex: "it's discard",
-            targetPileIndex: targetPileIndex,
+            originalPileIndex: pileIndex,
+            currentPileIndex: targetPileIndex,
             cardIndex: targetPile.length,
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
             suit: this.card.getData("suit"),
             colour: this.card.getData("colour"), 
         }
-        
-        targetPile.add(this.newCard);
-        this.card.destroy();
+        targetPile.add(this.originalCard);
+        this.card.destroy() // sourcePile.list.pop() does not work
+
         return this;
     }
     
     undo(command){
+        const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.currentPileIndex];
+        const targetPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.originalPileIndex];
         
-        //const pileIndex = this.card.getData("pileIndex");
-        const currentPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
-        const targetPile = this.scene.solitaire.discardPile.container;
-
-        //TO-DO: move card from foundation to foundation
-        //idea: do not bother moving if targetPile is not empty
         //idea: create a new card, add it to the target pile and destroy the original card being moved
-        this.newCard = this.scene.createCard("discardPileCard", 0, 0)
-        this.newCard
+        this.originalCard = this.scene.createCard("foundationPileCard", 0, 0)
+        this.originalCard
         .setInteractive({draggable: true})
         .setFrame(command.originalCardData.frame)
         .setData({
@@ -78,14 +83,14 @@ export class DiscardToFoundation extends DiscardMovement{
             colour: command.originalCardData.colour,
             x: targetPile.x,
             y: targetPile.y,
-            originalPileIndex: command.originalCardData.originalPileIndex,
-            currentPileIndex: command.originalCardData.currentPileIndex,
-            cardIndex: targetPile.list.length
+            pileIndex: command.originalCardData.originalPileIndex,
+            cardIndex: targetPile.length
         })
         
-        targetPile.add(this.newCard);
-        currentPile.list.pop();
-        //this.card.destroy();
+        targetPile.add(this.originalCard);
+        //this.card.destroy()
+        sourcePile.list.pop() //
+        
         return this; 
     }
 }

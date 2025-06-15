@@ -1,9 +1,10 @@
 import {DrawMovement} from "./DrawMovement.js";
 
 export class DrawToDiscard extends DrawMovement{
-  /* constructor(scene, card, dropZone){
+   constructor(scene, card, dropZone){
        super(scene, card, dropZone);
-   }*/
+       this.id = "drawToDiscard";
+   }
     execute(){
         const targetPile = this.scene.solitaire.discardPile.container;
         const newCard = this.scene.createCard("discardPileCard", 0,0);
@@ -47,10 +48,5 @@ export class DrawToDiscard extends DrawMovement{
         undoCard.destroy();
         this.scene.solitaire.discardPile.cards.pop(); 
     }
-    redo(){
-        const targetPile = this.scene.solitaire.drawPile.container;
-        //re-instantiate the destroyed card
-        this.card = targetPile.list[targetPile.list.length - 1];
-        this.execute();
-    }
+
 }
