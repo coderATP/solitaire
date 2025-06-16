@@ -96,7 +96,7 @@ export class Solitaire{
         this.tableauData = this.tableauPile.getBioData();
         
         for(let i = 0; i < 7; ++i){
-            const container = this.scene.add.container(i* (this.tableauData.padding+this.tableauData.displayWidth), this.tableauData.marginTop); 
+            const container = this.scene.add.container(this.tableauData.marginLeft + i* (this.tableauData.padding+this.tableauData.displayWidth), this.tableauData.marginTop); 
             for(let j = 0; j < i+1; ++j){
                 container.add(tempDeck.splice(i, 1))
             }

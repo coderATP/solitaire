@@ -1,3 +1,4 @@
+
 export class DiscardPile{
     constructor(scene){
         this.scene = scene;
@@ -10,7 +11,7 @@ export class DiscardPile{
         const paddingLeft = 5;
        //pile rectangle 
        const rect = this.scene.createPileRect(
-           this.getBiodata().displayWidth + paddingLeft,
+           this.getBiodata().x +this.getBiodata().displayWidth + paddingLeft,
            this.getBiodata().y,
            this.getBiodata().displayWidth,
            this.getBiodata().displayHeight);
@@ -22,7 +23,7 @@ export class DiscardPile{
        return this;
     }
     getBiodata(){
-        return{y: 50, displayWidth: 37*this.config.zoomFactor, displayHeight: 52*this.config.zoomFactor};
+        return{x: 10, y: 50, displayWidth: 37*this.config.zoomFactor, displayHeight: 52*this.config.zoomFactor};
     }
     handleMoveCardToEmptySpace(card){
         //console.log("invalid move: cannot place on empty space");

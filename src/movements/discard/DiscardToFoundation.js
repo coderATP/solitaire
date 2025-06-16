@@ -1,4 +1,5 @@
 import { DiscardMovement } from "./DiscardMovement.js";
+import { audio } from "../../audio/AudioControl.js";
 
 
 export class DiscardToFoundation extends DiscardMovement{
@@ -19,9 +20,11 @@ export class DiscardToFoundation extends DiscardMovement{
         const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         
         if(!isValid){
+            audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
         }
+        audio.play(audio.dropSound);
         if(pileIndex === targetPileIndex ) return;
         //TO-DO: move card from foundation to foundation
         //idea: do not bother moving if targetPile is not empty

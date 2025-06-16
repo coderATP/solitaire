@@ -1,4 +1,5 @@
 import { DiscardMovement } from "./DiscardMovement.js";
+import { audio } from "../../audio/AudioControl.js";
 
 export class DiscardToTableau extends DiscardMovement{
     constructor (scene, card, dropZone){
@@ -10,9 +11,11 @@ export class DiscardToTableau extends DiscardMovement{
         const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToTableau(this.card, this.dropZone);
         
         if(!isValid){
+            audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
-        } 
+        }
+        audio.play(audio.dropSound); 
         const cardIndex = this.card.getData("cardIndex");
         const pileIndex = this.card.getData("pileIndex");
         const targetPileIndex = this.dropZone.getData("pileIndex");

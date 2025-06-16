@@ -32,10 +32,10 @@ export class CommandHandler{
     
     undo(){
         if(this.movesToUndo === 0) return;
+        if(this.moves.length === 0) return;
         const command = this.moves.pop();
 
         if(!command) return;
-        console.log (command.id)
         if(command.id === "drawToDiscard"){
             new DrawToDiscard(this.scene, null, null).undo();
             this.movesToUndo--;

@@ -13,6 +13,9 @@ import { TableauToFoundation } from "../movements/tableau/TableauToFoundation.js
 import { TableauToTableau } from "../movements/tableau/TableauToTableau.js";
 import { Solitaire } from "../Solitaire.js";
 
+//audio
+import { audio } from "../audio/AudioControl.js";
+
 
 export class PlayScene extends BaseScene{
     constructor(config){
@@ -67,12 +70,13 @@ export class PlayScene extends BaseScene{
             }
             else if(gameobject.name === "discardPileCard"){
                 const pile = this.solitaire.discardPile.cards[0];
-                pile.setDepth(10);
+                pile&& pile.setDepth(10);
                 gameobject.setDepth(10).setAlpha(0.7);
             }
 
         })
         this.input.on("dragend", (pointer, gameobject, dropped)=>{
+            gameobject.setDepth(0).setAlpha(1)
           //  gameobject.setPosition(gameobject.getData("x"), gameobject.getData("y")); 
            //for invalid moves, snap back to original location
             if(gameobject.name === "foundationPileCard"){
@@ -94,13 +98,13 @@ export class PlayScene extends BaseScene{
                 const cardIndex = gameobject.getData("cardIndex");
                 
                 const pile = this.solitaire.tableauPile.cards[pileIndex];
-                pile.setDepth(0);
-                gameobject.setDepth(0)
+                pile.setDepth(0).setAlpha(1);
+                gameobject.setDepth(0).setAlpha(1)
                 if(cardIndex < pile.length - 1){
                     for(let i = 0; i < pile.length-cardIndex; ++i){
                         const card = pile.list[i+cardIndex];
                         card.setPosition(card.getData("x"), card.getData("y"))
-                            .setDepth(0)
+                            .setDepth(0).setAlpha(1)
                     }
                 }
                 
@@ -112,7 +116,7 @@ export class PlayScene extends BaseScene{
     
     handleDropEvent(){
         this.input.on("drop", (pointer, gameobject, dropZone)=>{
-           gameobject.setDepth(0).setAlpha(1);
+           gameobject.setDepth(0).setAlpha(1)
             switch(dropZone.name){
                 //FOUNDATION DROP ZONE
                 case "foundationPileZone":{
@@ -199,15 +203,22 @@ export class PlayScene extends BaseScene{
             //return if click on empty space
             if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
+                //audio
+                audio.play(audio.drawSound);
                 const command = new DrawToDiscard(this, gameobject[0], null);
                 this.commandHandler.execute(command);
             }
             else if(gameobject[0].name === "drawPileZone"){
+                //audio
+                audio.play(audio.drawSound); 
                 const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
                 //this.solitaire.discardPile.returnToDrawPile();
             }
             else if(gameobject[0].name === "undoButton"){
+                //audio
+                if(this.commandHandler.moves.length > 0) audio.play(audio.undoSound);
+                
                 this.commandHandler.undo();
             }
         })
@@ -215,12 +226,10 @@ export class PlayScene extends BaseScene{
     }
     
     create(){
-        //buttons
-        this.undoButton = this.add.text(0,0, "undo",
-            {font: "30px Arial"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("undoButton");
+        //audio
+        audio.playSong.play();
+        audio.beginGameSound.play();
+
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
         //solitaire
@@ -229,6 +238,114 @@ export class PlayScene extends BaseScene{
 
         //events
        this.handleDragEvent().handleDropEvent().handleClickEvent();
+       
+       //statuses
+       this.createStatus();
+       //user-options ui
+       this.createBottomUI();
+    }
+    createBottomUI(){
+        const width = this.config.width-10;
+        const height = 40;
+        const y = 10;
+        this.graphics.fillStyle(0x000000, 2);
+        this.bottomUIRect = this.graphics.fillRoundedRect(5, this.config.height-40-5, width, height,
+            {tl: 10, tr: 10, bl: 0, br: 0})
+        this.bottomUIContainer = this.add.container(5, this.config.height-40-5); 
+        //BUTTONS
+        //restart-left
+        this.restartButton = this.add.text(0,0, "Restart",
+            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("restartButton");
+        this.restartButton.setPosition(5, y); 
+        this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0x00ff00, 1).setOrigin(0)
+        //new game-centre
+        this.newGameButton = this.add.text(0, 0, "New",
+            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("newGameButton");
+        this.newGameButton.setPosition(width/2 - this.newGameButton.width/2, y);
+        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0x00ff00, 1).setOrigin(0)
+ 
+        //undo-right
+        this.undoButton = this.add.text(0, 0, "Undo",
+            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("undoButton");
+        this.undoButton.setPosition(width - this.undoButton.width-5, y);
+        this.undoRect = this.add.rectangle(this.undoButton.x, this.undoButton.y, this.undoButton.width, this.undoButton.height, 0x00ff00, 1).setOrigin(0)
+
+        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.restartButton, this.newGameButton, this.undoButton]);
+        
+        //tweens
+        this.tweens.add({
+            targets: this.restartButton,
+            alpha: 0.3,
+            yoyo: true,
+            repeat: -1,
+            duration: 1000,
+            repeatDelay: 100
+        })
+        this.tweens.add({
+            targets: this.newGameButton,
+            alpha: 0.3,
+            yoyo: true,
+            repeat: -1,
+            duration: 1000,
+            repeatDelay: 200
+        })
+        this.tweens.add({
+            targets: this.undoButton,
+            alpha: 0.3,
+            yoyo: true,
+            repeat: -1,
+            duration: 1000,
+            repeatDelay: 300
+        })
+    }
+    
+    createStatus(){
+        this.statusTopRect = this.add.rectangle(5, 5, this.config.width-10, 30, 0x000000, 1, {radius: 10})
+            .setOrigin(0);
+        this.statusTopContainer = this.add.container(this.statusTopRect.x, this.statusTopRect.y); 
+
+         //border
+        this.graphics.lineStyle(7, 0x000000)
+        this.graphics.strokeRect(0, 0, this.config.width, this.config.height, 0x000000, 1);
+        
+        //score status
+        const scoreText = this.add.text(5,5, "Score: ", {
+            color: "gold", fontFamily: "Arial", fontSize: "15px"
+        })
+        this.score = this.add.text(scoreText.x+scoreText.width+2 , scoreText.y, "0", {
+            color: "white", fontFamily: "Arial", fontSize: "15px"
+        })
+        
+        //time elapsed
+        this.timeElapsed = this.add.text(0,0, "0", {
+            color: "white", fontFamily: "Arial", fontSize: "15px"
+        })
+        this.timeElapsed.setPosition(this.statusTopRect.width/2 - this.timeElapsed.width/2, 5);
+        const timeText = this.add.text(0, 0, "Time: ", {
+            color: "gold", fontFamily: "Arial", fontSize: "15px"
+        }) 
+        timeText.setPosition(this.timeElapsed.x - timeText.width, 5);
+       
+        //moves taken 
+        this.moves = this.add.text(0, 0, "0", {
+            color: "white", fontFamily: "Arial", fontSize: "15px"
+        })
+        this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
+        const movesText = this.add.text(0,0, "Moves: ", {
+            color: "gold", fontFamily: "Arial", fontSize: "15px"
+        }) 
+        movesText.setPosition(this.moves.x-movesText.width, 5);
+        
+        this.statusTopContainer.add([scoreText, this.score, movesText, this.moves, timeText, this.timeElapsed])
     }
     update(time, delta){
 

@@ -1,5 +1,5 @@
 import { FoundationMovement } from "./FoundationMovement.js";
-
+import { audio } from "../../audio/AudioControl.js";
 
 export class FoundationToFoundation extends FoundationMovement{
     constructor(scene, card, dropZone){
@@ -10,9 +10,11 @@ export class FoundationToFoundation extends FoundationMovement{
     execute(){
         const isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         if(!isValid){
+            audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
         }
+        audio.play(audio.dropSound);
         const pileIndex = this.card.getData("pileIndex");
         const targetPileIndex = this.dropZone.getData("pileIndex"); 
 

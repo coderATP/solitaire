@@ -1,10 +1,12 @@
 import { PreloadScene } from "./src/scenes/PreloadScene.js";
+import { TitleScene } from "./src/scenes/TitleScene.js";
+
 import { PlayScene } from "./src/scenes/PlayScene.js";
 
 
 const GAME_WIDTH = innerWidth;
 const GAME_HEIGHT = innerHeight;
-const ZOOM_FACTOR = 1.38
+const ZOOM_FACTOR = 1.3
 
 
 const SHARED_CONFIG = {
@@ -48,6 +50,7 @@ const config= {
     },
     scene: [
         new PreloadScene(SHARED_CONFIG),
+        new TitleScene(SHARED_CONFIG),
         new PlayScene(SHARED_CONFIG) ],
 };
 

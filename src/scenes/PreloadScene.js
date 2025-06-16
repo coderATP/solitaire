@@ -16,7 +16,7 @@ export class PreloadScene extends BaseScene{
     }
     
     playSolitaire(){
-        this.scene.start("PlayScene");
+        this.scene.start("TitleScene");
     }
     
     

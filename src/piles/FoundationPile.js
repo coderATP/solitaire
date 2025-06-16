@@ -48,8 +48,8 @@ export class FoundationPile{
             y: 50,
             displayWidth: 37*this.config.zoomFactor,
             displayHeight: 52*this.config.zoomFactor,
-            padding: 37*this.config.zoomFactor + 5,
-            marginRight: 0
+            padding: 37*this.config.zoomFactor + 1,
+            marginRight: 10
         };
     }
     handleMoveCardToTableau(card, dropZone){
