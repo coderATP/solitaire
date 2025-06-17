@@ -1,7 +1,7 @@
 class AudioControl{
     constructor(){
         
-        this.playSong = new Audio("sounds/Fire_Crackling_Wind.wav");
+        this.playSong = new Audio("sounds/overworld.ogg");
         this.playSong.loop = true;
         
         this.buttonClickSound = new Audio("sounds/click.wav");
