@@ -5,4 +5,4 @@ a Solitaire game made with phaser 3
 2. change card graphics
 3. title screen, apart from preload screen
 4. leaderboard
-5. redo actions
+5. redo actionsh
