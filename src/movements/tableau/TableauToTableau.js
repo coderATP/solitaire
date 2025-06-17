@@ -103,9 +103,9 @@ export class TableauToTableau extends TableauMovement{
     }
     
     undo(command){
-       // alert("return to source tableau");
-       // console.log(command.originalCardData)
+        if(!command.originalCardData[0]) return; 
         const numberOfCardsToMove = command.originalCardData[0].numberOfCardsToMove;
+        
         let cardToMove;
         const currentCardIndex = command.originalCardData[0].currentCardIndex;
         const sourcePile = this.scene.solitaire.tableauPile.cards[command.originalCardData[0].currentPileIndex];
@@ -135,11 +135,6 @@ export class TableauToTableau extends TableauMovement{
         for(let i = 0; i < numberOfCardsToMove; ++i){
             sourcePile.list.pop();
         }
-        //2. player drops on a new pile
-        //TO-DO: move multiple cards at a time
-        //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
-
-
         return this; 
     }
 }

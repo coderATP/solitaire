@@ -70,6 +70,7 @@ export class FoundationToFoundation extends FoundationMovement{
     }
     
     undo(command){
+        if(!command.originalCardData) return;
         const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.currentPileIndex];
         const targetPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.originalPileIndex];
         

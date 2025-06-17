@@ -3,6 +3,7 @@ import { DiscardPile } from "./piles/DiscardPile.js";
 import { FoundationPile } from "./piles/FoundationPile.js";
 import { TableauPile } from "./piles/TableauPile.js";
 
+import { audio } from "./audio/AudioControl.js";
 
 export class Solitaire{
     static CARD_BACK_FRAMES = [52, 53, 54, 55, 56];
@@ -134,8 +135,15 @@ export class Solitaire{
     }
     
     newGame(){
+        this.scene.commandHandler.reset();
         this.createDeck();
         this.deck = this.shuffleDeck();
         this.distributeDeckCardsToPiles();
+    }
+    
+    onClickRestartButton(){
+        while(this.scene.commandHandler.moves.length)
+            this.scene.commandHandler.undo();
+            
     }
 }

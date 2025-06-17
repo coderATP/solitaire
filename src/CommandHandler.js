@@ -21,6 +21,12 @@ export class CommandHandler{
         this.movesToUndo = 0;
     }
     
+    reset(){
+        this.moves = [];
+        this.totalMoves = 0;
+        this.movesToRedo = 0;
+        this.movesToUndo = 0; 
+    }
     execute(command){
         
         command.execute();

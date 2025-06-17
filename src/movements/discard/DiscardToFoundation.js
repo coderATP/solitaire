@@ -62,7 +62,7 @@ export class DiscardToFoundation extends DiscardMovement{
     }
     
     undo(command){
-        
+        if(!command.originalCardData) return;
         //const pileIndex = this.card.getData("pileIndex");
         const currentPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
         const targetPile = this.scene.solitaire.discardPile.container;

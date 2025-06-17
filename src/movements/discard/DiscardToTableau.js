@@ -60,6 +60,7 @@ export class DiscardToTableau extends DiscardMovement{
     }
     
     undo(command){
+        if(!command.originalCardData) return;
         const sourcePile = this.scene.solitaire.tableauPile.cards[command.originalCardData.currentPileIndex];
         const targetPile = this.scene.solitaire.discardPile.container;
         

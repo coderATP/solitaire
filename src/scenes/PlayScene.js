@@ -1,6 +1,8 @@
 import { BaseScene } from "./BaseScene.js";
 //command handler for card movements
 import { CommandHandler } from "../CommandHandler.js";
+import { eventEmitter } from "../events/EventEmitter.js";
+
 
 //card movements
 import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
@@ -22,6 +24,7 @@ export class PlayScene extends BaseScene{
         super("PlayScene", config);
         this.config = config;
         this.commandHandler = new CommandHandler(this);
+
     }
     
     createCard(type, x, y){
@@ -221,11 +224,21 @@ export class PlayScene extends BaseScene{
                 
                 this.commandHandler.undo();
             }
+            else if(gameobject[0].name === "newGameButton"){
+                eventEmitter.emit("PlayToTitle");
+            }
+            else if(gameobject[0].name === "restartButton"){
+                this.solitaire.onClickRestartButton();
+            }  
         })
+        eventEmitter.once("PlayToTitle", ()=>{ this.scene.start("TitleScene"); })
         return this;
     }
     
     create(){
+        //camera
+        const camera = this.cameras.main;
+        camera.fadeIn(1500);
         //audio
         audio.playSong.play();
         audio.beginGameSound.play();
@@ -243,6 +256,8 @@ export class PlayScene extends BaseScene{
        this.createStatus();
        //user-options ui
        this.createBottomUI();
+       
+        console.log (this.graphics) 
     }
     createBottomUI(){
         const width = this.config.width-10;
@@ -255,29 +270,29 @@ export class PlayScene extends BaseScene{
         //BUTTONS
         //restart-left
         this.restartButton = this.add.text(0,0, "Restart",
-            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "Serif", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("restartButton");
         this.restartButton.setPosition(5, y); 
-        this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0x00ff00, 1).setOrigin(0)
+        this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0xffffff, 1).setOrigin(0)
         //new game-centre
         this.newGameButton = this.add.text(0, 0, "New",
-            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "Serif", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("newGameButton");
         this.newGameButton.setPosition(width/2 - this.newGameButton.width/2, y);
-        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0x00ff00, 1).setOrigin(0)
+        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0xffffff, 1).setOrigin(0)
  
         //undo-right
         this.undoButton = this.add.text(0, 0, "Undo",
-            {color: "red", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "Serif", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("undoButton");
         this.undoButton.setPosition(width - this.undoButton.width-5, y);
-        this.undoRect = this.add.rectangle(this.undoButton.x, this.undoButton.y, this.undoButton.width, this.undoButton.height, 0x00ff00, 1).setOrigin(0)
+        this.undoRect = this.add.rectangle(this.undoButton.x, this.undoButton.y, this.undoButton.width, this.undoButton.height, 0xffffff, 1).setOrigin(0)
 
         this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.restartButton, this.newGameButton, this.undoButton]);
         
@@ -288,7 +303,7 @@ export class PlayScene extends BaseScene{
             yoyo: true,
             repeat: -1,
             duration: 1000,
-            repeatDelay: 100
+            repeatDelay: 3000
         })
         this.tweens.add({
             targets: this.newGameButton,
@@ -296,7 +311,7 @@ export class PlayScene extends BaseScene{
             yoyo: true,
             repeat: -1,
             duration: 1000,
-            repeatDelay: 200
+            repeatDelay: 3000
         })
         this.tweens.add({
             targets: this.undoButton,
@@ -304,7 +319,7 @@ export class PlayScene extends BaseScene{
             yoyo: true,
             repeat: -1,
             duration: 1000,
-            repeatDelay: 300
+            repeatDelay: 3000
         })
     }
     
