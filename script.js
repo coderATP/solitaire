@@ -6,7 +6,7 @@ import { PlayScene } from "./src/scenes/PlayScene.js";
 
 const GAME_WIDTH = innerWidth;
 const GAME_HEIGHT = innerHeight;
-const ZOOM_FACTOR = 1.3
+const ZOOM_FACTOR = 0.53
 
 
 const SHARED_CONFIG = {

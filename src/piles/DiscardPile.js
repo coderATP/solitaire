@@ -23,7 +23,11 @@ export class DiscardPile{
        return this;
     }
     getBiodata(){
-        return{x: 10, y: 50, displayWidth: 37*this.config.zoomFactor, displayHeight: 52*this.config.zoomFactor};
+        return{x: 10,
+        y: 50,
+        displayWidth: 88*this.config.zoomFactor,
+        displayHeight: 128*this.config.zoomFactor
+        }
     }
     handleMoveCardToEmptySpace(card){
         //console.log("invalid move: cannot place on empty space");

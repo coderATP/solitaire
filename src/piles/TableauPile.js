@@ -11,7 +11,8 @@ export class TableauPile{
         let card, tableauCard;
         
         card = {
-            displayWidth: 37 * this.config.zoomFactor
+            displayWidth: 88*this.config.zoomFactor,
+            displayHeight: 128*this.config.zoomFactor
         }
         
         let marginLeft = 10, marginRight = 10, marginTop = this.getBioData().y + this.getBioData().displayHeight + 80;
@@ -41,9 +42,8 @@ export class TableauPile{
     }
     getBioData(){
         let y = 50,
-             displayHeight= 52 * this.config.zoomFactor,
-             displayWidth= 37 * this.config.zoomFactor;
-        
+        displayWidth = 88*this.config.zoomFactor,
+        displayHeight = 128*this.config.zoomFactor;
         let marginLeft = 10, marginRight = 10, marginTop = y + displayHeight + 80;
         
         const availableWidthTotal = this.config.width - (marginLeft + marginRight);

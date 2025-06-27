@@ -247,6 +247,7 @@ export class PlayScene extends BaseScene{
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
         //solitaire
         this.solitaire = new Solitaire(this);
+        
         this.solitaire.newGame();
 
         //events
@@ -257,7 +258,6 @@ export class PlayScene extends BaseScene{
        //user-options ui
        this.createBottomUI();
        
-        console.log (this.graphics) 
     }
     createBottomUI(){
         const width = this.config.width-10;

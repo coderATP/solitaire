@@ -18,7 +18,10 @@ export class DrawPile{
     }
     
     getBiodata(){
-        return{x: 10, y: 50, displayWidth: 37, displayHeight: 52};
+        return{x: 10,
+        y: 50,
+        displayWidth: 88*this.config.zoomFactor,
+        displayHeight: 128*this.config.zoomFactor};
     }
     
     updateTopmostTwoCardsPosition(){

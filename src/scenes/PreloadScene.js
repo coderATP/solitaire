@@ -9,7 +9,7 @@ export class PreloadScene extends BaseScene{
         this.load.image("clickToStart", "../images/clickToStart.png");
         this.load.image("title", "../images/title.png");
         this.load.spritesheet("cards", "../images/cards.png",
-            {frameWidth: 37, frameHeight: 52});
+            {frameWidth: 88, frameHeight: 128});
         
         this.load.on("complete", this.playSolitaire, this);
         
