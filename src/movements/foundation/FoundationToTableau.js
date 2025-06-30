@@ -46,7 +46,7 @@ export class FoundationToTableau extends FoundationMovement{
             currentPileIndex: targetPileIndex,
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
-            colour: this.card.getData("suit"),
+            suit: this.card.getData("suit"),
             colour: this.card.getData("colour"),
             x: newCard.x,
             y: newCard.y,
@@ -72,7 +72,7 @@ export class FoundationToTableau extends FoundationMovement{
         .setData({
             frame: command.originalCardData.frame,
             value: command.originalCardData.value,
-            colour: command.originalCardData.suit,
+            suit: command.originalCardData.suit,
             colour: command.originalCardData.suit,
             x: newCard.x,
             y: newCard.y,
