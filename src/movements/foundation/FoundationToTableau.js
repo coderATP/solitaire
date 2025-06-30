@@ -53,7 +53,6 @@ export class FoundationToTableau extends FoundationMovement{
             
         }
         targetPile.add(newCard);
-       // this.card.destroy();
         sourcePile.list.pop();
       
         return this;

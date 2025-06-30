@@ -60,6 +60,7 @@ export class DiscardToTableau extends DiscardMovement{
         return this;
     }
     
+    
     undo(command){
         if(!command.originalCardData) return;
         const sourcePile = this.scene.solitaire.tableauPile.cards[command.originalCardData.currentPileIndex];
@@ -73,7 +74,7 @@ export class DiscardToTableau extends DiscardMovement{
         .setData({
             frame: command.originalCardData.frame,
             value: command.originalCardData.value,
-            colour: command.originalCardData.suit,
+            suit: command.originalCardData.suit,
             colour: command.originalCardData.suit,
             x: newCard.x,
             y: newCard.y,
@@ -85,4 +86,5 @@ export class DiscardToTableau extends DiscardMovement{
         sourcePile.list.pop();
         return this;
     }
+    
 }
