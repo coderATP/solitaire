@@ -96,7 +96,7 @@ export class TableauToFoundation extends TableauMovement{
         })
         
         //hide card above again
-        this.scene.solitaire.tableauPile.hideTopmostCardInTableau(targetPile);
+       if(!command.originalCardData.wasPenultimateCardRevealed) this.scene.solitaire.tableauPile.hideTopmostCardInTableau(targetPile);
         targetPile.add(newCard);
         sourcePile.list.pop(); //card.destroy() also works
   
