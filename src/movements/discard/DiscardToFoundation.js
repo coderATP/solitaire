@@ -24,10 +24,12 @@ export class DiscardToFoundation extends DiscardMovement{
             this.card.setPosition(0,0);
             return;
         }
+        //increase score
+        this.scene.commandHandler.movementScore+=5;
+        //play sound
         audio.play(audio.dropSound);
-      //  if(pileIndex === targetPileIndex ) return;
-        //TO-DO: move card from foundation to foundation
-        //idea: do not bother moving if targetPile is not empty
+        if(pileIndex === targetPileIndex ) return;
+        //TO-DO: move card from discard to foundation
         //idea: create a new card, add it to the target pile and destroy the original card being moved
         this.newCard = this.scene.createCard("foundationPileCard", 0, 0)
         this.newCard
@@ -63,12 +65,11 @@ export class DiscardToFoundation extends DiscardMovement{
     
     undo(command){
         if(!command.originalCardData) return;
+        this.scene.commandHandler.movementScore-=5; 
         //const pileIndex = this.card.getData("pileIndex");
         const currentPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
         const targetPile = this.scene.solitaire.discardPile.container;
 
-        //TO-DO: move card from foundation to foundation
-        //idea: do not bother moving if targetPile is not empty
         //idea: create a new card, add it to the target pile and destroy the original card being moved
         this.newCard = this.scene.createCard("discardPileCard", 0, 0)
         this.newCard
@@ -88,7 +89,6 @@ export class DiscardToFoundation extends DiscardMovement{
         
         targetPile.add(this.newCard);
         currentPile.list.pop();
-        //this.card.destroy();
         return this; 
     }
 }

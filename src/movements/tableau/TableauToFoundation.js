@@ -24,14 +24,17 @@ export class TableauToFoundation extends TableauMovement{
                 cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*20 );
                 cardsToReturn.setData({x: 0, y: cardsToReturn.getData("cardIndex")*20} );
             }
-            audio.play(audio.dropSound);
             return;
         }
+        //play audio
+        audio.play(audio.dropSound);
+        //increase score
+        this.scene.commandHandler.movementScore+=5;
         //TO-DO: move a valid card to foundation
         //only one card can be moved at a time from the tableau to foundation
         if(cardIndex < sourcePile.length-1 ){
            //throw new Error("moving multiple cards is invalid")
-          //  return;
+            return;
         }
         
         const newCard = this.scene.createCard("foundationPileCard", 0, 0)
@@ -66,8 +69,7 @@ export class TableauToFoundation extends TableauMovement{
             wasPenultimateCardRevealed: sourcePile.list[sourcePile.list.length-2]&& sourcePile.list[sourcePile.list.length-2].getData("frame") > 51 
         }
         targetPile.add(newCard);
-        this.card.destroy();
-        //sourcePile.list.pop(); //card.destroy() also works
+        sourcePile.list.pop();
         this.scene.solitaire.tableauPile.showTopmostCardInTableau(sourcePile);
  
         return this; 
@@ -75,6 +77,8 @@ export class TableauToFoundation extends TableauMovement{
     
     undo(command){
         if(!command.originalCardData) return;
+        this.scene.commandHandler.movementScore-=5;
+ 
         const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.currentPileIndex];
         const targetPile = this.scene.solitaire.tableauPile.cards[command.originalCardData.originalPileIndex];
 
@@ -98,7 +102,7 @@ export class TableauToFoundation extends TableauMovement{
         //hide card above again
        if(!command.originalCardData.wasPenultimateCardRevealed) this.scene.solitaire.tableauPile.hideTopmostCardInTableau(targetPile);
         targetPile.add(newCard);
-        sourcePile.list.pop(); //card.destroy() also works
+        sourcePile.list.pop();
   
         return this;
     }

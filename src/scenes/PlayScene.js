@@ -230,33 +230,11 @@ export class PlayScene extends BaseScene{
                 this.solitaire.onClickRestartButton();
             }  
         })
-        eventEmitter.once("PlayToTitle", ()=>{ this.scene.start("TitleScene"); })
+        eventEmitter.once("PlayToTitle", ()=>{
+            clearInterval(this.stopwatch);
+            this.scene.start("TitleScene");
+        })
         return this;
-    }
-    
-    create(){
-        //camera
-        const camera = this.cameras.main;
-        camera.fadeIn(1500);
-        //audio
-        audio.playSong.play();
-        audio.beginGameSound.play();
-
-        //graphics creation
-        this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
-        //solitaire
-        this.solitaire = new Solitaire(this);
-        
-        this.solitaire.newGame();
-
-        //events
-       this.handleDragEvent().handleDropEvent().handleClickEvent();
-       
-       //statuses
-       this.createStatus();
-       //user-options ui
-       this.createBottomUI();
-       
     }
     createBottomUI(){
         const width = this.config.width-10;
@@ -332,10 +310,10 @@ export class PlayScene extends BaseScene{
         this.graphics.strokeRect(0, 0, this.config.width, this.config.height, 0x000000, 1);
         
         //score status
-        const scoreText = this.add.text(5,5, "Score: ", {
+        this.movementScoreText = this.add.text(5,5, "Score: ", {
             color: "gold", fontFamily: "Arial", fontSize: "15px"
         })
-        this.score = this.add.text(scoreText.x+scoreText.width+2 , scoreText.y, "0", {
+        this.movementScore = this.add.text(this.movementScoreText.x+this.movementScoreText.width+2 , this.movementScoreText.y, "0", {
             color: "white", fontFamily: "Arial", fontSize: "15px"
         })
         
@@ -354,14 +332,65 @@ export class PlayScene extends BaseScene{
             color: "white", fontFamily: "Arial", fontSize: "15px"
         })
         this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
-        const movesText = this.add.text(0,0, "Moves: ", {
+        this.movesText = this.add.text(0,0, "Moves: ", {
             color: "gold", fontFamily: "Arial", fontSize: "15px"
         }) 
-        movesText.setPosition(this.moves.x-movesText.width, 5);
+        this.movesText.setPosition(this.moves.x-this.movesText.width, 5);
         
-        this.statusTopContainer.add([scoreText, this.score, movesText, this.moves, timeText, this.timeElapsed])
+        this.statusTopContainer.add([this.movementScoreText, this.movementScore, this.movesText, this.moves, timeText, this.timeElapsed])
     }
-    update(time, delta){
+    
+    setStopwatch(){
+        let min = 0, sec = 0;
+        let secText = undefined, minText = undefined;
+        this.stopwatch = setInterval(()=>{
+            sec+=1;
+            if(sec > 59){
+                sec = 0;
+                min+=1;
+            }
+            if(sec < 10) secText = "0"+sec; else secText = sec;
+            if(min < 10) minText = "0"+min; else minText = min;
+            
+            this.timeElapsed.setText(minText+":"+secText);
+        }, 1000);
+    }
+    updateMoves(){
+        this.moves.setText(this.commandHandler.totalMovesCount);
+        this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
+        this.movesText.setPosition(this.moves.x-this.movesText.width, 5);
+    }
+    updateScore(){
+        this.movementScore.setText(this.commandHandler.movementScore);
+    }
+    create(){
+        //time
+        this.setStopwatch();
+        //camera
+        const camera = this.cameras.main;
+        camera.fadeIn(1500);
+        //audio
+        audio.playSong.play();
+        audio.beginGameSound.play();
 
+        //graphics creation
+        this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
+        //solitaire
+        this.solitaire = new Solitaire(this);
+        
+        this.solitaire.newGame();
+
+        //events
+       this.handleDragEvent().handleDropEvent().handleClickEvent();
+       
+       //statuses
+       this.createStatus();
+       //user-options ui
+       this.createBottomUI();
+       
+    } 
+    update(time, delta){
+        this.updateMoves();
+        this.updateScore();
     }
 }

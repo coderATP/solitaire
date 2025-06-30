@@ -16,20 +16,22 @@ export class CommandHandler{
         this.scene = scene;
         //tracking undo and redo actions 
         this.moves = [];
-        this.totalMoves = 0;
+        this.totalMovesCount = 0;
+        this.movementScore = 0;
         this.movesToRedo = 0;
         this.movesToUndo = 0;
     }
     
     reset(){
         this.moves = [];
-        this.totalMoves = 0;
+        this.totalMovesCount = 0;
         this.movesToRedo = 0;
         this.movesToUndo = 0; 
     }
     execute(command){
         command.execute();
         if(!command.isValid) return;
+        this.totalMovesCount++;
         this.moves.push(command);
         this.movesToUndo++;
         this.movesToRedo = 0;
@@ -42,6 +44,7 @@ export class CommandHandler{
         const command = this.moves.pop();
 
         if(!command) return;
+        this.totalMovesCount++;
         if(command.id === "drawToDiscard"){
             new DrawToDiscard(this.scene, null, null).undo();
             this.movesToUndo--;
