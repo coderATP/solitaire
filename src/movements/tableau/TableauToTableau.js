@@ -17,12 +17,12 @@ export class TableauToTableau extends TableauMovement{
         const numberOfCardsToMove = sourcePile.length - cardIndex;
         let cardsToMove;
         
-        const isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToTableau(this.card, this.dropZone);
+        this.isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToTableau(this.card, this.dropZone);
         
         //if card(s) does/do not meet validity conditions to move to another pile, it/they is/are returned to the source pile
         //code is returned early
         //logic: simply reset the position of the card(s) 
-        if(!isValid){
+        if(!this.isValid){
             audio.play(audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];

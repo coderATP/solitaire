@@ -8,13 +8,14 @@ export class DiscardToTableau extends DiscardMovement{
     }
     
     execute(){
-        const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToTableau(this.card, this.dropZone);
+        this.isValid = this.scene.solitaire.discardPile.isCardValidToMoveToTableau(this.card, this.dropZone);
         
-        if(!isValid){
+        if(!this.isValid){
             audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
         }
+        
         audio.play(audio.dropSound); 
         const cardIndex = this.card.getData("cardIndex");
         const pileIndex = this.card.getData("pileIndex");
@@ -32,7 +33,7 @@ export class DiscardToTableau extends DiscardMovement{
         .setData({
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
-            colour: this.card.getData("suit"),
+            suit: this.card.getData("suit"),
             colour: this.card.getData("colour"),
             x: newCard.x,
             y: newCard.y,
@@ -46,7 +47,7 @@ export class DiscardToTableau extends DiscardMovement{
             currentPileIndex: targetPileIndex,
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
-            colour: this.card.getData("suit"),
+            suit: this.card.getData("suit"),
             colour: this.card.getData("colour"),
             x: newCard.x,
             y: newCard.y,

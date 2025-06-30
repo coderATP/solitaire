@@ -91,7 +91,7 @@ export class TableauPile{
         //TO-DO: only aces (data value = 0) can move to empty tableaus
         if(targetPile.list.length === 0){
             if(cardValue !== 1){
-               // alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+                //alert("drop ace on empty tile")
                 return false;
             }else return true;
         }
@@ -100,13 +100,15 @@ export class TableauPile{
             //1. the card being dragged must have a value 1 more than that of the last card on the target pile.
             //2. it's suit same with the last card on the target pile
             const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
-            if(cardValue !== lastCardInTargetPile.getData("value")+1 ||
-               cardSuit !== lastCardInTargetPile.getData("suit")
+            const targetVal = lastCardInTargetPile.getData("value");
+            const targetSuit = lastCardInTargetPile.getData("suit");
+            if(cardValue !== targetVal+1 ||
+               cardSuit !== targetSuit
             ){
-              //  alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1 higher to be successfully placed");
-              //  console.log("values: ", cardValue, lastCardInTargetPile.getData('value'));
-               // console.log("suit: ", cardSuit, lastCardInTargetPile.getData('suit'));
- 
+               /* alert("values: "+ cardValue + "," + targetVal+
+                    " suits: " + cardSuit + ", " + targetSuit
+                );
+                */
                 return false;
             } 
         }

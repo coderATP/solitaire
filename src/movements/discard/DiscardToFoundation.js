@@ -11,21 +11,21 @@ export class DiscardToFoundation extends DiscardMovement{
     execute(){
         const pileIndex = this.card.getData("pileIndex");
         const targetPileIndex = this.dropZone.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.foundationPile.cards[pileIndex];
+        const sourcePile = this.scene.solitaire.discardPile.cards.container;
         const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
         
         //i created a reference to the present dropZone for later when i need to undo a move
         this.oldDropZone = this.dropZone;
         
-        const isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
+        this.isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         
-        if(!isValid){
+        if(!this.isValid){
             audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
         }
         audio.play(audio.dropSound);
-        if(pileIndex === targetPileIndex ) return;
+      //  if(pileIndex === targetPileIndex ) return;
         //TO-DO: move card from foundation to foundation
         //idea: do not bother moving if targetPile is not empty
         //idea: create a new card, add it to the target pile and destroy the original card being moved

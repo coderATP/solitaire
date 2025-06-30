@@ -5,6 +5,7 @@ export class Movement{
         this.dropZone = dropZone;
         this.config = scene.config;
         this.graphics = scene.graphics;
+        this.isValid = false;
     }
     
     execute(){}

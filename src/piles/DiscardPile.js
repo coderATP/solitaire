@@ -123,7 +123,7 @@ export class DiscardPile{
                 return true;
             }
             else{
-              //  alert("MOVEMENT RULE:\nonly aces can be the first to be dropped onto an empty pile")
+               // alert("only drop ace on an empty tile")
                 return false;
             }
         }
@@ -131,12 +131,15 @@ export class DiscardPile{
         //1. the card being dragged must have a value 1 more than that of the last card on the target pile.
         //2. it's suit same with the last card on the target pile
         const lastCardInTargetPile = targetPile.list[targetPile.length - 1];
-        if(cardValue === lastCardInTargetPile.getData("value")+1 &&
-           cardSuit === lastCardInTargetPile.getData("suit")
+        const targetVal = lastCardInTargetPile.getData("value");
+        const targetSuit = lastCardInTargetPile.getData("suit");
+        if(cardValue === targetVal+1 &&
+           cardSuit === targetSuit
         ){
             return true;
         }
         else{
+           // alert("suits: " + cardSuit + targetSuit + ", values: "+ cardValue+", "+targetVal)
            // alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
             return false;
         }

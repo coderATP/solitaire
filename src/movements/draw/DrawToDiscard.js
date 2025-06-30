@@ -6,7 +6,10 @@ export class DrawToDiscard extends DrawMovement{
        this.id = "drawToDiscard";
    }
     execute(){
+        this.isValid = true;
         const targetPile = this.scene.solitaire.discardPile.container;
+        const sourcePile = this.scene.solitaire.drawPile.container;
+        
         const newCard = this.scene.createCard("discardPileCard", 0,0);
         newCard
             .setInteractive({draggable: true})
@@ -21,8 +24,7 @@ export class DrawToDiscard extends DrawMovement{
                 cardIndex: targetPile.length
             })
         targetPile.add(newCard);
-        this.card.destroy();
-        this.scene.solitaire.drawPile.cards.pop();
+        sourcePile.list.pop();
         //this.updateTopmostTwoCardsPosition(); 
     }
     undo(){

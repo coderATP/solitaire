@@ -113,6 +113,10 @@ export class FoundationPile{
                 return true;
             }
             else{
+               /* alert("values: "+ cardValue + "," + lastCardInTargetPile.getData("value"),
+                    "suits: " + cardSuit + ", " + lastCardInTargetPile.getData("suit")
+                );
+                */
                // alert("MOVEMENT RULE:\nonly KINGS can be the first to be dropped onto an empty pile")
                 return false;
             }
@@ -155,7 +159,10 @@ export class FoundationPile{
             if(cardValue !== lastCardInTargetPile.getData("value")+1 ||
                cardSuit !== lastCardInTargetPile.getData("suit")
             ){
-               // alert("MOVEMENT RULE:\n1.only cards of same suit can be placed on each other\n2. CARD VALUE should be +1");
+              /*  alert("values: "+ cardValue + "," + lastCardInTargetPile.getData("value"),
+                    "suits: " + cardSuit + ", " + lastCardInTargetPile.getData("suit")
+                );
+                */
                 return false;
             } 
         }

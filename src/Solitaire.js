@@ -29,7 +29,6 @@ export class Solitaire{
         this.tableauPile = new TableauPile(scene).create();
         
         this.deck = [];
-        this.deck2 = [];
     }
     createDeck(){
         for(let i = 0; i < Solitaire.CARD_SUITS.length; ++i ){
@@ -47,7 +46,6 @@ export class Solitaire{
                        colour: Object.values(Solitaire.CARD_COLOURS)[i]
                    })
                this.deck.push(card);
-             //  this.deck2.push(card);
             }
         }
     }
@@ -89,7 +87,6 @@ export class Solitaire{
             drawPileCards[i].destroy();
         }
         this.drawPile.cards.push(this.drawPile.container);
-        
  
         //TO-DO: distribute remaining 28 cards from deck onto the tableau piles
         //logic: move 1 card into the 1st container, 2 cards into the 2nd container, 3 cards into the third...

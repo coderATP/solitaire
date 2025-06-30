@@ -16,8 +16,8 @@ export class TableauToFoundation extends TableauMovement{
   
         const numberOfCardsToMove = sourcePile.length - cardIndex;
         let cardsToReturn;
-        const isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
-        if(!isValid){
+        this.isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
+        if(!this.isValid){
             audio.play(audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToReturn = sourcePile.list[i+cardIndex];
@@ -31,7 +31,7 @@ export class TableauToFoundation extends TableauMovement{
         //only one card can be moved at a time from the tableau to foundation
         if(cardIndex < sourcePile.length-1 ){
            //throw new Error("moving multiple cards is invalid")
-            return;
+          //  return;
         }
         
         const newCard = this.scene.createCard("foundationPileCard", 0, 0)
