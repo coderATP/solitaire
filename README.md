@@ -1,5 +1,7 @@
 # solitaire
 a Solitaire game made with phaser 3
+* play it on https://atp-solitaire.netlify.app
+  
 //TO-DO:
 1. Add sounds for invalid move, valid move onto tableau, successful placement on foundation, win game
 2. change card graphics
