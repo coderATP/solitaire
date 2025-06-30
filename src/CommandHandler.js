@@ -28,8 +28,8 @@ export class CommandHandler{
         this.movesToUndo = 0; 
     }
     execute(command){
-        
         command.execute();
+        if(!command.isValid) return;
         this.moves.push(command);
         this.movesToUndo++;
         this.movesToRedo = 0;

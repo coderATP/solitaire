@@ -4,13 +4,13 @@ import { audio } from "../../audio/AudioControl.js";
 export class FoundationToTableau extends FoundationMovement{
     constructor (scene, card, dropZone){
         super(scene, card, dropZone);
-        this.id = "foundationToTableau"
+        this.id = "foundationToTableau";
     }
     
     execute(){
-        const isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToTableau(this.card, this.dropZone);
+        this.isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToTableau(this.card, this.dropZone);
         
-        if(!isValid){
+        if(!this.isValid){
             audio.play(audio.errorSound);
             this.card.setPosition(0,0);
             return;
@@ -53,7 +53,7 @@ export class FoundationToTableau extends FoundationMovement{
             
         }
         targetPile.add(newCard);
-        //this.card.destroy();
+       // this.card.destroy();
         sourcePile.list.pop();
       
         return this;

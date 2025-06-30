@@ -213,7 +213,6 @@ export class PlayScene extends BaseScene{
             }
             else if(gameobject[0].name === "drawPileZone"){
                 //audio
-                audio.play(audio.drawSound); 
                 const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
                 //this.solitaire.discardPile.returnToDrawPile();

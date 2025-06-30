@@ -1,4 +1,5 @@
 import { DiscardMovement } from "./DiscardMovement.js";
+import { audio } from "../../audio/AudioControl.js";
 
 export class DiscardToDraw extends DiscardMovement{
     constructor(scene, card, dropZone){
@@ -7,11 +8,13 @@ export class DiscardToDraw extends DiscardMovement{
     }
     
     execute(){
+        this.isValid = true;
         const drawPile = this.scene.solitaire.drawPile;
         const discardPile = this.scene.solitaire.discardPile; 
         
-      //  if(drawPile.container.length > 0) return;
-        //drawPile.container = null;
+        if(drawPile.container.length > 0) return;
+        audio.play(audio.drawSound); 
+
         for( let i =  0; i < discardPile.container.length; ++i){
             const card = discardPile.container.list[i];
             const newCard = this.scene.createCard("drawPileCard", 0, 0);
