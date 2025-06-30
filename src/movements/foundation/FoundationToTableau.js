@@ -32,7 +32,7 @@ export class FoundationToTableau extends FoundationMovement{
         .setData({
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
-            colour: this.card.getData("suit"),
+            suit: this.card.getData("suit"),
             colour: this.card.getData("colour"),
             x: newCard.x,
             y: newCard.y,
