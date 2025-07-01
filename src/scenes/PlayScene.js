@@ -1,5 +1,7 @@
 import { BaseScene } from "./BaseScene.js";
 //command handler for card movements
+//audio
+import { AudioControl } from "../audio/AudioControl.js";
 import { CommandHandler } from "../CommandHandler.js";
 import { eventEmitter } from "../events/EventEmitter.js";
 
@@ -15,8 +17,6 @@ import { TableauToFoundation } from "../movements/tableau/TableauToFoundation.js
 import { TableauToTableau } from "../movements/tableau/TableauToTableau.js";
 import { Solitaire } from "../Solitaire.js";
 
-//audio
-import { audio } from "../audio/AudioControl.js";
 
 
 export class PlayScene extends BaseScene{
@@ -207,7 +207,7 @@ export class PlayScene extends BaseScene{
             if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
                 //audio
-                audio.play(audio.drawSound);
+                this.audio.play(this.audio.drawSound);
                 const command = new DrawToDiscard(this, gameobject[0], null);
                 this.commandHandler.execute(command);
             }
@@ -215,11 +215,10 @@ export class PlayScene extends BaseScene{
                 //audio
                 const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
-                //this.solitaire.discardPile.returnToDrawPile();
             }
             else if(gameobject[0].name === "undoButton"){
                 //audio
-                if(this.commandHandler.moves.length > 0) audio.play(audio.undoSound);
+                if(this.commandHandler.moves.length > 0) this.audio.play(this.audio.undoSound);
                 
                 this.commandHandler.undo();
             }
@@ -364,14 +363,16 @@ export class PlayScene extends BaseScene{
         this.movementScore.setText(this.commandHandler.movementScore);
     }
     create(){
+        //audio
+        this.audio = new AudioControl(this);
+        this.audio.playSong.play();
+        this.audio.beginGameSound.play();
+ 
         //time
         this.setStopwatch();
         //camera
         const camera = this.cameras.main;
         camera.fadeIn(1500);
-        //audio
-        audio.playSong.play();
-        audio.beginGameSound.play();
 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })

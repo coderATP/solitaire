@@ -1,5 +1,4 @@
 import { DiscardMovement } from "./DiscardMovement.js";
-import { audio } from "../../audio/AudioControl.js";
 
 
 export class DiscardToFoundation extends DiscardMovement{
@@ -27,7 +26,7 @@ export class DiscardToFoundation extends DiscardMovement{
         //increase score
         this.scene.commandHandler.movementScore+=5;
         //play sound
-        audio.play(audio.dropSound);
+        this.scene.audio.play(this.scene.audio.dropSound);
         if(pileIndex === targetPileIndex ) return;
         //TO-DO: move card from discard to foundation
         //idea: create a new card, add it to the target pile and destroy the original card being moved

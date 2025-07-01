@@ -1,5 +1,4 @@
 import { TableauMovement } from "./TableauMovement.js";
-import { audio } from "../../audio/AudioControl.js";
 
 export class TableauToFoundation extends TableauMovement{
     constructor (scene, card, dropZone){
@@ -18,7 +17,7 @@ export class TableauToFoundation extends TableauMovement{
         let cardsToReturn;
         this.isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         if(!this.isValid){
-            audio.play(audio.errorSound);
+            this.scene.audio.play(this.scene.audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToReturn = sourcePile.list[i+cardIndex];
                 cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*20 );
@@ -27,7 +26,7 @@ export class TableauToFoundation extends TableauMovement{
             return;
         }
         //play audio
-        audio.play(audio.dropSound);
+        this.scene.audio.play(this.scene.audio.dropSound);
         //increase score
         this.scene.commandHandler.movementScore+=5;
         //TO-DO: move a valid card to foundation

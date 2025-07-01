@@ -1,5 +1,4 @@
 import { TableauMovement } from "./TableauMovement.js";
-import { audio } from "../../audio/AudioControl.js";
 
 export class TableauToTableau extends TableauMovement{
     constructor (scene, card, dropZone){
@@ -23,7 +22,7 @@ export class TableauToTableau extends TableauMovement{
         //code is returned early
         //logic: simply reset the position of the card(s) 
         if(!this.isValid){
-            audio.play(audio.errorSound);
+            this.scene.audio.play(this.scene.audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];
                 cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
@@ -31,7 +30,7 @@ export class TableauToTableau extends TableauMovement{
             }
             return;
         }
-        audio.play(audio.dropSound);
+        this.scene.audio.play(this.scene.audio.dropSound);
         //VALID MOVEMENTS->
         //1. but player drops on the same pile return its position
         //logic: simply reset the position of the card(s)

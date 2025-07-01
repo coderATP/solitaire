@@ -3,7 +3,7 @@ import { DiscardPile } from "./piles/DiscardPile.js";
 import { FoundationPile } from "./piles/FoundationPile.js";
 import { TableauPile } from "./piles/TableauPile.js";
 
-import { audio } from "./audio/AudioControl.js";
+import { AudioControl } from "./audio/AudioControl.js";
 
 export class Solitaire{
     static CARD_BACK_FRAMES = [52, 53, 54, 55, 56];

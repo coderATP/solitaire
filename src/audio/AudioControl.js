@@ -1,16 +1,16 @@
-class AudioControl{
-    constructor(){
+export class AudioControl{
+    constructor(scene){
         
-        this.playSong = new Audio("sounds/overworld.ogg");
+        this.playSong = scene.sound.add('playSong');
         this.playSong.loop = true;
         
-        this.buttonClickSound = new Audio("sounds/click.wav");
-        this.beginGameSound = new Audio("sounds/begin_game.wav");
-        this.drawSound = new Audio("sounds/draw.wav");
-        this.dropSound = new Audio("sounds/drop.wav");
-        this.errorSound = new Audio("sounds/error_sound.wav");
-        this.undoSound = new Audio("sounds/undo.wav");
-        this.shuffleSound = new Audio("sounds/shuffle.wav");
+        this.buttonClickSound = scene.sound.add('buttonClickSound');
+        this.beginGameSound = scene.sound.add('beginGameSound');
+        this.drawSound = scene.sound.add('drawSound');
+        this.dropSound = scene.sound.add('dropSound');
+        this.errorSound = scene.sound.add('errorSound');
+        this.undoSound = scene.sound.add('undoSound');
+        this.shuffleSound = scene.sound.add('shuffleSound');
         
         this.songs = [this.playSong];
         this.sounds = [this.buttonClickSound, this.beginGameSound, this.drawSound, this.dropSound, this.errorSound, this.undoSound, this.shuffleSound];
@@ -37,5 +37,3 @@ class AudioControl{
     }
     
 }
-
-export const audio = new AudioControl();

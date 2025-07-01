@@ -1,5 +1,5 @@
 import { BaseScene } from "./BaseScene.js";
-import { audio } from "../audio/AudioControl.js";
+import { AudioControl } from "../audio/AudioControl.js";
 
 export class TitleScene extends BaseScene{
     constructor(config){
@@ -15,7 +15,7 @@ export class TitleScene extends BaseScene{
             .setScale(0.5)
             .setInteractive({draggable: false})
             .once("pointerdown", ()=>{
-                audio.buttonClickSound.play();
+                new AudioControl(this).buttonClickSound.play();
                 this.scene.start("PlayScene");
             })
         this.tweens.add({
