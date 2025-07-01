@@ -16,6 +16,7 @@ export class CommandHandler{
         this.scene = scene;
         //tracking undo and redo actions 
         this.moves = [];
+        this.undoneActions = [];
         this.totalMovesCount = 0;
         this.movementScore = 0;
         this.movesToRedo = 0;
@@ -24,6 +25,7 @@ export class CommandHandler{
     
     reset(){
         this.moves = [];
+        this.undoneActions = [];
         this.totalMovesCount = 0;
         this.movesToRedo = 0;
         this.movesToUndo = 0; 
@@ -42,42 +44,62 @@ export class CommandHandler{
         if(this.movesToUndo === 0) return;
         if(this.moves.length === 0) return;
         const command = this.moves.pop();
+        this.undoneActions.push(command);
 
         if(!command) return;
         this.totalMovesCount++;
         if(command.id === "drawToDiscard"){
             new DrawToDiscard(this.scene, null, null).undo();
             this.movesToUndo--;
+            this.movesToRedo++;
         }
 
         else if(command.id === "discardToDraw"){
             new DiscardToDraw(this.scene, null, null).undo();
             this.movesToUndo--;
+            this.movesToRedo++; 
         } 
         else if(command.id === "discardToFoundation"){
             new DiscardToFoundation(this.scene, null, null).undo(command);
-            this.movesToUndo--; 
+            this.movesToUndo--;
+            this.movesToRedo++;
         }
         else if(command.id === "discardToTableau"){
             new DiscardToTableau(this.scene, null, null).undo(command);
-            this.movesToUndo--;  
+            this.movesToUndo--;
+            this.movesToRedo++;
         }
         else if(command.id === "foundationToFoundation"){
             new FoundationToFoundation(this.scene, null, null).undo(command);
             this.movesToUndo--;
+            this.movesToRedo++;
         }
         else if(command.id === "foundationToTableau"){
             new FoundationToTableau(this.scene, null, null).undo(command);
             this.movesToUndo--;
+            this.movesToRedo++;
         } 
         else if(command.id === "tableauToFoundation"){
             new TableauToFoundation(this.scene, null, null).undo(command);
             this.movesToUndo--;
+            this.movesToRedo++;
         }
         else if(command.id === "tableauToTableau"){
             new TableauToTableau(this.scene, null, null).undo(command);
             this.movesToUndo--;
+            this.movesToRedo++;
         }
     
     }
+    
+    redo(){
+        if(this.movesToRedo === 0) return;
+        if(this.undoneActions.length === 0) return;
+        const command = this.undoneActions.pop();
+        command.execute();
+        this.totalMovesCount++;
+        this.moves.push(command);
+        this.movesToRedo--;
+        this.movesToUndo++;
+    } 
 }

@@ -19,7 +19,7 @@ export class DiscardToFoundation extends DiscardMovement{
         this.isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
         
         if(!this.isValid){
-            audio.play(audio.errorSound);
+            this.audio.play(this.audio.errorSound);
             this.card.setPosition(0,0);
             return;
         }

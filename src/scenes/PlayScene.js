@@ -219,9 +219,13 @@ export class PlayScene extends BaseScene{
             else if(gameobject[0].name === "undoButton"){
                 //audio
                 if(this.commandHandler.moves.length > 0) this.audio.play(this.audio.undoSound);
-                
                 this.commandHandler.undo();
             }
+            else if(gameobject[0].name === "redoButton"){
+                //audio
+                if(this.commandHandler.undoneActions.length > 0) this.audio.play(this.audio.undoSound);
+                this.commandHandler.redo();
+            } 
             else if(gameobject[0].name === "newGameButton"){
                 eventEmitter.emit("PlayToTitle");
             }
@@ -230,8 +234,9 @@ export class PlayScene extends BaseScene{
             }  
         })
         eventEmitter.once("PlayToTitle", ()=>{
+            //reset time and restart
             clearInterval(this.stopwatch);
-            this.scene.start("TitleScene");
+            this.scene.restart();
         })
         return this;
     }
@@ -240,8 +245,9 @@ export class PlayScene extends BaseScene{
         const height = 40;
         const y = 10;
         this.graphics.fillStyle(0x000000, 2);
-        this.bottomUIRect = this.graphics.fillRoundedRect(5, this.config.height-40-5, width, height,
-            {tl: 10, tr: 10, bl: 0, br: 0})
+        this.graphics.fillRoundedRect(5, this.config.height-40-5, width, height,
+            {tl: 10, tr: 10, bl: 0, br: 0});
+        this.bottomUIRect = this.add.rectangle(5, this.config.height-40-5, width, height);
         this.bottomUIContainer = this.add.container(5, this.config.height-40-5); 
         //BUTTONS
         //restart-left
@@ -252,13 +258,13 @@ export class PlayScene extends BaseScene{
             .setName("restartButton");
         this.restartButton.setPosition(5, y); 
         this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0xffffff, 1).setOrigin(0)
-        //new game-centre
+        //new game- right of restart
         this.newGameButton = this.add.text(0, 0, "New",
             {color: "green", fontFamily: "Serif", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("newGameButton");
-        this.newGameButton.setPosition(width/2 - this.newGameButton.width/2, y);
+        this.newGameButton.setPosition(this.restartButton.x + this.restartButton.width + 5, y);
         this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0xffffff, 1).setOrigin(0)
  
         //undo-right
@@ -269,8 +275,17 @@ export class PlayScene extends BaseScene{
             .setName("undoButton");
         this.undoButton.setPosition(width - this.undoButton.width-5, y);
         this.undoRect = this.add.rectangle(this.undoButton.x, this.undoButton.y, this.undoButton.width, this.undoButton.height, 0xffffff, 1).setOrigin(0)
+       
+        //redo- left of undo
+        this.redoButton = this.add.text(0, 0, "Redo",
+            {color: "green", fontFamily: "Serif", fontSize: "20px"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("redoButton");
+        this.redoButton.setPosition(this.undoButton.x - this.undoButton.width-5, y);
+        this.redoRect = this.add.rectangle(this.redoButton.x, this.redoButton.y, this.redoButton.width, this.redoButton.height, 0xffffff, 1).setOrigin(0)
 
-        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.restartButton, this.newGameButton, this.undoButton]);
+        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.redoRect, this.restartButton, this.newGameButton, this.undoButton, this.redoButton]);
         
         //tweens
         this.tweens.add({
@@ -317,7 +332,7 @@ export class PlayScene extends BaseScene{
         })
         
         //time elapsed
-        this.timeElapsed = this.add.text(0,0, "0", {
+        this.timeElapsed = this.add.text(0,0, "00:00", {
             color: "white", fontFamily: "Arial", fontSize: "15px"
         })
         this.timeElapsed.setPosition(this.statusTopRect.width/2 - this.timeElapsed.width/2, 5);

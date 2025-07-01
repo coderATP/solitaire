@@ -3,8 +3,8 @@ a Solitaire game made with phaser 3
 * play it on https://atp-solitaire.netlify.app
   
 //TO-DO:
-4. leaderboard
-5. redo actions
+1. leaderboard
+2. Pause and resume
 7. scoring system:
 
 each move = 5 points
