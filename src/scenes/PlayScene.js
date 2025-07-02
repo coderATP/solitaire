@@ -258,11 +258,12 @@ export class PlayScene extends BaseScene{
         })
         pause_menuBtn.addEventListener('click', ()=>{
             confirmText.innerText = "Return to Menu?"
-            
+            this.trigger = "pauseToMenu";
             this.audio.play(this.audio.buttonClickSound);
             this.hide(this.pauseScreen);
             this.show(this.confirmScreen, "grid");
             yesBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "pauseToMenu") return;
                 this.hide(this.confirmScreen);
                 this.resetWatch();
                 this.scene.start("TitleScene"); 
@@ -270,9 +271,27 @@ export class PlayScene extends BaseScene{
             noBtn.addEventListener('click', ()=>{
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid");
+                this.stopWatch();
             }) 
         }) 
-        
+        pause_restartBtn.addEventListener('click', ()=>{
+            confirmText.innerText = "Restart?"
+            this.trigger = "pauseToRestart";
+            this.audio.play(this.audio.buttonClickSound);
+            this.hide(this.pauseScreen);
+            this.show(this.confirmScreen, "grid");
+            yesBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "pauseToRestart") return; 
+                this.hide(this.confirmScreen);
+                this.resetWatch();
+                this.setUpWatch();
+                this.solitaire.onClickRestartButton();
+            })
+            noBtn.addEventListener('click', ()=>{
+                this.hide(this.confirmScreen);
+                this.show(this.pauseScreen, "grid");
+            }) 
+        })  
     }
     
     createBottomUI(){
@@ -476,5 +495,6 @@ export class PlayScene extends BaseScene{
     update(time, delta){
         this.updateMoves();
         this.updateScore();
+        
     }
 }
