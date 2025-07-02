@@ -4,7 +4,6 @@ a Solitaire game made with phaser 3
   
 //TO-DO:
 1. leaderboard
-2. Pause and resume
 7. scoring system:
 
 each move = 5 points
@@ -13,3 +12,8 @@ award moves from discard to foundation
 award moves from tableau to foundation
 award bonus points when player completes game in less than 10 min
 deduct points when player undos any rewarding action
+
+
+
+
+FUNCTION CALLBACK FROM EV LISTENER

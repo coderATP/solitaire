@@ -29,20 +29,20 @@ export class PreloadScene extends BaseScene{
             this.registry.inc("assetsTotal", 1);
         });
 
-        this.loadingText = this.add.text(0,0, "", { font: "20px Serif"})
+        this.loadingText = this.add.text(0,0, "", { font: "20px myOtherFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
         this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
-        this.loadingText2 = this.add.text(0,0, "Please wait", { font: "20px Serif"})
+        this.loadingText2 = this.add.text(0,0, "", { font: "20px myOtherFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
-        this.loadingText2.setPosition(this.config.width/2 - this.loadingText2.width/2,  this.loadingText.y + this.loadingText.height);
          
         //while files are still being added...
         this.load.on("progress", (progress)=>{
             this.loadingText.setText(Math.floor(progress*this.registry.get("assetsTotal")) + " of " + this.registry.get("assetsTotal") + " assets loading..." );
+            this.loadingText2.setText("Please wait");
             this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
-            
+            this.loadingText2.setPosition(this.config.width/2 - this.loadingText2.width/2,  this.loadingText.y + this.loadingText.height+5);
         });
         
         //when file adding is done...

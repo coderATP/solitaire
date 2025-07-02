@@ -24,7 +24,7 @@ export class PlayScene extends BaseScene{
         super("PlayScene", config);
         this.config = config;
         this.commandHandler = new CommandHandler(this);
-
+        
     }
     
     createCard(type, x, y){
@@ -231,15 +231,50 @@ export class PlayScene extends BaseScene{
             }
             else if(gameobject[0].name === "restartButton"){
                 this.solitaire.onClickRestartButton();
+            }
+            else if(gameobject[0].name === "pauseButton"){
+                eventEmitter.emit("PlayToPause");
             }  
+        })
+        eventEmitter.on("PlayToPause", ()=>{
+            this.stopWatch();
+            this.show(this.pauseScreen, "block");
         })
         eventEmitter.once("PlayToTitle", ()=>{
             //reset time and restart
-            clearInterval(this.stopwatch);
+            this.resetWatch();
             this.scene.restart();
         })
+        this.playToPause();
         return this;
     }
+    
+    playToPause(){
+        const confirmText = document.getElementById("confirmText"); 
+        pause_resumeBtn.addEventListener('click', ()=>{
+            this.audio.play(this.audio.buttonClickSound);
+            this.hide(this.pauseScreen);
+            this.resumeWatch();
+        })
+        pause_menuBtn.addEventListener('click', ()=>{
+            confirmText.innerText = "Return to Menu?"
+            
+            this.audio.play(this.audio.buttonClickSound);
+            this.hide(this.pauseScreen);
+            this.show(this.confirmScreen, "grid");
+            yesBtn.addEventListener('click', ()=>{
+                this.hide(this.confirmScreen);
+                this.resetWatch();
+                this.scene.start("TitleScene"); 
+            })
+            noBtn.addEventListener('click', ()=>{
+                this.hide(this.confirmScreen);
+                this.show(this.pauseScreen, "grid");
+            }) 
+        }) 
+        
+    }
+    
     createBottomUI(){
         const width = this.config.width-10;
         const height = 40;
@@ -252,7 +287,7 @@ export class PlayScene extends BaseScene{
         //BUTTONS
         //restart-left
         this.restartButton = this.add.text(0,0, "Restart",
-            {color: "green", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("restartButton");
@@ -260,16 +295,23 @@ export class PlayScene extends BaseScene{
         this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0xffffff, 1).setOrigin(0)
         //new game- right of restart
         this.newGameButton = this.add.text(0, 0, "New",
-            {color: "green", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("newGameButton");
         this.newGameButton.setPosition(this.restartButton.x + this.restartButton.width + 5, y);
-        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0xffffff, 1).setOrigin(0)
- 
+        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0xffffff, 1).setOrigin(0);
+        //pause- center
+        this.pauseButton = this.add.text(0,0, "Pause",
+            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
+            .setOrigin(0)
+            .setInteractive()
+            .setName("pauseButton");
+        this.pauseButton.setPosition(width/2 - this.pauseButton.width/2, y); 
+        this.pauseRect = this.add.rectangle(this.pauseButton.x, this.pauseButton.y, this.pauseButton.width, this.pauseButton.height, 0xffffff, 1).setOrigin(0);
         //undo-right
         this.undoButton = this.add.text(0, 0, "Undo",
-            {color: "green", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("undoButton");
@@ -278,14 +320,14 @@ export class PlayScene extends BaseScene{
        
         //redo- left of undo
         this.redoButton = this.add.text(0, 0, "Redo",
-            {color: "green", fontFamily: "Serif", fontSize: "20px"})
+            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
             .setOrigin(0)
             .setInteractive()
             .setName("redoButton");
         this.redoButton.setPosition(this.undoButton.x - this.undoButton.width-5, y);
         this.redoRect = this.add.rectangle(this.redoButton.x, this.redoButton.y, this.redoButton.width, this.redoButton.height, 0xffffff, 1).setOrigin(0)
 
-        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.redoRect, this.restartButton, this.newGameButton, this.undoButton, this.redoButton]);
+        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.redoRect, this.pauseRect, this.restartButton, this.newGameButton, this.undoButton, this.redoButton, this.pauseButton]);
         
         //tweens
         this.tweens.add({
@@ -325,49 +367,75 @@ export class PlayScene extends BaseScene{
         
         //score status
         this.movementScoreText = this.add.text(5,5, "Score: ", {
-            color: "gold", fontFamily: "Arial", fontSize: "15px"
+            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
         })
         this.movementScore = this.add.text(this.movementScoreText.x+this.movementScoreText.width+2 , this.movementScoreText.y, "0", {
-            color: "white", fontFamily: "Arial", fontSize: "15px"
+            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
         })
         
         //time elapsed
         this.timeElapsed = this.add.text(0,0, "00:00", {
-            color: "white", fontFamily: "Arial", fontSize: "15px"
+            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
         })
         this.timeElapsed.setPosition(this.statusTopRect.width/2 - this.timeElapsed.width/2, 5);
         const timeText = this.add.text(0, 0, "Time: ", {
-            color: "gold", fontFamily: "Arial", fontSize: "15px"
+            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
         }) 
         timeText.setPosition(this.timeElapsed.x - timeText.width, 5);
        
         //moves taken 
         this.moves = this.add.text(0, 0, "0", {
-            color: "white", fontFamily: "Arial", fontSize: "15px"
+            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
         })
         this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
         this.movesText = this.add.text(0,0, "Moves: ", {
-            color: "gold", fontFamily: "Arial", fontSize: "15px"
+            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
         }) 
         this.movesText.setPosition(this.moves.x-this.movesText.width, 5);
         
         this.statusTopContainer.add([this.movementScoreText, this.movementScore, this.movesText, this.moves, timeText, this.timeElapsed])
     }
     
-    setStopwatch(){
-        let min = 0, sec = 0;
-        let secText = undefined, minText = undefined;
+    createTimeVariables(){
+        this.min = 0;
+        this.sec = 0;
+        this.secText = undefined;
+        this.minText = undefined;
+        this.clockRunning = false;
+    }
+    startWatch(){
+        this.sec+=1;
+        if(this.sec > 59){
+            this.sec = 0;
+            this.min+=1;
+        }
+        if(this.sec < 10) this.secText = "0"+this.sec; else this.secText = this.sec;
+        if(this.min < 10) this.minText = "0"+this.min; else this.minText = this.min;
+        this.timeElapsed.setText(this.minText+":"+this.secText);
+    }
+    setUpWatch(){
+        this.createTimeVariables();
         this.stopwatch = setInterval(()=>{
-            sec+=1;
-            if(sec > 59){
-                sec = 0;
-                min+=1;
-            }
-            if(sec < 10) secText = "0"+sec; else secText = sec;
-            if(min < 10) minText = "0"+min; else minText = min;
-            
-            this.timeElapsed.setText(minText+":"+secText);
+            this.startWatch();
+            this.clockRunning = true;
         }, 1000);
+    }
+    resumeWatch(){
+     //   this.clockRunning = false;
+        this.stopwatch = setInterval(()=>{
+            this.startWatch();
+           // this.clockRunning = true;
+        }, 1000);
+    }
+    stopWatch(){
+        clearInterval(this.stopwatch);
+        this.clockRunning = false;
+    }
+    resetWatch(){
+        clearInterval(this.stopwatch);
+        this.createTimeVariables();
+        this.timeElapsed.setText("00:00"); 
+        this.clockRunning = false;
     }
     updateMoves(){
         this.moves.setText(this.commandHandler.totalMovesCount);
@@ -384,7 +452,7 @@ export class PlayScene extends BaseScene{
         this.audio.beginGameSound.play();
  
         //time
-        this.setStopwatch();
+        this.setUpWatch();
         //camera
         const camera = this.cameras.main;
         camera.fadeIn(1500);

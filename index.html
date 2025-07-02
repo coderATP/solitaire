@@ -14,9 +14,29 @@
 </head>
 
 <body>
-    
     <div id="gameWrapper">
-        
+        <!--PAUSE SCREEN-->
+        <section id="pauseScreen">
+                <div id="resume">
+            <button id="pause_resumeBtn">X</button>
+            <button id="title">paused</button>  
+            </div>
+            <div id="others">
+                <button id="pause_restartBtn">RESTART</button>
+                <button id="pause_saveBtn">SAVE</button>
+                <button id="pause_menuBtn">MENU</button> 
+                </div>
+        </section>
+        <!-- RESTART CONFIRMATION DIALOGUE BOX -->
+        <section id="confirmScreen">
+            <div id="title">
+                <p id = "confirmText">Text goes here?</p> 
+            </div>
+            <div id="others">
+                <button id="yesBtn">✅</button>
+                <button id="noBtn">❌</button> 
+            </div>
+        </section>
     </div>
     <script src="lib/phaser_v87/phaser.min.js"></script>
     <script type = "module" src="script.js">script.js</script>
