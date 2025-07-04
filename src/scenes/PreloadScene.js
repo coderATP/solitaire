@@ -29,11 +29,11 @@ export class PreloadScene extends BaseScene{
             this.registry.inc("assetsTotal", 1);
         });
 
-        this.loadingText = this.add.text(0,0, "", { font: "20px myOtherFont"})
+        this.loadingText = this.add.text(0,0, "", { font: "20px Arial"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
         this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
-        this.loadingText2 = this.add.text(0,0, "", { font: "20px myOtherFont"})
+        this.loadingText2 = this.add.text(0,0, "", { font: "20px Arial"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
          
