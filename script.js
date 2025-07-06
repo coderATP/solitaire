@@ -1,3 +1,4 @@
+import { ManufacturerScene } from "./src/scenes/ManufacturerScene.js";
 import { PreloadScene } from "./src/scenes/PreloadScene.js";
 import { TitleScene } from "./src/scenes/TitleScene.js";
 
@@ -50,6 +51,7 @@ const config= {
 
     },
     scene: [
+        new ManufacturerScene(SHARED_CONFIG),
         new PreloadScene(SHARED_CONFIG),
         new TitleScene(SHARED_CONFIG),
         new PlayScene(SHARED_CONFIG) ],

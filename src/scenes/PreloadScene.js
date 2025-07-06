@@ -2,26 +2,49 @@ import { BaseScene } from "./BaseScene.js";
 
 export class PreloadScene extends BaseScene{
     constructor(config) {
-        super("BaseScene", config);
+        super("PreloadScene", config);
         this.config = config;
     }
     
+    showInterface(){
+        this.hideAllScreens();
+        this.show(this.preloadScreen, "grid");
+        this.preloadScreen.style.zIndex = -1;
+    }
+
     loadFiles(){
-        this.load.audio('playSong', "sounds/overworld.ogg");
-        this.load.image("clickToStart", "../images/clickToStart.png");
-        this.load.image("title", "../images/title.png");
-        this.load.spritesheet("cards", "../images/cards.png",
-            {frameWidth: 88, frameHeight: 128});
-        this.load.audio('buttonClickSound', 'sounds/click.wav');
-        this.load.audio('beginGameSound', "sounds/begin_game.wav");
-        this.load.audio('drawSound', "sounds/draw.wav");
-        this.load.audio('dropSound', "sounds/drop.wav");
-        this.load.audio('errorSound', "sounds/error_sound.wav");
-        this.load.audio('undoSound', "sounds/undo.wav");
-        this.load.audio('shuffleSound', "sounds/shuffle.wav");
+        let audioFileIndex = 0;
+        this.text = "sounds";
+        const audioFiles = [
+            ['playSong', "sounds/overworld.ogg"],
+            ['buttonClickSound', 'sounds/click.wav'],
+            ['beginGameSound', "sounds/begin_game.wav"],
+            ['drawSound', "sounds/draw.wav"],
+            ['dropSound', "sounds/drop.wav"],
+            ['errorSound', "sounds/error_sound.wav"],
+            ['undoSound', "sounds/undo.wav"],
+            ['shuffleSound', "sounds/shuffle.wav"],
+            
+        ]
+        this.load.audio(...audioFiles[audioFileIndex]);
+        this.load.on("filecomplete", ()=>{
+                audioFileIndex++;
+                if(audioFileIndex < audioFiles.length){
+                    this.load.audio(...audioFiles[audioFileIndex]);
+                }
+                else{
+                    this.text = "images";
+                    this.load.image("clickToStart", "../images/clickToStart.png");
+                    this.load.image("title", "../images/title.png");
+                    this.load.spritesheet("cards", "../images/cards.png",
+                        {frameWidth: 88, frameHeight: 128});
+                }
+            })
+
     }
     
     preload(){
+        this.showInterface();
         this.registry.set('assetsTotal', 0);
         // track and display assets loading progress
         //added 1 new file
@@ -29,18 +52,17 @@ export class PreloadScene extends BaseScene{
             this.registry.inc("assetsTotal", 1);
         });
 
-        this.loadingText = this.add.text(0,0, "", { font: "20px Arial"})
+        this.loadingText = this.add.text(0,0, "", { font: "12px myFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
         this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
-        this.loadingText2 = this.add.text(0,0, "", { font: "20px Arial"})
+        this.loadingText2 = this.add.text(0,0, "Please wait", { font: "12px myFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
          
         //while files are still being added...
         this.load.on("progress", (progress)=>{
-            this.loadingText.setText(Math.floor(progress*this.registry.get("assetsTotal")) + " of " + this.registry.get("assetsTotal") + " assets loading..." );
-            this.loadingText2.setText("Please wait");
+            this.loadingText.setText( "loading "+this.text + "..." );
             this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
             this.loadingText2.setPosition(this.config.width/2 - this.loadingText2.width/2,  this.loadingText.y + this.loadingText.height+5);
         });

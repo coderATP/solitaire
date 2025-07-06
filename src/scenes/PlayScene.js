@@ -30,6 +30,9 @@ export class PlayScene extends BaseScene{
     }
     
     showInterface(){
+        this.hideAllScreens();
+        this.show(this.playScreen, "grid");
+        this.playScreen.style.zIndex = -1;
         this.show(this.playScreenTop, "flex");
         this.show(this.playScreenBottom, "flex"); 
     }

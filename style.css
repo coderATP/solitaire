@@ -25,11 +25,8 @@
     font-family: myFont;
 }
 body{
-   background: url(images/background.jpg);
-   background-position: center;
-   background-size: cover;
-   background-repeat: repeat;
-   background-attachment: fixed;
+    background-color: rgba(21, 1, 90, 255);
+   
 }
 
 div#gameWrapper{
@@ -43,6 +40,40 @@ div#gameWrapper{
     transform: translate(-50%, -50%);
 }
 
+/* ATP Game Studio */
+section#manufacturerScreen{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+section#preloadScreen{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+section#titleScreen{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+section#playScreen{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background: url(images/background.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: repeat;
+    background-attachment: fixed;
+}
 /* PAUSE */
 section#pauseScreen{
     position: absolute;
