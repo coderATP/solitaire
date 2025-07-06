@@ -13,6 +13,10 @@
     src: url("fonts/angrybirds-regular.ttf");
 } 
 
+:root{
+    --hue: 200;
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -21,8 +25,11 @@
     font-family: myFont;
 }
 body{
-   /* background: url(images/particles/star.png); */
-   background-color: #102030; 
+   background: url(images/background.jpg);
+   background-position: center;
+   background-size: cover;
+   background-repeat: repeat;
+   background-attachment: fixed;
 }
 
 div#gameWrapper{
@@ -42,7 +49,7 @@ section#pauseScreen{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 2px solid green;
+    border: 1px solid green;
     border-radius: 3%;
     width: 50%;
     height: 40%;
@@ -142,5 +149,59 @@ section#confirmScreen button#yesBtn{
     top: 5%;
 }
 section#confirmScreen button:hover{
-  /*  background-color: black; */
+    background-color: black;
 }
+
+/*PLAY*/
+div#playScreenBottom, div#playScreenTop{
+    display: none;
+    width: 100%;
+    height: 7%;
+    position: absolute;
+    background-color: hsl(calc(360 - var(--hue)), 50%, 50%);
+}
+
+div#playScreenBottom div, div#playScreenTop div{
+    font-family: myOtherFont;
+    font-size: 0.7rem;
+    padding: auto;
+  /*  border: 1px solid white; */
+    width: 20%;
+    display: grid;
+}
+div#playScreenBottom img, div#playScreenTop img {
+    font-family: myOtherFont;
+    margin: 0 auto;
+}
+
+div#playScreenBottom p, div#playScreenTop p{
+    color: white;
+    font-family: myOtherFont;
+    width: 100%;
+    text-align: center;
+}
+
+div#playScreenBottom div:hover, div#playScreenTop div:hover{
+    background-color: hsl(calc(var(--hue)), 50%, 50%);
+}
+
+
+div#playScreenTop{
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+}
+div#playScreenBottom {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+div#playScreenBottom div{
+    border-radius: 10% 10% 0 0;
+}
+div#playScreenTop div{
+    border-radius: 0 0 10% 10%;
+}
+
+

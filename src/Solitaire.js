@@ -38,7 +38,7 @@ export class Solitaire{
                const card = this.scene.createCard("null", 0, 0)
                    .setOrigin(0)
                    .setFrame(52)
-                   .setDepth(0)
+                   .setDepth(9)
                    .setData({
                        frame: startFrame + j,
                        value: j+1,

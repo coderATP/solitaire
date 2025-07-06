@@ -4,6 +4,7 @@ import { BaseScene } from "./BaseScene.js";
 import { AudioControl } from "../audio/AudioControl.js";
 import { CommandHandler } from "../CommandHandler.js";
 import { eventEmitter } from "../events/EventEmitter.js";
+import { UIEventsHandler } from "../events/UIEventsHandler.js";
 
 
 //card movements
@@ -18,15 +19,20 @@ import { TableauToTableau } from "../movements/tableau/TableauToTableau.js";
 import { Solitaire } from "../Solitaire.js";
 
 
-
 export class PlayScene extends BaseScene{
     constructor(config){
         super("PlayScene", config);
         this.config = config;
-        this.commandHandler = new CommandHandler(this);
         
+        this.ui = new UIEventsHandler(this);
+        this.commandHandler = new CommandHandler(this);
+ 
     }
     
+    showInterface(){
+        this.show(this.playScreenTop, "flex");
+        this.show(this.playScreenBottom, "flex"); 
+    }
     createCard(type, x, y){
         const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0).setScale(this.config.zoomFactor);
         return card
@@ -200,11 +206,11 @@ export class PlayScene extends BaseScene{
     
     handleClickEvent(){
         const drawPile = this.solitaire.drawPile;
-
+        //PHASER EVENTS
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
         this.input.on("pointerdown", (pointer, gameobject)=>{
-            //return if click on empty space
-            if(!gameobject[0]) return;
+            //return if click on empty space or if game paused
+            if(!gameobject[0] || this.gamePaused) return;
             if(gameobject[0].name === "drawPileCard"){
                 //audio
                 this.audio.play(this.audio.drawSound);
@@ -216,46 +222,63 @@ export class PlayScene extends BaseScene{
                 const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
             }
-            else if(gameobject[0].name === "undoButton"){
-                //audio
-                if(this.commandHandler.moves.length > 0) this.audio.play(this.audio.undoSound);
-                this.commandHandler.undo();
-            }
-            else if(gameobject[0].name === "redoButton"){
-                //audio
-                if(this.commandHandler.undoneActions.length > 0) this.audio.play(this.audio.undoSound);
-                this.commandHandler.redo();
-            } 
-            else if(gameobject[0].name === "newGameButton"){
-                eventEmitter.emit("PlayToTitle");
-            }
-            else if(gameobject[0].name === "restartButton"){
-                this.solitaire.onClickRestartButton();
-            }
-            else if(gameobject[0].name === "pauseButton"){
-                eventEmitter.emit("PlayToPause");
-            }  
+        })
+        //CSS EVENTS
+        this.ui.playSceneIcons.forEach(icon=>{
+            icon.addEventListener('click', (e)=>{
+                
+                if(e.target.id === "redoIcon"){
+                    if(this.gamePaused) return;
+                    if(this.commandHandler.undoneActions.length > 0){
+                        this.audio.play(this.audio.undoSound);
+                        this.commandHandler.redo();
+                    }
+                    else{
+                        this.audio.play(this.audio.errorSound);
+                        return;
+                    }
+                }
+                else if(e.target.id === "undoIcon"){
+                    if(this.gamePaused) return;
+                    if(this.commandHandler.moves.length > 0){
+                        this.audio.play(this.audio.undoSound);
+                        this.commandHandler.undo();
+                    }
+                    else{
+                        this.audio.play(this.audio.errorSound);
+                        return;
+                    } 
+                }
+                else if(e.target.id === "pauseIcon"){
+                    eventEmitter.emit("PlayToPause");
+                }
+            })
         })
         eventEmitter.on("PlayToPause", ()=>{
             this.stopWatch();
             this.show(this.pauseScreen, "block");
+            if(!this.gamePaused){
+                this.scene.pause();
+                this.gamePaused = true; 
+            }
+
         })
-        eventEmitter.once("PlayToTitle", ()=>{
-            //reset time and restart
-            this.resetWatch();
-            this.scene.restart();
-        })
-        this.playToPause();
+        this.handleGamePause();
         return this;
     }
     
-    playToPause(){
-        const confirmText = document.getElementById("confirmText"); 
+    handleGamePause(){
+        const confirmText = document.getElementById("confirmText");
+        this.gamePaused = true;
+        //resume
         pause_resumeBtn.addEventListener('click', ()=>{
+            this.scene.resume();
+            this.gamePaused = false;
             this.audio.play(this.audio.buttonClickSound);
             this.hide(this.pauseScreen);
-            this.resumeWatch();
+            this.resumeWatch(this.ui.timeText);
         })
+        //menu
         pause_menuBtn.addEventListener('click', ()=>{
             confirmText.innerText = "Return to Menu?"
             this.trigger = "pauseToMenu";
@@ -265,15 +288,19 @@ export class PlayScene extends BaseScene{
             yesBtn.addEventListener('click', ()=>{
                 if(this.trigger !== "pauseToMenu") return;
                 this.hide(this.confirmScreen);
+                this.audio.beginGameSound.stop();
+                this.audio.playSong.stop();
                 this.resetWatch();
                 this.scene.start("TitleScene"); 
             })
             noBtn.addEventListener('click', ()=>{
+                this.gamePaused = false;
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid");
                 this.stopWatch();
             }) 
-        }) 
+        })
+        //restart
         pause_restartBtn.addEventListener('click', ()=>{
             confirmText.innerText = "Restart?"
             this.trigger = "pauseToRestart";
@@ -288,131 +315,11 @@ export class PlayScene extends BaseScene{
                 this.solitaire.onClickRestartButton();
             })
             noBtn.addEventListener('click', ()=>{
+                this.gamePaused = false;
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid");
             }) 
         })  
-    }
-    
-    createBottomUI(){
-        const width = this.config.width-10;
-        const height = 40;
-        const y = 10;
-        this.graphics.fillStyle(0x000000, 2);
-        this.graphics.fillRoundedRect(5, this.config.height-40-5, width, height,
-            {tl: 10, tr: 10, bl: 0, br: 0});
-        this.bottomUIRect = this.add.rectangle(5, this.config.height-40-5, width, height);
-        this.bottomUIContainer = this.add.container(5, this.config.height-40-5); 
-        //BUTTONS
-        //restart-left
-        this.restartButton = this.add.text(0,0, "Restart",
-            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("restartButton");
-        this.restartButton.setPosition(5, y); 
-        this.restartRect = this.add.rectangle(this.restartButton.x, this.restartButton.y, this.restartButton.width, this.restartButton.height, 0xffffff, 1).setOrigin(0)
-        //new game- right of restart
-        this.newGameButton = this.add.text(0, 0, "New",
-            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("newGameButton");
-        this.newGameButton.setPosition(this.restartButton.x + this.restartButton.width + 5, y);
-        this.newGameRect = this.add.rectangle(this.newGameButton.x, this.newGameButton.y, this.newGameButton.width, this.newGameButton.height, 0xffffff, 1).setOrigin(0);
-        //pause- center
-        this.pauseButton = this.add.text(0,0, "Pause",
-            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("pauseButton");
-        this.pauseButton.setPosition(width/2 - this.pauseButton.width/2, y); 
-        this.pauseRect = this.add.rectangle(this.pauseButton.x, this.pauseButton.y, this.pauseButton.width, this.pauseButton.height, 0xffffff, 1).setOrigin(0);
-        //undo-right
-        this.undoButton = this.add.text(0, 0, "Undo",
-            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("undoButton");
-        this.undoButton.setPosition(width - this.undoButton.width-5, y);
-        this.undoRect = this.add.rectangle(this.undoButton.x, this.undoButton.y, this.undoButton.width, this.undoButton.height, 0xffffff, 1).setOrigin(0)
-       
-        //redo- left of undo
-        this.redoButton = this.add.text(0, 0, "Redo",
-            {color: "green", fontFamily: "myOtherFont", fontSize: "20px"})
-            .setOrigin(0)
-            .setInteractive()
-            .setName("redoButton");
-        this.redoButton.setPosition(this.undoButton.x - this.undoButton.width-5, y);
-        this.redoRect = this.add.rectangle(this.redoButton.x, this.redoButton.y, this.redoButton.width, this.redoButton.height, 0xffffff, 1).setOrigin(0)
-
-        this.bottomUIContainer.add([this.restartRect, this.newGameRect, this.undoRect, this.redoRect, this.pauseRect, this.restartButton, this.newGameButton, this.undoButton, this.redoButton, this.pauseButton]);
-        
-        //tweens
-        this.tweens.add({
-            targets: this.restartButton,
-            alpha: 0.3,
-            yoyo: true,
-            repeat: -1,
-            duration: 1000,
-            repeatDelay: 3000
-        })
-        this.tweens.add({
-            targets: this.newGameButton,
-            alpha: 0.3,
-            yoyo: true,
-            repeat: -1,
-            duration: 1000,
-            repeatDelay: 3000
-        })
-        this.tweens.add({
-            targets: this.undoButton,
-            alpha: 0.3,
-            yoyo: true,
-            repeat: -1,
-            duration: 1000,
-            repeatDelay: 3000
-        })
-    }
-    
-    createStatus(){
-        this.statusTopRect = this.add.rectangle(5, 5, this.config.width-10, 30, 0x000000, 1, {radius: 10})
-            .setOrigin(0);
-        this.statusTopContainer = this.add.container(this.statusTopRect.x, this.statusTopRect.y); 
-
-         //border
-        this.graphics.lineStyle(7, 0x000000)
-        this.graphics.strokeRect(0, 0, this.config.width, this.config.height, 0x000000, 1);
-        
-        //score status
-        this.movementScoreText = this.add.text(5,5, "Score: ", {
-            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
-        })
-        this.movementScore = this.add.text(this.movementScoreText.x+this.movementScoreText.width+2 , this.movementScoreText.y, "0", {
-            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
-        })
-        
-        //time elapsed
-        this.timeElapsed = this.add.text(0,0, "00:00", {
-            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
-        })
-        this.timeElapsed.setPosition(this.statusTopRect.width/2 - this.timeElapsed.width/2, 5);
-        const timeText = this.add.text(0, 0, "Time: ", {
-            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
-        }) 
-        timeText.setPosition(this.timeElapsed.x - timeText.width, 5);
-       
-        //moves taken 
-        this.moves = this.add.text(0, 0, "0", {
-            color: "white", fontFamily: "myOtherFont", fontSize: "15px"
-        })
-        this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
-        this.movesText = this.add.text(0,0, "Moves: ", {
-            color: "gold", fontFamily: "myOtherFont", fontSize: "15px"
-        }) 
-        this.movesText.setPosition(this.moves.x-this.movesText.width, 5);
-        
-        this.statusTopContainer.add([this.movementScoreText, this.movementScore, this.movesText, this.moves, timeText, this.timeElapsed])
     }
     
     createTimeVariables(){
@@ -420,9 +327,8 @@ export class PlayScene extends BaseScene{
         this.sec = 0;
         this.secText = undefined;
         this.minText = undefined;
-        this.clockRunning = false;
     }
-    startWatch(){
+    startWatch(renderer){
         this.sec+=1;
         if(this.sec > 59){
             this.sec = 0;
@@ -430,71 +336,60 @@ export class PlayScene extends BaseScene{
         }
         if(this.sec < 10) this.secText = "0"+this.sec; else this.secText = this.sec;
         if(this.min < 10) this.minText = "0"+this.min; else this.minText = this.min;
-        this.timeElapsed.setText(this.minText+":"+this.secText);
+        renderer.innerText = (this.minText+":"+this.secText);
     }
     setUpWatch(){
         this.createTimeVariables();
         this.stopwatch = setInterval(()=>{
-            this.startWatch();
-            this.clockRunning = true;
+            this.startWatch(this.ui.timeText);
         }, 1000);
     }
-    resumeWatch(){
-     //   this.clockRunning = false;
+    resumeWatch(renderer){
         this.stopwatch = setInterval(()=>{
-            this.startWatch();
-           // this.clockRunning = true;
+            this.startWatch(renderer);
         }, 1000);
     }
     stopWatch(){
         clearInterval(this.stopwatch);
-        this.clockRunning = false;
     }
     resetWatch(){
         clearInterval(this.stopwatch);
         this.createTimeVariables();
-        this.timeElapsed.setText("00:00"); 
-        this.clockRunning = false;
+        this.ui.timeText.innerText = "00:00"; 
     }
     updateMoves(){
-        this.moves.setText(this.commandHandler.totalMovesCount);
-        this.moves.setPosition(this.statusTopRect.width-this.moves.width-5, 5);
-        this.movesText.setPosition(this.moves.x-this.movesText.width, 5);
+        this.ui.movesText.innerText = (this.commandHandler.totalMovesCount);
     }
     updateScore(){
-        this.movementScore.setText(this.commandHandler.movementScore);
+        this.ui.scoreText.innerText = (this.commandHandler.movementScore);
     }
     create(){
+        this.showInterface();
+        //camera
+        this.camera = this.cameras.main;
+        this.camera.fadeIn(1500);
+
         //audio
         this.audio = new AudioControl(this);
         this.audio.playSong.play();
         this.audio.beginGameSound.play();
- 
+
         //time
         this.setUpWatch();
-        //camera
-        const camera = this.cameras.main;
-        camera.fadeIn(1500);
 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
+        
         //solitaire
         this.solitaire = new Solitaire(this);
-        
         this.solitaire.newGame();
 
         //events
-       this.handleDragEvent().handleDropEvent().handleClickEvent();
-       
-       //statuses
-       this.createStatus();
-       //user-options ui
-       this.createBottomUI();
+        this.handleDragEvent().handleDropEvent().handleClickEvent();
        
     } 
     update(time, delta){
         this.updateMoves();
         this.updateScore();
-        
     }
 }

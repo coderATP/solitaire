@@ -5,9 +5,17 @@ export class TitleScene extends BaseScene{
     constructor(config){
         super("TitleScene", config);
         this.config = config;
+
     }
     
+    showInterface(){
+        this.hide(this.playScreenTop);
+        this.hide(this.playScreenBottom);
+    }
     create(){
+        this.showInterface();
+        this.audio = new AudioControl(this);
+ 
         this.title = this.add.image(0,0,"title").setOrigin(0).setScale(0.5);
         this.title.setPosition(this.config.width/2 - this.title.displayWidth/2, this.config.height/2 - this.title.displayHeight);
         this.clickToStart = this.add.image(0,0,"clickToStart")
@@ -15,7 +23,7 @@ export class TitleScene extends BaseScene{
             .setScale(0.5)
             .setInteractive({draggable: false})
             .once("pointerdown", ()=>{
-                new AudioControl(this).buttonClickSound.play();
+                this.audio.buttonClickSound.play();
                 this.scene.start("PlayScene");
             })
         this.tweens.add({

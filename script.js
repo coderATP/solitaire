@@ -32,7 +32,8 @@ const config= {
     type: Phaser.AUTO,
     ...SHARED_CONFIG, 
     parent: "gameWrapper",
-    backgroundColor: 0x00aa00,
+    backgroundColor: 0x00ff00,
+    transparent: true,
     scale: {
          mode: Phaser.Scale.Fit,
          autoCenter: Phaser.Scale.CENTER_BOTH,

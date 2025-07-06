@@ -6,9 +6,11 @@ export class BaseScene extends Phaser.Scene{
         this.config = undefined;
         this.pauseScreen = document.getElementById("pauseScreen");
         this.confirmScreen = document.getElementById("confirmScreen");
- 
+        this.playScreenTop = document.getElementById("playScreenTop");
+        this.playScreenBottom = document.getElementById("playScreenBottom");
+        
     }
-    
+   
     hide(screen){
         screen.style.display = "none";
     }
