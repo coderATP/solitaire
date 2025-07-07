@@ -11,13 +11,14 @@ export class AudioControl{
         this.errorSound = scene.sound.add('errorSound');
         this.undoSound = scene.sound.add('undoSound');
         this.shuffleSound = scene.sound.add('shuffleSound');
-        
+        this.popUpSound = scene.sound.add('popUpSound');
         this.songs = [this.playSong];
-        this.sounds = [this.buttonClickSound, this.beginGameSound, this.drawSound, this.dropSound, this.errorSound, this.undoSound, this.shuffleSound];
+        this.sounds = [this.buttonClickSound, this.beginGameSound, this.drawSound, this.dropSound, this.errorSound, this.undoSound, this.shuffleSound, this.popUpSound];
         //REDUCE VOLUME AT STARTUP, UNLESS OTHERWISE SPECIFIED BY USER
         this.songs.forEach(song=>{song.volume = 0.2;});
         this.sounds.forEach(sound=>{sound.volume = 0.4;});
         this.errorSound.volume = 1;
+        this.popUpSound.volume = 1;
     }
     
     play(audio){

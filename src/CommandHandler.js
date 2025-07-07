@@ -10,6 +10,8 @@ import { FoundationToTableau } from "./movements/foundation/FoundationToTableau.
 import { TableauToFoundation} from "./movements/tableau/TableauToFoundation.js";
 import { TableauToTableau} from "./movements/tableau/TableauToTableau.js";
 
+import { eventEmitter } from "./events/EventEmitter.js";
+
 
 export class CommandHandler{
     constructor(scene){
@@ -26,7 +28,8 @@ export class CommandHandler{
     checkWin(){
         let hiddenTableauCards = 0;
         //after executing command check if player has won
-        const { tableauPile, onCompleteGame } = this.scene.solitaire;
+        //LOGIC: player wins when all tableau pile cards have been revealed
+        const { tableauPile } = this.scene.solitaire;
         tableauPile.cards.forEach(container=>{
             container.list.forEach(card=>{
                 if(card.frame.name >= 52){
@@ -34,7 +37,7 @@ export class CommandHandler{
                 }
             })
         })
-        if(hiddenTableauCards == 0){ this.scene.solitaore.onCompleteGame(); }
+        if(hiddenTableauCards == 0){ eventEmitter.emit("PlayToGameComplete"); }
     }
     reset(){
         this.moves = [];

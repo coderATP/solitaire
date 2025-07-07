@@ -25,7 +25,7 @@ e.g. if player finishes in 5min 30sec, extra points =
 10 min = 10 * 60 seconds * 5points = 3000 points total
 
 //CODE 
-inside TableauToFoundation and TableauToTableau movements
+inside CommandHandler
 check after card has been successfully moved, if
 all cards in all tableau piles have been revealed
 show a message displaying "all cards have been revealed. proceed to win?"

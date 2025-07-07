@@ -32,8 +32,8 @@ export class PlayScene extends BaseScene{
     showInterface(){
         this.hideAllScreens();
         this.show(this.playScreen, "grid").style.zIndex = -1;
-        this.show(this.playScreenTopUI, "flex").style.zIndex = 1;
-        this.show(this.playScreenBottomUI, "flex").style.zIndex = -1;
+        this.show(this.playScreenTopUI, "flex").style.zIndex = 0;
+        this.show(this.playScreenBottomUI, "flex").style.zIndex = 0;
         
     }
     createCard(type, x, y){
@@ -212,7 +212,7 @@ export class PlayScene extends BaseScene{
         //PHASER EVENTS
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
         this.input.on("pointerdown", (pointer, gameobject)=>{
-            //return if click on empty space or if game paused
+            //return if click on empty space
             if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
                 //audio
@@ -266,19 +266,92 @@ export class PlayScene extends BaseScene{
                 }
             })
         })
+        this.processEvents();
+        this.handleGamePause();
+        this.handleGameComplete();
+        return this;
+    }
+    
+    processEvents(){
         eventEmitter.on("PlayToPause", ()=>{
             if(!this.gamePaused) this.scene.pause();
             this.time.stopWatch();
             this.show(this.pauseScreen, "block").style.zIndex = 0;
+            this.audio.popUpSound.play()
             this.ui.changeID(this.ui.pauseIcon, null);
             this.gamePaused = true;
         })
-        this.handleGamePause();  
-        return this;
+        eventEmitter.on("PlayToGameComplete", ()=>{
+            //PAUSE GAME
+            if(!this.gamePaused) this.scene.pause();
+            this.time.stopWatch();
+            this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
+            this.audio.popUpSound.play()
+            this.ui.changeID(this.ui.pauseIcon, null);
+            this.gamePaused = true;
+            //READ TIME REMAINING, MOVES AND SCORE
+        })
+        eventEmitter.once("PlayToTitle", ()=>{ this.scene.start("TitleScene")})
     }
     
+    handleGameComplete(){
+        //restart
+        this.ui.levelComplete_replayBtn.addEventListener("click", ()=>{
+            this.confirmText.innerText = "You've won! Replay?"
+            this.trigger = "levelCompleteToRestart";
+            this.audio.popUpSound.play();
+            this.hide(this.levelCompleteScreen);
+            this.show(this.confirmScreen, "grid").style.zIndex = 0;
+            
+            yesBtn.addEventListener('click', ()=>{
+                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
+                if(this.trigger !== "levelCompleteToRestart") return; 
+                this.hide(this.confirmScreen);
+                this.hide(this.levelCompleteScreen);
+                if(this.gamePaused) this.scene.resume();
+                this.time.resetWatch(this.ui.timeText);
+                this.time.setUpWatch(this.ui.timeText);
+                this.solitaire.onClickRestartButton();
+            })
+            noBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "levelCompleteToRestart") return;  
+                this.hide(this.confirmScreen);
+                this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
+                this.audio.popUpSound.play();
+            }) 
+        })
+        //new game
+        this.ui.levelComplete_newGameBtn.addEventListener('click', ()=>{
+            eventEmitter.emit("PlayToTitle");
+        })
+        //menu
+        this.ui.levelComplete_menuBtn.addEventListener('click', ()=>{
+            this.confirmText.innerText = "Return to Menu?"
+            this.trigger = "levelCompleteToMenu";
+            this.audio.popUpSound.play();
+            this.hide(this.levelCompleteScreen);
+            this.show(this.confirmScreen, "grid").style.zIndex = 0;
+            
+            yesBtn.addEventListener('click', ()=>{
+                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
+                if(this.trigger !== "levelCompleteToMenu") return;
+                this.hide(this.confirmScreen);
+                this.audio.beginGameSound.stop();
+                this.audio.playSong.stop();
+                this.time.resetWatch(this.ui.timeText);
+                this.scene.start("TitleScene"); 
+            })
+            noBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "levelCompleteToMenu") return; 
+                this.hide(this.confirmScreen);
+                this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
+                this.audio.popUpSound.play();
+                this.time.stopWatch();
+            }) 
+        }) 
+    }
     handleGamePause(){
-        const confirmText = document.getElementById("confirmText");
+        this.confirmText = document.getElementById("confirmText");
         //resume
         pause_resumeBtn.addEventListener('click', ()=>{
             if(this.gamePaused) this.time.resumeWatch(this.ui.timeText); 
@@ -291,9 +364,9 @@ export class PlayScene extends BaseScene{
         //menu
         pause_menuBtn.addEventListener('click', ()=>{
             
-            confirmText.innerText = "Return to Menu?"
+            this.confirmText.innerText = "Return to Menu?"
             this.trigger = "pauseToMenu";
-            this.audio.play(this.audio.buttonClickSound);
+            this.audio.popUpSound.play();
             this.hide(this.pauseScreen);
             this.show(this.confirmScreen, "grid").style.zIndex = 0;
             
@@ -304,20 +377,22 @@ export class PlayScene extends BaseScene{
                 this.audio.beginGameSound.stop();
                 this.audio.playSong.stop();
                 this.time.resetWatch(this.ui.timeText);
-                this.scene.start("TitleScene"); 
+                eventEmitter.emit("PlayToTitle");
             })
             noBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "pauseToMenu") return; 
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid").style.zIndex = 0;
+                this.audio.popUpSound.play();
                 this.time.stopWatch();
             }) 
         })
         //restart
         pause_restartBtn.addEventListener('click', ()=>{
 
-            confirmText.innerText = "Restart?"
+            this.confirmText.innerText = "Restart?"
             this.trigger = "pauseToRestart";
-            this.audio.play(this.audio.buttonClickSound);
+            this.audio.popUpSound.play();
             this.hide(this.pauseScreen);
             this.show(this.confirmScreen, "grid").style.zIndex = 0;
             
@@ -332,8 +407,10 @@ export class PlayScene extends BaseScene{
                 this.solitaire.onClickRestartButton();
             })
             noBtn.addEventListener('click', ()=>{
+                if(this.trigger !== "pauseToRestart") return;  
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid").style.zIndex = 0;
+                this.audio.popUpSound.play();
             }) 
         })  
     }
@@ -345,6 +422,7 @@ export class PlayScene extends BaseScene{
         this.ui.scoreText.innerText = (this.commandHandler.movementScore);
     }
     create(){
+        //renderers: ui, canvas
         this.showInterface();
         //camera
         this.camera = this.cameras.main;
@@ -352,8 +430,6 @@ export class PlayScene extends BaseScene{
 
         //audio
         this.audio = new AudioControl(this);
-        this.audio.playSong.play();
-        this.audio.beginGameSound.play();
 
         //time
         this.time = new Time(this);

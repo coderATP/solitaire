@@ -30,8 +30,8 @@ section#levelCompleteScreen #summary{
 
 section#levelCompleteScreen #summary p{
     font-family: myOtherFont;
-    font-size: 2rem;
-    color: gold; 
+    font-size: 1.5rem;
+    color: white; 
     padding: 2%;
 }
 

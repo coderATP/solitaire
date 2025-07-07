@@ -16,7 +16,7 @@ export class TitleScene extends BaseScene{
         this.showInterface();
         this.audio = new AudioControl(this);
  
-        this.title = this.add.image(0,0,"title").setOrigin(0).setScale(0.25);
+        this.title = this.add.image(0,0,"title").setOrigin(0).setScale(1);
         this.title.setPosition(this.config.width/2 - this.title.displayWidth/2, this.config.height/2 - this.title.displayHeight/2);
         this.clickToStart = this.add.text(0,0,"click anywhere to start",
         {font: "15px myFont"})

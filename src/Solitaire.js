@@ -35,7 +35,7 @@ export class Solitaire{
             
             const startFrame = Object.values(Solitaire.CARD_START_FRAMES)[i];
             for(let j = 0; j < 13; ++j){
-               const card = this.scene.createCard("null", 0, 0)
+               const card = this.scene.createCard("null", -100, -100)
                    .setOrigin(0)
                    .setFrame(52)
                    .setDepth(9)
@@ -135,18 +135,21 @@ export class Solitaire{
         this.scene.commandHandler.reset();
         this.createDeck();
         this.deck = this.shuffleDeck();
-        this.distributeDeckCardsToPiles();
+        this.scene.audio.shuffleSound.play();
+        this.scene.audio.shuffleSound.once('complete', ()=>{
+            this.distributeDeckCardsToPiles();
+            this.scene.audio.playSong.play();
+        })
     }
     
     onCompleteGame(){
         this.scene.hideAllScreens();
-        this.scene.show(this.scene.levelCompleteScreen, "grid");
+        this.scene.show(this.scene.levelCompleteScreen, "grid").style.zIndex = 0;
     }
     
     onClickRestartButton(){
         while(this.scene.commandHandler.moves.length)
             this.scene.commandHandler.undo();
-     //   this.drawPile.cards.forEach(card=>{card.setDepth(4)})
     }
     update(time, delta){
        // console.log(delta)
