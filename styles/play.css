@@ -23,7 +23,7 @@ div#playScreenBottom img, div#playScreenTop img {
 div#playScreenBottom p, div#playScreenTop p{
     color: gold;
     font-family: myOtherFont;
-    font-size: 125%;
+    font-size: 110%;
     width: 100%;
     text-align: center;
 }
@@ -33,13 +33,11 @@ div#playScreenBottom div:hover, div#playScreenTop div:hover{
 }
 
 div#playScreenTop{
-    border: 2px solid white;
     top: 0;
     left: 50%;
     transform: translate(-50%);
 }
 div#playScreenBottom {
-    border: 2px solid white;
     position: absolute;
     bottom: 0;
     left: 50%;

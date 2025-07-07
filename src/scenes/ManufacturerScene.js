@@ -28,7 +28,7 @@ export class ManufacturerScene extends BaseScene{
             onComplete: ()=>{
                 setTimeout(()=>{
                     this.scene.start("PreloadScene"); 
-                }, 300)
+                }, 1000)
             }
         })
     }
