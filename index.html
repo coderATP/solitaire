@@ -12,6 +12,10 @@
     <title>Klondike Solitaire</title>
     <link rel="shortcut icon" type="image/x-icon" href="images/game-icon.ico">
     <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/pause.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/play.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/confirm.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/levelComplete.css" type="text/css" media="all" />
 </head>
 
 <body>
@@ -99,6 +103,22 @@
                 <button id="yesBtn">✅</button>
                 <button id="noBtn">❌</button> 
             </div>
+        </section>
+        <!--END-OF-LEVEL SCREEN-->
+        <section id="levelCompleteScreen">
+            <div id="message">
+                <h1>Level Complete!</h1>
+                <div id="summary">
+                    <p id="score">Score:</p>
+                    <p id="time_bonus">Time bonus:</p>
+                </div>
+            </div>
+            <div id="buttons">
+                <button id="levelComplete_replayBtn">Restart</button>
+                <button id="levelComplete_menuBtn">Menu</button> 
+                <button id="levelComplete_nextBtn">New Game</button>
+            </div>
+            
         </section>
     </div>
     <script src="lib/phaser_v87/phaser.min.js"></script>

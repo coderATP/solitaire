@@ -1,16 +1,16 @@
 export class UIEventsHandler{
     constructor(scene){
         this.scene = scene;
-        this.undoIcon = document.getElementById("undoIcon");
-        this.redoIcon = document.getElementById("redoIcon");
-        this.instructionsIcon = document.getElementById("instructionsIcon");
-        this.settingsIcon = document.getElementById("settingsIcon");
-        this.leaderboardIcon = document.getElementById("leaderboardIcon");
-        this.scoreIcon = document.getElementById("scoreIcon");
-        this.pauseIcon = document.getElementById("pauseIcon");
-        this.hintIcon = document.getElementById("hintIcon");
-        this.movesIcon = document.getElementById("movesIcon");
-        this.timeIcon = document.getElementById("timeIcon");
+        this.undoIcon = document.getElementById("undo");
+        this.redoIcon = document.getElementById("redo");
+        this.instructionsIcon = document.getElementById("instructions");
+        this.settingsIcon = document.getElementById("settings");
+        this.leaderboardIcon = document.getElementById("leaderboard");
+        this.scoreIcon = document.getElementById("score");
+        this.pauseIcon = document.getElementById("pause");
+        this.hintIcon = document.getElementById("hint");
+        this.movesIcon = document.getElementById("moves");
+        this.timeIcon = document.getElementById("time");
 
         this.playSceneIcons = [this.undoIcon, this.redoIcon, this.instructionsIcon, this.settingsIcon, this.leaderboardIcon, this.hintIcon, this.pauseIcon];
         
@@ -29,6 +29,10 @@ export class UIEventsHandler{
         this.addClickSound();
     }
     
+    changeID(element, newID){
+        element.id = newID;
+    }
+
     addClickSound(){
         this.playSceneIcons.forEach(icon=>{
             icon.addEventListener('click', (e)=>{

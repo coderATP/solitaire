@@ -51,7 +51,7 @@ export class FoundationToFoundation extends FoundationMovement{
     }
     
     undo(command){
-            audio.play(audio.errorSound);
+            this.scene.audio.play(this.scene.audio.errorSound);
             command.originalCard.setPosition(0,0); 
             return;
 

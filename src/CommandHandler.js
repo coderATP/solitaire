@@ -23,6 +23,19 @@ export class CommandHandler{
         this.movesToUndo = 0;
     }
     
+    checkWin(){
+        let hiddenTableauCards = 0;
+        //after executing command check if player has won
+        const { tableauPile, onCompleteGame } = this.scene.solitaire;
+        tableauPile.cards.forEach(container=>{
+            container.list.forEach(card=>{
+                if(card.frame.name >= 52){
+                    hiddenTableauCards++;
+                }
+            })
+        })
+        if(hiddenTableauCards == 0){ this.scene.solitaore.onCompleteGame(); }
+    }
     reset(){
         this.moves = [];
         this.undoneActions = [];
@@ -38,6 +51,8 @@ export class CommandHandler{
         this.movesToUndo++;
         this.movesToRedo = 0;
         this.lastAction = command.id;
+        
+        this.checkWin();
     }
     
     undo(){

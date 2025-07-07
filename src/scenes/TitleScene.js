@@ -10,8 +10,7 @@ export class TitleScene extends BaseScene{
     
     showInterface(){
         this.hideAllScreens();
-        this.show(this.titleScreen, "grid");
-        this.titleScreen.style.zIndex = -1;
+        this.show(this.titleScreen, "grid").style.zIndex = -1;
     }
     create(){
         this.showInterface();

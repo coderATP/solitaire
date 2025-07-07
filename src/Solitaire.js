@@ -109,7 +109,7 @@ export class Solitaire{
         this.tableauPile.cards.forEach((container, i)=>{
             container.list.forEach((card, j)=>{
                 card.setPosition(0, j*20)
-                    .setDepth(0)
+                    .setDepth(2)
                     .setFrame(52)
                     .setInteractive({draggable: true})
                     .setName("tableauPileCard")
@@ -138,9 +138,18 @@ export class Solitaire{
         this.distributeDeckCardsToPiles();
     }
     
+    onCompleteGame(){
+        this.scene.hideAllScreens();
+        this.scene.show(this.scene.levelCompleteScreen, "grid");
+    }
+    
     onClickRestartButton(){
         while(this.scene.commandHandler.moves.length)
             this.scene.commandHandler.undo();
-            
+     //   this.drawPile.cards.forEach(card=>{card.setDepth(4)})
+    }
+    update(time, delta){
+       // console.log(delta)
+
     }
 }

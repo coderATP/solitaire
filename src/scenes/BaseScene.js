@@ -6,25 +6,32 @@ export class BaseScene extends Phaser.Scene{
         this.config = undefined;
         this.pauseScreen = document.getElementById("pauseScreen");
         this.confirmScreen = document.getElementById("confirmScreen");
-        this.playScreenTop = document.getElementById("playScreenTop");
-        this.playScreenBottom = document.getElementById("playScreenBottom");
+        this.playScreenTopUI = document.getElementById("playScreenTop");
+        this.playScreenBottomUI = document.getElementById("playScreenBottom");
         this.manufacturerScreen = document.getElementById("manufacturerScreen");
         this.preloadScreen = document.getElementById("preloadScreen");
         this.titleScreen = document.getElementById("titleScreen");
         this.playScreen = document.getElementById("playScreen");
-
-        this.screens = [this.pauseScreen, this.confirmScreen, this.playScreenTop, this.playScreenBottom, this.manufacturerScreen, this.preloadScreen, this.titleScreen, this.playScreen];
+        this.levelCompleteScreen = document.getElementById("levelCompleteScreen");
+        this.screens = [this.pauseScreen, this.confirmScreen, this.playScreenTopUI, this.playScreenBottomUI, this.manufacturerScreen, this.preloadScreen, this.titleScreen, this.playScreen, this.levelCompleteScreen];
     }
    
     hide(screen){
+        screen.style.zIndex = -1; 
         screen.style.display = "none";
+        return screen;
     }
     
     show(screen, display){
+        screen.style.zIndex = -1;  
         screen.style.display = display;
+        return screen;
     }
     hideAllScreens(){
-        this.screens.forEach(screen=>{ screen.style.display = "none"; });
+        this.screens.forEach(screen=>{
+            screen.style.zIndex = -1; 
+            screen.style.display = "none";
+        });
     }
      
 }

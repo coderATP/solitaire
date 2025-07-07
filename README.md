@@ -18,3 +18,15 @@ deduct points when player undos any rewarding action
 
 FUNCTION CALLBACK FROM EV LISTENER
 CREATE LOADING SCREEN IN PHASER 3
+WINNING CONDITION
+For every 1 second that the player finished earlier than 10 min, award extra five points
+e.g. if player finishes in 5min 30sec, extra points = 
+
+10 min = 10 * 60 seconds * 5points = 3000 points total
+
+//CODE 
+inside TableauToFoundation and TableauToTableau movements
+check after card has been successfully moved, if
+all cards in all tableau piles have been revealed
+show a message displaying "all cards have been revealed. proceed to win?"
+then show confirm dialog

@@ -5,7 +5,7 @@ import { AudioControl } from "../audio/AudioControl.js";
 import { CommandHandler } from "../CommandHandler.js";
 import { eventEmitter } from "../events/EventEmitter.js";
 import { UIEventsHandler } from "../events/UIEventsHandler.js";
-
+import { Time } from "../events/Time.js";
 
 //card movements
 import { DrawToDiscard } from "../movements/draw/DrawToDiscard.js";
@@ -26,15 +26,15 @@ export class PlayScene extends BaseScene{
         
         this.ui = new UIEventsHandler(this);
         this.commandHandler = new CommandHandler(this);
- 
+        this.gamePaused = undefined;
     }
     
     showInterface(){
         this.hideAllScreens();
-        this.show(this.playScreen, "grid");
-        this.playScreen.style.zIndex = -1;
-        this.show(this.playScreenTop, "flex");
-        this.show(this.playScreenBottom, "flex"); 
+        this.show(this.playScreen, "grid").style.zIndex = -1;
+        this.show(this.playScreenTopUI, "flex").style.zIndex = 1;
+        this.show(this.playScreenBottomUI, "flex").style.zIndex = -1;
+        
     }
     createCard(type, x, y){
         const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0).setScale(this.config.zoomFactor);
@@ -213,24 +213,33 @@ export class PlayScene extends BaseScene{
         //TO-DO: move a card from draw-pile to discard-pile on clicking the draw-pile
         this.input.on("pointerdown", (pointer, gameobject)=>{
             //return if click on empty space or if game paused
-            if(!gameobject[0] || this.gamePaused) return;
+            if(!gameobject[0]) return;
             if(gameobject[0].name === "drawPileCard"){
                 //audio
+                //alert("clicking on a card")
                 this.audio.play(this.audio.drawSound);
                 const command = new DrawToDiscard(this, gameobject[0], null);
                 this.commandHandler.execute(command);
             }
             else if(gameobject[0].name === "drawPileZone"){
                 //audio
+                //alert("clicking on a zone")
                 const command = new DiscardToDraw(this, null, null);
                 this.commandHandler.execute(command);
             }
         })
         //CSS EVENTS
+        //SCREEN OVERLAY TROUBLESHOOTING
+        this.screens.forEach(screen=>{
+            screen.addEventListener("click", (e)=>{
+                //alert(e.currentTarget.id)
+            })
+        })
+        //PlayScene icons
         this.ui.playSceneIcons.forEach(icon=>{
             icon.addEventListener('click', (e)=>{
                 
-                if(e.target.id === "redoIcon"){
+                if(e.currentTarget.id === "redo"){
                     if(this.gamePaused) return;
                     if(this.commandHandler.undoneActions.length > 0){
                         this.audio.play(this.audio.undoSound);
@@ -241,7 +250,7 @@ export class PlayScene extends BaseScene{
                         return;
                     }
                 }
-                else if(e.target.id === "undoIcon"){
+                else if(e.currentTarget.id === "undo"){
                     if(this.gamePaused) return;
                     if(this.commandHandler.moves.length > 0){
                         this.audio.play(this.audio.undoSound);
@@ -252,114 +261,83 @@ export class PlayScene extends BaseScene{
                         return;
                     } 
                 }
-                else if(e.target.id === "pauseIcon"){
+                else if(e.currentTarget.id === "pause"){
                     eventEmitter.emit("PlayToPause");
                 }
             })
         })
         eventEmitter.on("PlayToPause", ()=>{
-            this.stopWatch();
-            this.show(this.pauseScreen, "block");
-            if(!this.gamePaused){
-                this.scene.pause();
-                this.gamePaused = true; 
-            }
-
+            if(!this.gamePaused) this.scene.pause();
+            this.time.stopWatch();
+            this.show(this.pauseScreen, "block").style.zIndex = 0;
+            this.ui.changeID(this.ui.pauseIcon, null);
+            this.gamePaused = true;
         })
-        this.handleGamePause();
+        this.handleGamePause();  
         return this;
     }
     
     handleGamePause(){
         const confirmText = document.getElementById("confirmText");
-        this.gamePaused = true;
         //resume
         pause_resumeBtn.addEventListener('click', ()=>{
+            if(this.gamePaused) this.time.resumeWatch(this.ui.timeText); 
+            this.gamePaused = false; 
             this.scene.resume();
-            this.gamePaused = false;
             this.audio.play(this.audio.buttonClickSound);
+            this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
             this.hide(this.pauseScreen);
-            this.resumeWatch(this.ui.timeText);
         })
         //menu
         pause_menuBtn.addEventListener('click', ()=>{
+            
             confirmText.innerText = "Return to Menu?"
             this.trigger = "pauseToMenu";
             this.audio.play(this.audio.buttonClickSound);
             this.hide(this.pauseScreen);
-            this.show(this.confirmScreen, "grid");
+            this.show(this.confirmScreen, "grid").style.zIndex = 0;
+            
             yesBtn.addEventListener('click', ()=>{
+                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
                 if(this.trigger !== "pauseToMenu") return;
                 this.hide(this.confirmScreen);
                 this.audio.beginGameSound.stop();
                 this.audio.playSong.stop();
-                this.resetWatch();
+                this.time.resetWatch(this.ui.timeText);
                 this.scene.start("TitleScene"); 
             })
             noBtn.addEventListener('click', ()=>{
-                this.gamePaused = false;
                 this.hide(this.confirmScreen);
-                this.show(this.pauseScreen, "grid");
-                this.stopWatch();
+                this.show(this.pauseScreen, "grid").style.zIndex = 0;
+                this.time.stopWatch();
             }) 
         })
         //restart
         pause_restartBtn.addEventListener('click', ()=>{
+
             confirmText.innerText = "Restart?"
             this.trigger = "pauseToRestart";
             this.audio.play(this.audio.buttonClickSound);
             this.hide(this.pauseScreen);
-            this.show(this.confirmScreen, "grid");
+            this.show(this.confirmScreen, "grid").style.zIndex = 0;
+            
             yesBtn.addEventListener('click', ()=>{
+                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
                 if(this.trigger !== "pauseToRestart") return; 
                 this.hide(this.confirmScreen);
-                this.resetWatch();
-                this.setUpWatch();
+                this.hide(this.pauseScreen);
+                if(this.gamePaused) this.scene.resume();
+                this.time.resetWatch(this.ui.timeText);
+                this.time.setUpWatch(this.ui.timeText);
                 this.solitaire.onClickRestartButton();
             })
             noBtn.addEventListener('click', ()=>{
-                this.gamePaused = false;
                 this.hide(this.confirmScreen);
-                this.show(this.pauseScreen, "grid");
+                this.show(this.pauseScreen, "grid").style.zIndex = 0;
             }) 
         })  
     }
     
-    createTimeVariables(){
-        this.min = 0;
-        this.sec = 0;
-        this.secText = undefined;
-        this.minText = undefined;
-    }
-    startWatch(renderer){
-        this.sec+=1;
-        if(this.sec > 59){
-            this.sec = 0;
-            this.min+=1;
-        }
-        if(this.sec < 10) this.secText = "0"+this.sec; else this.secText = this.sec;
-        if(this.min < 10) this.minText = "0"+this.min; else this.minText = this.min;
-        renderer.innerText = (this.minText+":"+this.secText);
-    }
-    setUpWatch(){
-        this.createTimeVariables();
-        this.stopwatch = setInterval(()=>{
-            this.startWatch(this.ui.timeText);
-        }, 1000);
-    }
-    resumeWatch(renderer){
-        this.stopwatch = setInterval(()=>{
-            this.startWatch(renderer);
-        }, 1000);
-    }
-    stopWatch(){
-        clearInterval(this.stopwatch);
-    }
-    resetWatch(){
-        clearInterval(this.stopwatch);
-        this.createTimeVariables();
-        this.ui.timeText.innerText = "00:00"; 
-    }
     updateMoves(){
         this.ui.movesText.innerText = (this.commandHandler.totalMovesCount);
     }
@@ -378,7 +356,8 @@ export class PlayScene extends BaseScene{
         this.audio.beginGameSound.play();
 
         //time
-        this.setUpWatch();
+        this.time = new Time(this);
+        this.time.setUpWatch(this.ui.timeText);
 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
@@ -394,5 +373,6 @@ export class PlayScene extends BaseScene{
     update(time, delta){
         this.updateMoves();
         this.updateScore();
+        this.solitaire.update(time, delta);
     }
 }

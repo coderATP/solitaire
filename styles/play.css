@@ -1,0 +1,54 @@
+/*PLAY*/
+div#playScreenBottom, div#playScreenTop{
+    display: none;
+    width: 100%;
+    height: 7%;
+    position: absolute;
+    background-color: hsl(calc(360 - var(--hue)), 50%, 50%);
+}
+
+div#playScreenBottom div, div#playScreenTop div{
+    font-family: myOtherFont;
+    font-size: 0.7rem;
+    padding: auto;
+  /*  border: 1px solid white; */
+    width: 20%;
+    display: grid;
+}
+div#playScreenBottom img, div#playScreenTop img {
+    font-family: myOtherFont;
+    margin: 0 auto;
+}
+
+div#playScreenBottom p, div#playScreenTop p{
+    color: gold;
+    font-family: myOtherFont;
+    font-size: 125%;
+    width: 100%;
+    text-align: center;
+}
+
+div#playScreenBottom div:hover, div#playScreenTop div:hover{
+    background-color: hsl(calc(var(--hue)), 50%, 50%);
+}
+
+div#playScreenTop{
+    border: 2px solid white;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+}
+div#playScreenBottom {
+    border: 2px solid white;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+div#playScreenBottom div{
+    border-radius: 10% 10% 0 0;
+}
+div#playScreenTop div{
+    border-radius: 0 0 10% 10%;
+}
+

@@ -1,0 +1,54 @@
+/* CONFIRM SCREEN */
+section#confirmScreen{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #102030;
+    border: 3px groove green;
+    border-radius: 10%;
+    width: 60%;
+    height: 14%;
+    z-index : 10;
+    display: none;
+}
+
+section#confirmScreen div#title{
+    font-size: 1rem;
+    text-align: center;
+    padding-top: 15px;
+    position: absolute;
+    width: 100%;
+    height: 60%;
+    top: 0;
+    left: 50%;
+    background-color: rgba(0,0,255,0.5);
+    transform: translate(-50%, 0);
+}
+
+section#confirmScreen div#others{
+    position: absolute;
+    top: 60%;
+    height: 40%;
+    width: 100%;
+}
+section#confirmScreen button{
+    height: 100%;
+    width: 20%;
+    background: transparent;
+    font-size: 1.2rem;
+    border-radius: 20%;
+}
+section#confirmScreen button#noBtn{
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+}
+section#confirmScreen button#yesBtn{
+    position: absolute;
+    left: 5%;
+    top: 5%;
+}
+section#confirmScreen button:hover{
+    background-color: black;
+}

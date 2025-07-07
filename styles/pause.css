@@ -1,0 +1,53 @@
+/* PAUSE */
+section#pauseScreen{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid green;
+    border-radius: 3%;
+    width: 50%;
+    height: 40%;
+    z-index : 10;
+    display: none;
+}
+
+section#pauseScreen div#resume{
+    position: absolute ;
+    width: 100%;
+    height: 7%;
+}
+section#pauseScreen div#resume button#pause_resumeBtn{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 0;
+    z-index: 10;
+}
+section#pauseScreen div#resume button#title{
+    font-family: myFont;
+    height: 30px;
+    position: absolute;
+    left: 50%;
+    top: -30px;
+    transform: translate(-50%);
+    z-index: 10;
+}
+section#pauseScreen div#others{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: grid;
+}
+section#pauseScreen div#others button{
+    font-family: myOtherFont;
+    font-size: 2rem ;
+}
+section#pauseScreen button{
+    background-color: rgba(0, 0, 0, 0.5);
+    color: gold;
+}
+
+section#pauseScreen button:hover{
+    background-color: rgba(0, 0, 255, 0.5);
+}
