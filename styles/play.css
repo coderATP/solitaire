@@ -23,7 +23,6 @@ div#playScreenBottom img, div#playScreenTop img {
 div#playScreenBottom p, div#playScreenTop p{
     color: gold;
     font-family: myOtherFont;
-    font-size: 110%;
     width: 100%;
     text-align: center;
 }
@@ -50,3 +49,6 @@ div#playScreenTop div{
     border-radius: 0 0 10% 10%;
 }
 
+div#playScreenTop div p, div#playScreenBottom div p{
+    font-size: 0.75rem;
+}
