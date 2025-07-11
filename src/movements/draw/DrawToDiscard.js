@@ -25,12 +25,11 @@ export class DrawToDiscard extends DrawMovement{
             })
         targetPile.add(newCard);
         sourcePile.list.pop();
-        //this.updateTopmostTwoCardsPosition(); 
     }
     undo(){
         const targetPile = this.scene.solitaire.drawPile.container;
-        const undoPile = this.scene.solitaire.discardPile.container;
-        const undoCard = undoPile.list[undoPile.list.length - 1];
+        const sourcePile = this.scene.solitaire.discardPile.container;
+        const undoCard = sourcePile.list[sourcePile.list.length - 1];
         if(!undoCard) return;
         this.tempCard = undoCard;
         const newCard = this.scene.createCard("drawPileCard", 0,0);
@@ -47,8 +46,7 @@ export class DrawToDiscard extends DrawMovement{
                 cardIndex: targetPile.length
             })
         targetPile.add(newCard);
-        undoCard.destroy();
-        this.scene.solitaire.discardPile.cards.pop(); 
+        sourcePile.list.pop();
     }
 
 }

@@ -1,6 +1,8 @@
 import { ManufacturerScene } from "./src/scenes/ManufacturerScene.js";
 import { PreloadScene } from "./src/scenes/PreloadScene.js";
 import { TitleScene } from "./src/scenes/TitleScene.js";
+import { PauseScene } from "./src/scenes/PauseScene.js";
+import { ConfirmScene } from "./src/scenes/ConfirmScene.js";
 
 import { PlayScene } from "./src/scenes/PlayScene.js";
 
@@ -54,7 +56,9 @@ const config= {
         new ManufacturerScene(SHARED_CONFIG),
         new PreloadScene(SHARED_CONFIG),
         new TitleScene(SHARED_CONFIG),
-        new PlayScene(SHARED_CONFIG) ],
+        new PlayScene(SHARED_CONFIG),
+        new PauseScene(SHARED_CONFIG),
+        new ConfirmScene(SHARED_CONFIG) ],
 };
 
 new Phaser.Game(config);

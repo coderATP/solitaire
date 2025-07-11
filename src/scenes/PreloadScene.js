@@ -8,8 +8,7 @@ export class PreloadScene extends BaseScene{
     
     showInterface(){
         this.hideAllScreens();
-        this.show(this.preloadScreen, "grid");
-        this.preloadScreen.style.zIndex = -1;
+        this.showOne(this.preloadScreen, "grid");
     }
 
     loadFiles(){

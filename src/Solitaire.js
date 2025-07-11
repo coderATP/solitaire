@@ -110,7 +110,7 @@ export class Solitaire{
             container.list.forEach((card, j)=>{
                 card.setPosition(0, j*20)
                     .setDepth(2)
-                    .setFrame(52)
+                    .setFrame(card.getData("frame"))
                     .setInteractive({draggable: true})
                     .setName("tableauPileCard")
                 card.setData({
@@ -133,18 +133,34 @@ export class Solitaire{
     
     newGame(){
         this.scene.commandHandler.reset();
+        this.scene.updateMoves();
+        this.scene.updateScore();
         this.createDeck();
         this.deck = this.shuffleDeck();
         this.scene.audio.shuffleSound.play();
         this.scene.audio.shuffleSound.once('complete', ()=>{
             this.distributeDeckCardsToPiles();
             this.scene.audio.playSong.play();
+            //renderers: ui, canvas
+            this.scene.showInterface();
+            this.scene.watch.setUpWatch(this.scene.ui.timeText);
         })
     }
     
-    onCompleteGame(){
-        this.scene.hideAllScreens();
-        this.scene.show(this.scene.levelCompleteScreen, "grid").style.zIndex = 0;
+    displayEndOfGameStatistics(){
+        //score from time left
+        const time = this.scene.watch.getRemainingTime();
+        const timeScore = time * 5;
+        //total moves
+        const moves = this.scene.commandHandler.getTotalMoves();
+        //score from succesful moves to foundation
+        const totalNumberOfCards = 52;
+        const movesScore = totalNumberOfCards * 5;
+        //Display them on the level complete screen
+        this.scene.ui.levelCompleteTotalMovesText.innerText = "Total moves: " + moves;
+        this.scene.ui.levelCompleteTimeBonusText.innerText = 'Time bonus: ' + timeScore + ' pts';
+        this.scene.ui.levelCompleteTotalScoreText.innerText = "Total: " + (timeScore + movesScore) + ' pts';
+        
     }
     
     onClickRestartButton(){

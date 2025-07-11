@@ -70,7 +70,7 @@ export class TableauToFoundation extends TableauMovement{
         targetPile.add(newCard);
         sourcePile.list.pop();
         this.scene.solitaire.tableauPile.showTopmostCardInTableau(sourcePile);
- 
+        setTimeout(()=>{ this.scene.commandHandler.checkWin(); }, 120);
         return this; 
     }
     

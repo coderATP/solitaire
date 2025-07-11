@@ -13,6 +13,7 @@ export class FoundationToFoundation extends FoundationMovement{
         const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
         
         this.isValid = this.scene.solitaire.foundationPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
+       // this.isValid = false;
         if(!this.isValid){
             this.scene.audio.play(this.scene.audio.errorSound);
             this.card.setPosition(0,0);
@@ -37,7 +38,7 @@ export class FoundationToFoundation extends FoundationMovement{
         this.originalCardData = {
             x: targetPile.x,
             y: targetPile.y,
-            originalPileIndex: "it's discard",
+            originalPileIndex: pileIndex,
             targetPileIndex: targetPileIndex,
             cardIndex: targetPile.length,
             frame: this.card.getData("frame"),
@@ -47,14 +48,38 @@ export class FoundationToFoundation extends FoundationMovement{
         }
         
         targetPile.add(this.newCard);
-        this.card.destroy();
+        sourcePile.list.pop();
+        this.scene.commandHandler.checkWin();
+        
+        return this;
     }
     
     undo(command){
-            this.scene.audio.play(this.scene.audio.errorSound);
-            command.originalCard.setPosition(0,0); 
-            return;
-
+        if(!command.originalCardData) return;
+        const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
+        const targetPile = this.scene.solitaire.foundationPile.cards[command.originalCardData.originalPileIndex];
+        
+        //idea: create a new card, add it to the target pile and destroy the original card being moved
+        this.newCard = this.scene.createCard("foundationPileCard", 0, 0)
+        this.newCard
+        .setInteractive({draggable: true})
+        .setFrame(command.originalCardData.frame)
+        .setData({
+            frame: command.originalCardData.frame,
+            value: command.originalCardData.value,
+            suit: command.originalCardData.suit,
+            colour: command.originalCardData.colour,
+            x: targetPile.x,
+            y: targetPile.y,
+            originalPileIndex: command.originalCardData.originalPileIndex,
+            targetPileIndex: command.originalCardData.targetPileIndex,
+            cardIndex: targetPile.list.length
+        })
+        
+        targetPile.add(this.newCard);
+        sourcePile.list.pop();
+        this.scene.commandHandler.checkWin();
+        
         return this; 
     }
 }

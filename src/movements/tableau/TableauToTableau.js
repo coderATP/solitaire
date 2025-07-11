@@ -98,6 +98,7 @@ export class TableauToTableau extends TableauMovement{
         }
         //reveal topmost card
         this.scene.solitaire.tableauPile.showTopmostCardInTableau(sourcePile);
+        setTimeout(()=>{ this.scene.commandHandler.checkWin(); }, 120);
         return this;
     }
     

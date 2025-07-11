@@ -8,8 +8,8 @@ export class ManufacturerScene extends BaseScene{
     }
     
     showInterface(){
-        this.show(this.manufacturerScreen, "grid");
-        this.manufacturerScreen.style.zIndex = -1;
+        this.hideAllScreens();
+        this.showOne(this.manufacturerScreen, "grid", -1);
     }
     preload(){
         this.showInterface()
@@ -23,12 +23,12 @@ export class ManufacturerScene extends BaseScene{
         this.tweens.add({
             targets: this.logo,
             y: this.config.height/2 - this.logo.displayHeight/2,
-            duration: 500,
+            duration: 300,
             ease: "Cubic",
             onComplete: ()=>{
                 setTimeout(()=>{
                     this.scene.start("PreloadScene"); 
-                }, 2000)
+                }, 200)
             }
         })
     }

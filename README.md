@@ -30,3 +30,9 @@ check after card has been successfully moved, if
 all cards in all tableau piles have been revealed
 show a message displaying "all cards have been revealed. proceed to win?"
 then show confirm dialog
+
+to-do
+reset moves and score after restart/new game
+____reset moves after restart
+save game when return to menu
+resume game

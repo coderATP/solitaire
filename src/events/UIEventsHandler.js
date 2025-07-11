@@ -26,8 +26,9 @@ export class UIEventsHandler{
         this.movesText = document.getElementById("movesText");
         this.timeText = document.getElementById("timeText");
         //win
-        this.timeBonusText = document.getElementById("time_bonus");
-        this.totalScoreText = document.getElementById("total_score");
+        this.levelCompleteTotalMovesText = document.getElementById("total_moves");
+        this.levelCompleteTimeBonusText = document.getElementById("time_bonus");
+        this.levelCompleteTotalScoreText = document.getElementById("total_score");
         this.levelComplete_replayBtn = document.getElementById("levelComplete_replayBtn");
         this.levelComplete_menuBtn = document.getElementById("levelComplete_menuBtn");
         this.levelComplete_newGameBtn = document.getElementById("levelComplete_newGameBtn");

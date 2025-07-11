@@ -26,15 +26,13 @@ export class PlayScene extends BaseScene{
         
         this.ui = new UIEventsHandler(this);
         this.commandHandler = new CommandHandler(this);
-        this.gamePaused = undefined;
+        this.confirmText = document.getElementById("confirmText");
     }
     
     showInterface(){
         this.hideAllScreens();
-        this.show(this.playScreen, "grid").style.zIndex = -1;
-        this.show(this.playScreenTopUI, "flex").style.zIndex = 0;
-        this.show(this.playScreenBottomUI, "flex").style.zIndex = 0;
-        
+        this.showOne(this.playScreen, "grid");
+        this.showMultiple([this.playScreenBottomUI, this.playScreenTopUI], "flex", 0);
     }
     createCard(type, x, y){
         const card =  this.add.image(x,y,"cards").setName(type).setOrigin(0).setScale(this.config.zoomFactor);
@@ -70,19 +68,17 @@ export class PlayScene extends BaseScene{
                     for(let i = 0; i < pile.length-cardIndex; ++i){
                         const card = pile.list[i+cardIndex];
                         card.setPosition(dragX, dragY+i*20)
-                            .setDepth(10).setAlpha(0.8)
+                            .setDepth(10).setAlpha(0.7)
                     }
                     
                 }
             }
             else if(gameobject.name === "foundationPileCard"){
                 const pile = this.solitaire.foundationPile.cards[gameobject.getData("pileIndex")];
-                pile.setDepth(10);
-                gameobject.setDepth(10).setAlpha(0.7);
+                pile&& pile.setDepth(10);
+                gameobject.setAlpha(0.7);
             }
             else if(gameobject.name === "discardPileCard"){
-                const pile = this.solitaire.discardPile.cards[0];
-                pile&& pile.setDepth(10);
                 gameobject.setDepth(10).setAlpha(0.7);
             }
 
@@ -238,9 +234,7 @@ export class PlayScene extends BaseScene{
         //PlayScene icons
         this.ui.playSceneIcons.forEach(icon=>{
             icon.addEventListener('click', (e)=>{
-                
                 if(e.currentTarget.id === "redo"){
-                    if(this.gamePaused) return;
                     if(this.commandHandler.undoneActions.length > 0){
                         this.audio.play(this.audio.undoSound);
                         this.commandHandler.redo();
@@ -251,7 +245,6 @@ export class PlayScene extends BaseScene{
                     }
                 }
                 else if(e.currentTarget.id === "undo"){
-                    if(this.gamePaused) return;
                     if(this.commandHandler.moves.length > 0){
                         this.audio.play(this.audio.undoSound);
                         this.commandHandler.undo();
@@ -267,29 +260,32 @@ export class PlayScene extends BaseScene{
             })
         })
         this.processEvents();
-        this.handleGamePause();
-        this.handleGameComplete();
+        //this.handleGamePause();
+        //this.handleGameComplete();
         return this;
     }
     
     processEvents(){
+        const { PauseScene } = this.game.scene.keys;
+        
         eventEmitter.on("PlayToPause", ()=>{
-            if(!this.gamePaused) this.scene.pause();
-            this.time.stopWatch();
-            this.show(this.pauseScreen, "block").style.zIndex = 0;
-            this.audio.popUpSound.play()
-            this.ui.changeID(this.ui.pauseIcon, null);
-            this.gamePaused = true;
+            //flags to avoid multiple event calling
+            if(!this.scene.isPaused("PlayScene")){
+                if(!PauseScene.gamePaused) this.scene.pause();
+                this.audio.popUpSound.play();
+                this.scene.launch("PauseScene");
+                PauseScene.gamePaused = true;
+            }
         })
         eventEmitter.on("PlayToGameComplete", ()=>{
             //PAUSE GAME
-            if(!this.gamePaused) this.scene.pause();
-            this.time.stopWatch();
-            this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
-            this.audio.popUpSound.play()
-            this.ui.changeID(this.ui.pauseIcon, null);
-            this.gamePaused = true;
+            if(!this.scene.isPaused("PlayScene")) this.scene.pause();
+            this.watch.stopWatch();
+            this.showOne(this.levelCompleteScreen, "grid", 0);
+            this.audio.popUpSound.play();
+            this.hideMultiple([this.playScreenBottomUI, this.playScreenTopUI]);
             //READ TIME REMAINING, MOVES AND SCORE
+            this.solitaire.displayEndOfGameStatistics(); 
         })
         eventEmitter.once("PlayToTitle", ()=>{ this.scene.start("TitleScene")})
     }
@@ -309,9 +305,12 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.hide(this.levelCompleteScreen);
                 if(this.gamePaused) this.scene.resume();
-                this.time.resetWatch(this.ui.timeText);
-                this.time.setUpWatch(this.ui.timeText);
-                this.solitaire.onClickRestartButton();
+                this.watch.resetWatch(this.ui.timeText);
+                this.watch.setUpWatch(this.ui.timeText);
+                this.commandHandler.reset();
+                this.solitaire.onClickRestartButton(); 
+                this.updateMoves();
+                this.updateScore();
             })
             noBtn.addEventListener('click', ()=>{
                 if(this.trigger !== "levelCompleteToRestart") return;  
@@ -338,7 +337,7 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.audio.beginGameSound.stop();
                 this.audio.playSong.stop();
-                this.time.resetWatch(this.ui.timeText);
+                this.watch.resetWatch(this.ui.timeText);
                 this.scene.start("TitleScene"); 
             })
             noBtn.addEventListener('click', ()=>{
@@ -346,15 +345,14 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
                 this.audio.popUpSound.play();
-                this.time.stopWatch();
+                this.watch.stopWatch();
             }) 
         }) 
     }
     handleGamePause(){
-        this.confirmText = document.getElementById("confirmText");
         //resume
         pause_resumeBtn.addEventListener('click', ()=>{
-            if(this.gamePaused) this.time.resumeWatch(this.ui.timeText); 
+            if(this.gamePaused) this.watch.resumeWatch(this.ui.timeText); 
             this.gamePaused = false; 
             this.scene.resume();
             this.audio.play(this.audio.buttonClickSound);
@@ -376,7 +374,7 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.audio.beginGameSound.stop();
                 this.audio.playSong.stop();
-                this.time.resetWatch(this.ui.timeText);
+                this.watch.resetWatch(this.ui.timeText);
                 eventEmitter.emit("PlayToTitle");
             })
             noBtn.addEventListener('click', ()=>{
@@ -384,7 +382,7 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.show(this.pauseScreen, "grid").style.zIndex = 0;
                 this.audio.popUpSound.play();
-                this.time.stopWatch();
+                this.watch.stopWatch();
             }) 
         })
         //restart
@@ -402,8 +400,8 @@ export class PlayScene extends BaseScene{
                 this.hide(this.confirmScreen);
                 this.hide(this.pauseScreen);
                 if(this.gamePaused) this.scene.resume();
-                this.time.resetWatch(this.ui.timeText);
-                this.time.setUpWatch(this.ui.timeText);
+                this.watch.resetWatch(this.ui.timeText);
+                this.watch.setUpWatch(this.ui.timeText);
                 this.solitaire.onClickRestartButton();
             })
             noBtn.addEventListener('click', ()=>{
@@ -415,6 +413,7 @@ export class PlayScene extends BaseScene{
         })  
     }
     
+    
     updateMoves(){
         this.ui.movesText.innerText = (this.commandHandler.totalMovesCount);
     }
@@ -422,18 +421,15 @@ export class PlayScene extends BaseScene{
         this.ui.scoreText.innerText = (this.commandHandler.movementScore);
     }
     create(){
-        //renderers: ui, canvas
-        this.showInterface();
-        //camera
+        this.showOne(this.playScreen, "grid"); 
         this.camera = this.cameras.main;
-        this.camera.fadeIn(1500);
+        this.camera.fadeIn(2000);
 
         //audio
         this.audio = new AudioControl(this);
 
         //time
-        this.time = new Time(this);
-        this.time.setUpWatch(this.ui.timeText);
+        this.watch = new Time(this);
 
         //graphics creation
         this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })

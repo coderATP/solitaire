@@ -53,8 +53,8 @@ export class DiscardToTableau extends DiscardMovement{
             
         }
         targetPile.add(newCard);
-        //this.card.destroy();
         sourcePile.list.pop();
+        this.scene.commandHandler.checkWin();
       
         return this;
     }

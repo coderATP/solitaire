@@ -25,6 +25,10 @@ export class CommandHandler{
         this.movesToUndo = 0;
     }
     
+    getTotalMoves(){ return this.totalMovesCount; }
+    
+    getMovementsScore() { return this.movementScore; }
+    
     checkWin(){
         let hiddenTableauCards = 0;
         //after executing command check if player has won
@@ -43,6 +47,7 @@ export class CommandHandler{
         this.moves = [];
         this.undoneActions = [];
         this.totalMovesCount = 0;
+        this.movementScore = 0;
         this.movesToRedo = 0;
         this.movesToUndo = 0; 
     }
@@ -54,8 +59,7 @@ export class CommandHandler{
         this.movesToUndo++;
         this.movesToRedo = 0;
         this.lastAction = command.id;
-        
-        this.checkWin();
+        setTimeout(()=>{this.checkWin(); }, 200)
     }
     
     undo(){
@@ -114,6 +118,7 @@ export class CommandHandler{
         if(this.movesToRedo === 0) return;
         if(this.undoneActions.length === 0) return;
         const command = this.undoneActions.pop();
+        
         command.execute();
         this.totalMovesCount++;
         this.moves.push(command);
