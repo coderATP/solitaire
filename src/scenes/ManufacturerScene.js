@@ -23,12 +23,12 @@ export class ManufacturerScene extends BaseScene{
         this.tweens.add({
             targets: this.logo,
             y: this.config.height/2 - this.logo.displayHeight/2,
-            duration: 300,
+            duration: 350,
             ease: "Cubic",
             onComplete: ()=>{
                 setTimeout(()=>{
                     this.scene.start("PreloadScene"); 
-                }, 200)
+                }, 1500)
             }
         })
     }

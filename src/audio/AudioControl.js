@@ -19,6 +19,8 @@ export class AudioControl{
         this.sounds.forEach(sound=>{sound.volume = 0.4;});
         this.errorSound.volume = 1;
         this.popUpSound.volume = 1;
+        this.shuffleSound.volume = 0.1;
+        this.playSong.volume = 0.5;
     }
     
     play(audio){

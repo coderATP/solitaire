@@ -9,11 +9,13 @@ export class TitleScene extends BaseScene{
     }
     
     showInterface(){
+        const { PlayScene } = this.game.scene.keys;
         eventEmitter.destroy("ConfirmToTitle"); 
         eventEmitter.destroy("GameCompleteToMenu");
         this.hideAllScreens();
         this.showOne(this.titleScreen, "grid");
         this.scene.stop("PlayScene");
+        if(PlayScene.audio) PlayScene.audio.playSong.stop();
     }
     create(){
         this.showInterface();

@@ -21,7 +21,7 @@ export class DiscardToFoundation extends DiscardMovement{
             return;
         }
         //increase score
-        this.scene.commandHandler.movementScore+=1500;
+        this.scene.commandHandler.movementScore+=100;
         //play sound
         this.scene.audio.play(this.scene.audio.dropSound);
         if(pileIndex === targetPileIndex ) return;

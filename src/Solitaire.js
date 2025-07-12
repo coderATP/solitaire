@@ -140,6 +140,7 @@ export class Solitaire{
         this.scene.audio.shuffleSound.play();
         this.scene.audio.shuffleSound.once('complete', ()=>{
             this.distributeDeckCardsToPiles();
+
             this.scene.audio.playSong.play();
             //renderers: ui, canvas
             this.scene.showInterface();
@@ -155,7 +156,7 @@ export class Solitaire{
         const moves = this.scene.commandHandler.getTotalMoves();
         //score from succesful moves to foundation
         const totalNumberOfCards = 52;
-        const movesScore = totalNumberOfCards * 5;
+        const movesScore = totalNumberOfCards * 100;
         //Display them on the level complete screen
         this.scene.ui.levelCompleteTotalMovesText.innerText = "Total moves: " + moves;
         this.scene.ui.levelCompleteTimeBonusText.innerText = 'Time bonus: ' + timeScore + ' pts';
