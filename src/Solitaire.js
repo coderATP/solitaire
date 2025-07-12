@@ -110,7 +110,7 @@ export class Solitaire{
             container.list.forEach((card, j)=>{
                 card.setPosition(0, j*20)
                     .setDepth(2)
-                    .setFrame(card.getData("frame"))
+                    .setFrame(52)
                     .setInteractive({draggable: true})
                     .setName("tableauPileCard")
                 card.setData({

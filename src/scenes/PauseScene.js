@@ -9,7 +9,6 @@ export class PauseScene extends BaseScene{
     }
     
     showInterface(){
-        //eventEmitter.destroy("ConfirmToPause");
         this.hideOne(this.confirmScreen);
         this.showOne(this.pauseScreen, "grid", 0);
     }

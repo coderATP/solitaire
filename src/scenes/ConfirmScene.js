@@ -9,7 +9,7 @@ export class ConfirmScene extends BaseScene{
     }
     
     showInterface(){
-        this.hideOne(this.pauseScreen);
+        this.hideMultiple([this.pauseScreen, this.levelCompleteScreen]);
         this.showOne(this.confirmScreen, "grid", 0)
     }
 
@@ -37,6 +37,7 @@ export class ConfirmScene extends BaseScene{
             PlayScene.audio.popUpSound.play();
             this.scene.start("TitleScene");
         })
+
         eventEmitter.once("ConfirmToRestart", ()=>{
             PlayScene.audio.popUpSound.play();
             this.hideOne(this.confirmScreen);

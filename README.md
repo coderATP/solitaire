@@ -23,16 +23,3 @@ For every 1 second that the player finished earlier than 10 min, award extra fiv
 e.g. if player finishes in 5min 30sec, extra points = 
 
 10 min = 10 * 60 seconds * 5points = 3000 points total
-
-//CODE 
-inside CommandHandler
-check after card has been successfully moved, if
-all cards in all tableau piles have been revealed
-show a message displaying "all cards have been revealed. proceed to win?"
-then show confirm dialog
-
-to-do
-reset moves and score after restart/new game
-____reset moves after restart
-save game when return to menu
-resume game

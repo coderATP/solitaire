@@ -59,7 +59,7 @@ export class CommandHandler{
         this.movesToUndo++;
         this.movesToRedo = 0;
         this.lastAction = command.id;
-        setTimeout(()=>{this.checkWin(); }, 200)
+      //  setTimeout(()=>{this.checkWin(); }, 200)
     }
     
     undo(){

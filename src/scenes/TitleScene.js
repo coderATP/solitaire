@@ -1,14 +1,16 @@
 import { BaseScene } from "./BaseScene.js";
 import { AudioControl } from "../audio/AudioControl.js";
+import { eventEmitter } from "../events/EventEmitter.js";
 
 export class TitleScene extends BaseScene{
     constructor(config){
         super("TitleScene", config);
         this.config = config;
-
     }
     
     showInterface(){
+        eventEmitter.destroy("ConfirmToTitle"); 
+        eventEmitter.destroy("GameCompleteToMenu");
         this.hideAllScreens();
         this.showOne(this.titleScreen, "grid");
         this.scene.stop("PlayScene");
@@ -26,9 +28,12 @@ export class TitleScene extends BaseScene{
             .once("pointerdown", ()=>{
                 
             })
-        this.input.on("pointerdown", ()=>{
+        this.input.once("pointerdown", ()=>{
+            eventEmitter.emit("MenuToPlay");
+        })
+        eventEmitter.once("MenuToPlay", ()=>{
             this.audio.buttonClickSound.play();
-            this.scene.start("PlayScene"); 
+            this.scene.start("PlayScene");  
         })
         this.tweens.add({
             targets: this.clickToStart,

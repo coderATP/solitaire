@@ -30,6 +30,7 @@ export class PlayScene extends BaseScene{
     }
     
     showInterface(){
+       // eventEmitter.destroy("MenuToPlay");
         this.hideAllScreens();
         this.showOne(this.playScreen, "grid");
         this.showMultiple([this.playScreenBottomUI, this.playScreenTopUI], "flex", 0);
@@ -260,13 +261,11 @@ export class PlayScene extends BaseScene{
             })
         })
         this.processEvents();
-        //this.handleGamePause();
-        //this.handleGameComplete();
         return this;
     }
     
     processEvents(){
-        const { PauseScene } = this.game.scene.keys;
+        const { GameCompleteScene, PauseScene } = this.game.scene.keys;
         
         eventEmitter.on("PlayToPause", ()=>{
             //flags to avoid multiple event calling
@@ -280,139 +279,13 @@ export class PlayScene extends BaseScene{
         eventEmitter.on("PlayToGameComplete", ()=>{
             //PAUSE GAME
             if(!this.scene.isPaused("PlayScene")) this.scene.pause();
-            this.watch.stopWatch();
-            this.showOne(this.levelCompleteScreen, "grid", 0);
+            this.scene.launch("GameCompleteScene");
             this.audio.popUpSound.play();
-            this.hideMultiple([this.playScreenBottomUI, this.playScreenTopUI]);
-            //READ TIME REMAINING, MOVES AND SCORE
-            this.solitaire.displayEndOfGameStatistics(); 
+            this.audio.playSong.stop();
+            GameCompleteScene.gamePaused = true;
         })
         eventEmitter.once("PlayToTitle", ()=>{ this.scene.start("TitleScene")})
     }
-    
-    handleGameComplete(){
-        //restart
-        this.ui.levelComplete_replayBtn.addEventListener("click", ()=>{
-            this.confirmText.innerText = "You've won! Replay?"
-            this.trigger = "levelCompleteToRestart";
-            this.audio.popUpSound.play();
-            this.hide(this.levelCompleteScreen);
-            this.show(this.confirmScreen, "grid").style.zIndex = 0;
-            
-            yesBtn.addEventListener('click', ()=>{
-                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
-                if(this.trigger !== "levelCompleteToRestart") return; 
-                this.hide(this.confirmScreen);
-                this.hide(this.levelCompleteScreen);
-                if(this.gamePaused) this.scene.resume();
-                this.watch.resetWatch(this.ui.timeText);
-                this.watch.setUpWatch(this.ui.timeText);
-                this.commandHandler.reset();
-                this.solitaire.onClickRestartButton(); 
-                this.updateMoves();
-                this.updateScore();
-            })
-            noBtn.addEventListener('click', ()=>{
-                if(this.trigger !== "levelCompleteToRestart") return;  
-                this.hide(this.confirmScreen);
-                this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
-                this.audio.popUpSound.play();
-            }) 
-        })
-        //new game
-        this.ui.levelComplete_newGameBtn.addEventListener('click', ()=>{
-            eventEmitter.emit("PlayToTitle");
-        })
-        //menu
-        this.ui.levelComplete_menuBtn.addEventListener('click', ()=>{
-            this.confirmText.innerText = "Return to Menu?"
-            this.trigger = "levelCompleteToMenu";
-            this.audio.popUpSound.play();
-            this.hide(this.levelCompleteScreen);
-            this.show(this.confirmScreen, "grid").style.zIndex = 0;
-            
-            yesBtn.addEventListener('click', ()=>{
-                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
-                if(this.trigger !== "levelCompleteToMenu") return;
-                this.hide(this.confirmScreen);
-                this.audio.beginGameSound.stop();
-                this.audio.playSong.stop();
-                this.watch.resetWatch(this.ui.timeText);
-                this.scene.start("TitleScene"); 
-            })
-            noBtn.addEventListener('click', ()=>{
-                if(this.trigger !== "levelCompleteToMenu") return; 
-                this.hide(this.confirmScreen);
-                this.show(this.levelCompleteScreen, "grid").style.zIndex = 0;
-                this.audio.popUpSound.play();
-                this.watch.stopWatch();
-            }) 
-        }) 
-    }
-    handleGamePause(){
-        //resume
-        pause_resumeBtn.addEventListener('click', ()=>{
-            if(this.gamePaused) this.watch.resumeWatch(this.ui.timeText); 
-            this.gamePaused = false; 
-            this.scene.resume();
-            this.audio.play(this.audio.buttonClickSound);
-            this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
-            this.hide(this.pauseScreen);
-        })
-        //menu
-        pause_menuBtn.addEventListener('click', ()=>{
-            
-            this.confirmText.innerText = "Return to Menu?"
-            this.trigger = "pauseToMenu";
-            this.audio.popUpSound.play();
-            this.hide(this.pauseScreen);
-            this.show(this.confirmScreen, "grid").style.zIndex = 0;
-            
-            yesBtn.addEventListener('click', ()=>{
-                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
-                if(this.trigger !== "pauseToMenu") return;
-                this.hide(this.confirmScreen);
-                this.audio.beginGameSound.stop();
-                this.audio.playSong.stop();
-                this.watch.resetWatch(this.ui.timeText);
-                eventEmitter.emit("PlayToTitle");
-            })
-            noBtn.addEventListener('click', ()=>{
-                if(this.trigger !== "pauseToMenu") return; 
-                this.hide(this.confirmScreen);
-                this.show(this.pauseScreen, "grid").style.zIndex = 0;
-                this.audio.popUpSound.play();
-                this.watch.stopWatch();
-            }) 
-        })
-        //restart
-        pause_restartBtn.addEventListener('click', ()=>{
-
-            this.confirmText.innerText = "Restart?"
-            this.trigger = "pauseToRestart";
-            this.audio.popUpSound.play();
-            this.hide(this.pauseScreen);
-            this.show(this.confirmScreen, "grid").style.zIndex = 0;
-            
-            yesBtn.addEventListener('click', ()=>{
-                this.ui.changeID(this.ui.pauseIcon, "pause"); //allow clicking again
-                if(this.trigger !== "pauseToRestart") return; 
-                this.hide(this.confirmScreen);
-                this.hide(this.pauseScreen);
-                if(this.gamePaused) this.scene.resume();
-                this.watch.resetWatch(this.ui.timeText);
-                this.watch.setUpWatch(this.ui.timeText);
-                this.solitaire.onClickRestartButton();
-            })
-            noBtn.addEventListener('click', ()=>{
-                if(this.trigger !== "pauseToRestart") return;  
-                this.hide(this.confirmScreen);
-                this.show(this.pauseScreen, "grid").style.zIndex = 0;
-                this.audio.popUpSound.play();
-            }) 
-        })  
-    }
-    
     
     updateMoves(){
         this.ui.movesText.innerText = (this.commandHandler.totalMovesCount);
@@ -437,7 +310,6 @@ export class PlayScene extends BaseScene{
         //solitaire
         this.solitaire = new Solitaire(this);
         this.solitaire.newGame();
-
         //events
         this.handleDragEvent().handleDropEvent().handleClickEvent();
        

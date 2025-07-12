@@ -21,7 +21,7 @@ export class DiscardToFoundation extends DiscardMovement{
             return;
         }
         //increase score
-        this.scene.commandHandler.movementScore+=5;
+        this.scene.commandHandler.movementScore+=1500;
         //play sound
         this.scene.audio.play(this.scene.audio.dropSound);
         if(pileIndex === targetPileIndex ) return;
@@ -62,7 +62,7 @@ export class DiscardToFoundation extends DiscardMovement{
     
     undo(command){
         if(!command.originalCardData) return;
-        this.scene.commandHandler.movementScore-=5; 
+        this.scene.commandHandler.movementScore-=1500; 
         //const pileIndex = this.card.getData("pileIndex");
         const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
         const targetPile = this.scene.solitaire.discardPile.container;

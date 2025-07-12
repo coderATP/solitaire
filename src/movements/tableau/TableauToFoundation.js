@@ -28,7 +28,7 @@ export class TableauToFoundation extends TableauMovement{
         //play audio
         this.scene.audio.play(this.scene.audio.dropSound);
         //increase score
-        this.scene.commandHandler.movementScore+=5;
+        this.scene.commandHandler.movementScore+=1500;
         //TO-DO: move a valid card to foundation
         //only one card can be moved at a time from the tableau to foundation
         if(cardIndex < sourcePile.length-1 ){
@@ -76,7 +76,7 @@ export class TableauToFoundation extends TableauMovement{
     
     undo(command){
         if(!command.originalCardData) return;
-        this.scene.commandHandler.movementScore-=5;
+        this.scene.commandHandler.movementScore-=1500;
  
         const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.currentPileIndex];
         const targetPile = this.scene.solitaire.tableauPile.cards[command.originalCardData.originalPileIndex];
