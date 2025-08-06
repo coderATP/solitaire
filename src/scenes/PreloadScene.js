@@ -78,15 +78,6 @@ export class PreloadScene extends BaseScene{
         this.loadFiles(); 
 
     }
-    toggleFullscreen(){
-       if(!document.fullscreenElement){
-           document.documentElement.requestFullscreen();
-            screen.orientation.lock("portrait");
-        }else if(document.exitFullscreen){
-            document.exitFullscreen();
-            screen.orientation.lock("portrait"); 
-        }
-    }  
     playSolitaire(){
         this.scene.start("TitleScene");
     }

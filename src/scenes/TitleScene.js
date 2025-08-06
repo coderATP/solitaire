@@ -34,6 +34,7 @@ export class TitleScene extends BaseScene{
             eventEmitter.emit("MenuToPlay");
         })
         eventEmitter.once("MenuToPlay", ()=>{
+            this.toggleFullscreen();
             this.audio.buttonClickSound.play();
             this.scene.start("PlayScene");  
         })
@@ -46,4 +47,14 @@ export class TitleScene extends BaseScene{
         })
         this.clickToStart.setPosition(this.config.width/2-this.clickToStart.displayWidth/2, this.title.y + this.title.displayHeight+30);
     }
+    
+    toggleFullscreen(){
+       if(!document.fullscreenElement){
+           document.documentElement.requestFullscreen();
+            screen.orientation.lock("portrait");
+        }else if(document.exitFullscreen){
+            document.exitFullscreen();
+            screen.orientation.lock("portrait"); 
+        }
+    }  
 }
