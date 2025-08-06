@@ -51,10 +51,10 @@ export class TitleScene extends BaseScene{
     toggleFullscreen(){
        if(!document.fullscreenElement){
            document.documentElement.requestFullscreen();
-            screen.orientation.lock("portrait");
+            screen.orientation.lock("landscape");
         }else if(document.exitFullscreen){
             document.exitFullscreen();
-            screen.orientation.lock("portrait"); 
+            screen.orientation.lock("landscape"); 
         }
     }  
 }
