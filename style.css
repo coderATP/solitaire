@@ -25,7 +25,7 @@
     font-family: myFont;
 }
 body{
-   background-color: black;
+   background-color: rgba(21, 1, 90);
 }
 
 div#gameWrapper{
