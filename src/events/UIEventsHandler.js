@@ -32,7 +32,8 @@ export class UIEventsHandler{
         this.levelComplete_replayBtn = document.getElementById("levelComplete_replayBtn");
         this.levelComplete_menuBtn = document.getElementById("levelComplete_menuBtn");
         this.levelComplete_newGameBtn = document.getElementById("levelComplete_newGameBtn");
-
+        //confirm
+        this.confirmText = document.getElementById("confirmText");
         this.addClickSound();
     }
     

@@ -24,7 +24,7 @@ export class DiscardToTableau extends DiscardMovement{
         
         //TO-DO: move card from foundation to tableau
         //idea: create a new card, add it to the target pile and destroy the original card being moved
-        const newCard = this.scene.createCard("tableauPileCard", 0, targetPile.length *20);
+        const newCard = this.scene.createCard("tableauPileCard", 0, targetPile.length *40);
         
         newCard
         .setFrame(this.card.getData("frame"))

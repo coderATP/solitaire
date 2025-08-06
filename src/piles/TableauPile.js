@@ -41,7 +41,7 @@ export class TableauPile{
         return this;
     }
     getBioData(){
-        let y = 50,
+        let y = 50*devicePixelRatio,
         displayWidth = 88*this.config.zoomFactor,
         displayHeight = 128*this.config.zoomFactor;
         let marginLeft = 10, marginRight = 10, marginTop = y + displayHeight + 80;
@@ -66,8 +66,8 @@ export class TableauPile{
         //logic: simply reset the position of the card(s)
          for(let i = 0; i < numberOfCardsToMove; ++i){
             cardsToMove = sourcePile.list[i+cardIndex];
-            cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
-            cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+            cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
+            cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
         }
         return;
     }
@@ -185,8 +185,8 @@ export class TableauPile{
             //alert("not a valid move")
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];
-                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
-                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
+                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
             }
             return;
         }
@@ -196,15 +196,15 @@ export class TableauPile{
         //logic: simply reset the position of the card(s)
         if(pileIndex === targetPileIndex){
             if(numberOfCardsToMove===1){
-                card.setPosition(0, cardIndex*20);
-                card.setData({x: 0, y: cardIndex*20})
+                card.setPosition(0, cardIndex*40);
+                card.setData({x: 0, y: cardIndex*40})
                 return;
             }
             else{
                 for(let i = 0; i < numberOfCardsToMove; ++i){
                     cardsToMove = sourcePile.list[i+cardIndex];
-                    cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
-                    cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+                    cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
+                    cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
                 }
                 return;
             }
@@ -215,7 +215,7 @@ export class TableauPile{
         //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
 
         for(let i = 0; i < numberOfCardsToMove; ++i){
-            const cardGameObject = this.scene.createCard("tableauPileCard", 0, targetPile.length*20 )
+            const cardGameObject = this.scene.createCard("tableauPileCard", 0, targetPile.length*40 )
                 .setInteractive({draggable: true})
                 
             cardsToMove = sourcePile.list[i+cardIndex];
@@ -261,8 +261,8 @@ export class TableauPile{
         if(!isValid){
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToReturn = sourcePile.list[i+cardIndex];
-                cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*20 );
-                cardsToReturn.setData({x: 0, y: cardsToReturn.getData("cardIndex")*20} );
+                cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*40 );
+                cardsToReturn.setData({x: 0, y: cardsToReturn.getData("cardIndex")*40} );
             }
             return;
         }

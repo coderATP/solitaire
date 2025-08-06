@@ -44,12 +44,12 @@ export class FoundationPile{
         return this;
     }
     getBiodata(){
-        return{x: 10,
-            y: 50,
+        return{x: 10*devicePixelRatio,
+            y: 50*devicePixelRatio,
             displayWidth: 88*this.config.zoomFactor,
             displayHeight: 128*this.config.zoomFactor,
-            padding: 88*this.config.zoomFactor + 1,
-            marginRight: 10
+            padding: 88*this.config.zoomFactor + 2,
+            marginRight: 10*devicePixelRatio
         };
     }
     handleMoveCardToTableau(card, dropZone){

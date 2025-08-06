@@ -20,8 +20,8 @@ export class TableauToFoundation extends TableauMovement{
             this.scene.audio.play(this.scene.audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToReturn = sourcePile.list[i+cardIndex];
-                cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*20 );
-                cardsToReturn.setData({x: 0, y: cardsToReturn.getData("cardIndex")*20} );
+                cardsToReturn.setPosition(0, cardsToReturn.getData("cardIndex")*40 );
+                cardsToReturn.setData({x: 0, y: cardsToReturn.getData("cardIndex")*40} );
             }
             return;
         }
@@ -85,7 +85,7 @@ export class TableauToFoundation extends TableauMovement{
         newCard
         .setInteractive({draggable: true})
         .setFrame(command.originalCardData.frame)
-        .setPosition(0, targetPile.length*20);
+        .setPosition(0, targetPile.length*40);
         
         newCard.setData({
             frame: command.originalCardData.frame,

@@ -1,6 +1,8 @@
 export class Time{
     constructor(scene){
         this.scene = scene;
+        const { PlayScene } = scene.game.scene.keys;
+        this.playScene = PlayScene;
     }
     
     createTimeVariables(){
@@ -9,6 +11,7 @@ export class Time{
         this.secText = undefined;
         this.minText = undefined;
         this.paused = true;
+        this.canPlayTickSound = true;
     }
     startWatch(renderer){
         this.sec+=1;

@@ -15,7 +15,7 @@ export class PreloadScene extends BaseScene{
         let audioFileIndex = 0;
         this.text = "sounds";
         const audioFiles = [
-            ['playSong', "sounds/overworld.ogg"],
+            ['playSong', "sounds/menu.mp3"],
             ['buttonClickSound', 'sounds/click.wav'],
             ['beginGameSound', "sounds/begin_game.wav"],
             ['drawSound', "sounds/draw.wav"],
@@ -51,11 +51,11 @@ export class PreloadScene extends BaseScene{
             this.registry.inc("assetsTotal", 1);
         });
 
-        this.loadingText = this.add.text(0,0, "", { font: "14px myFont"})
+        this.loadingText = this.add.text(0,0, "", { font: "28px myFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
         this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
-        this.loadingText2 = this.add.text(0,0, "Please wait", { font: "14px myFont"})
+        this.loadingText2 = this.add.text(0,0, "Please wait", { font: "28px myFont"})
                 .setOrigin(0)
                 .setStyle({fill: 'white'})
          
@@ -81,10 +81,10 @@ export class PreloadScene extends BaseScene{
     toggleFullscreen(){
        if(!document.fullscreenElement){
            document.documentElement.requestFullscreen();
-            screen.orientation.lock("landscape");
+            screen.orientation.lock("portrait");
         }else if(document.exitFullscreen){
             document.exitFullscreen();
-            screen.orientation.lock("landscape"); 
+            screen.orientation.lock("portrait"); 
         }
     }  
     playSolitaire(){

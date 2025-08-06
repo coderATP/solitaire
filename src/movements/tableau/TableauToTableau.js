@@ -25,8 +25,8 @@ export class TableauToTableau extends TableauMovement{
             this.scene.audio.play(this.scene.audio.errorSound);
             for(let i = 0; i < numberOfCardsToMove; ++i){
                 cardsToMove = sourcePile.list[i+cardIndex];
-                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
-                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
+                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
             }
             return;
         }
@@ -36,15 +36,15 @@ export class TableauToTableau extends TableauMovement{
         //logic: simply reset the position of the card(s)
         if(pileIndex === targetPileIndex){
             if(numberOfCardsToMove===1){
-                this.card.setPosition(0, cardIndex*20);
-                this.card.setData({x: 0, y: cardIndex*20})
+                this.card.setPosition(0, cardIndex*40);
+                this.card.setData({x: 0, y: cardIndex*40})
                 return;
             }
             else{
                 for(let i = 0; i < numberOfCardsToMove; ++i){
                     cardsToMove = sourcePile.list[i+cardIndex];
-                    cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*20 );
-                    cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*20} );
+                    cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
+                    cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
                 }
                 return;
             }
@@ -55,7 +55,7 @@ export class TableauToTableau extends TableauMovement{
         //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
 
         for(let i = 0; i < numberOfCardsToMove; ++i){
-            const cardGameObject = this.scene.createCard("tableauPileCard", 0, targetPile.length*20 )
+            const cardGameObject = this.scene.createCard("tableauPileCard", 0, targetPile.length*40 )
                 .setInteractive({draggable: true})
                 
             cardsToMove = sourcePile.list[i+cardIndex];
@@ -116,7 +116,7 @@ export class TableauToTableau extends TableauMovement{
 
         for(let i = 0; i < numberOfCardsToMove; ++i){
             cardToMove = sourcePile.list[i+currentCardIndex];
-            const cardGameObject = this.scene.createCard("tableauPileCard", 0, (targetPile.length)*20);
+            const cardGameObject = this.scene.createCard("tableauPileCard", 0, (targetPile.length)*40);
             cardGameObject
                 .setFrame(cardToMove.getData("frame"))
                 .setInteractive({draggable: true})

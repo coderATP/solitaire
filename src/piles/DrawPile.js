@@ -18,8 +18,8 @@ export class DrawPile{
     }
     
     getBiodata(){
-        return{x: 10,
-        y: 50,
+        return{x: 10*devicePixelRatio,
+        y: 50*devicePixelRatio,
         displayWidth: 88*this.config.zoomFactor,
         displayHeight: 128*this.config.zoomFactor};
     }

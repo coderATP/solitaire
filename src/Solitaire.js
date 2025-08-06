@@ -108,7 +108,7 @@ export class Solitaire{
         //set their properties
         this.tableauPile.cards.forEach((container, i)=>{
             container.list.forEach((card, j)=>{
-                card.setPosition(0, j*20)
+                card.setPosition(0, j*40)
                     .setDepth(2)
                     .setFrame(52)
                     .setInteractive({draggable: true})
