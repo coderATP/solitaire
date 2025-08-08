@@ -8,8 +8,8 @@ import { GameCompleteScene } from "./src/scenes/GameCompleteScene.js";
 import { PlayScene } from "./src/scenes/PlayScene.js";
 
 
-const GAME_WIDTH = innerWidth*devicePixelRatio;
-const GAME_HEIGHT = innerHeight*devicePixelRatio;
+const GAME_WIDTH = screen.width*devicePixelRatio;
+const GAME_HEIGHT = screen.height*devicePixelRatio;
 const ZOOM_FACTOR = 1;
 
 
@@ -33,7 +33,7 @@ const SHARED_CONFIG = {
 };
 
 const config= {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     ...SHARED_CONFIG, 
     parent: "gameWrapper",
     backgroundColor: 0x00ff00,
@@ -41,6 +41,7 @@ const config= {
     scale: {
          mode: Phaser.Scale.Fit,
          autoCenter: Phaser.Scale.CENTER_BOTH,
+         orientation: Phaser.Scale.Orientation.PORTRAIT
     },
     pixelArt: false, 
     physics:{

@@ -70,17 +70,39 @@ export class PreloadScene extends BaseScene{
         this.load.on("complete", ()=>{
             //load animations (this has to wait till now since it requires textures to first load)
             //load animations here
-            this.loadingText.setText("Ready? Let's Game!!");
-
-            this.playSolitaire();
-
+            this.loadingText2.destroy();
+            this.loadingText2 = null;
+            this.loadingText.setText("Click anywhere to start");
+            this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
+ 
+            this.input.once("pointerdown", ()=>{
+                this.toggleFullscreen();
+                setTimeout(()=>{this.scene.start("TitleScene")}, 500);
+            }); 
         })
         this.loadFiles(); 
 
     }
-    playSolitaire(){
-        this.scene.start("TitleScene");
-    }
-    
-    
+        
+    toggleFullscreen(){
+        if(!document.fullscreenElement){
+            //full screen
+            document.documentElement.requestFullscreen();
+            //portrait mode only
+            if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('portrait').catch((error) => {
+                        console.warn('Failed to lock screen orientation:', error);
+                    });
+                   // this.onResize();
+                }
+        }else if(document.exitFullscreen){
+            document.exitFullscreen();
+        }
+    } 
+    onResize(){
+        window.addEventListener("resize", ()=>{
+            this.config.width = screen.availWidth * devicePixelRatio;
+            this.config.height = screen.availHeight * devicePixelRatio; 
+        })
+    } 
 }
