@@ -10,12 +10,13 @@
     <script src="https://connect.facebook.net/en_US/fbinstant.6.3.js"></script>
 
     <title>Klondike Solitaire</title>
-    <link rel="shortcut icon" type="image/x-icon" href="images/game-icon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/client/assets/images/game-icon.ico">
     <link rel="stylesheet" href="style.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="styles/pause.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="styles/play.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="styles/confirm.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="styles/levelComplete.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/client/styles/ManufacturerScene.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/client/styles/PauseScene.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/client/styles/PlayScene.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/client/styles/ConfirmScene.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/client/styles/LevelCompleteScene.css" type="text/css" media="all" />
 </head>
 
 <body>
@@ -43,45 +44,45 @@
         <!--PLAY SCREEN--> 
             <div id="playScreenTop">
                 <div id="score">
-                    <img id="scoreIcon" src="images/score.png" alt="score" />
+                    <img id="scoreIcon" src="/client/assets/images/score.png" alt="score" />
                     <p id = "scoreText">0</p> 
                 </div>
                 <div id="moves">
-                    <img id="movesIcon" src="images/moves.png" alt="moves" />
+                    <img id="movesIcon" src="/client/assets/images/moves.png" alt="moves" />
                     <p id = "movesText">0</p> 
                 </div>
                 <div id="time">
-                    <img id="timeIcon" src="images/time.png" alt="time" />
+                    <img id="timeIcon" src="/client/assets/images/time.png" alt="time" />
                     <p id = "timeText">00:00</p> 
                 </div>
                 <div id="pause">
-                    <img id="pauseIcon" src="images/pause.png" alt="pause" />
+                    <img id="pauseIcon" src="/client/assets/images/pause.png" alt="pause" />
                     <p id = "pauseText">Pause</p> 
                 </div>
                 <div id="hint">
-                    <img id="hintIcon" src="images/hint.png" alt="hint" />
+                    <img id="hintIcon" src="/client/assets/images/hint.png" alt="hint" />
                     <p id = "hintText">Hint</p> 
                 </div>
             </div>
             <div id="playScreenBottom">
                 <div id="undo">
-                    <img id="undoIcon" src="images/undo.png" alt="img" style="scale: -1" />
+                    <img id="undoIcon" src="/client/assets/images/undo.png" alt="img" style="scale: -1" />
                     <p id = "undoText">Undo</p> 
                 </div>
                 <div id="redo">
-                    <img id="redoIcon" src="images/undo.png" alt="img" />
+                    <img id="redoIcon" src="/client/assets/images/undo.png" alt="img" />
                     <p id = "redoText">Redo</p> 
                 </div>
                 <div id="settings">
-                    <img id="settingsIcon" src="images/settings.png" alt="img" />
+                    <img id="settingsIcon" src="/client/assets/images/settings.png" alt="img" />
                     <p id = "settingsText">Settings</p> 
                 </div>
                 <div id="instructions">
-                    <img id="instructionsIcon" src="images/instructions.png" alt="img" />
+                    <img id="instructionsIcon" src="/client/assets/images/instructions.png" alt="img" />
                     <p id = "instructionsText">Instructions</p> 
                 </div>
                 <div id="leaderboard">
-                    <img id="leaderboardIcon" src="images/leaderboard.png" alt="img" />
+                    <img id="leaderboardIcon" src="/client/assets/images/leaderboard.png" alt="img" />
                     <p id = "leaderboardText">Leaderboard</p> 
                 </div> 
             </div> 
@@ -125,7 +126,7 @@
             
         </section>
     </div>
-    <script src="lib/phaser_v87/phaser.min.js"></script>
+    <script src="/client/lib/phaser_v87/phaser.min.js"></script>
     <script type = "module" src="script.js"></script>
 </body>
 

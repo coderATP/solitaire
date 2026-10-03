@@ -1,11 +1,11 @@
-import { ManufacturerScene } from "./src/scenes/ManufacturerScene.js";
-import { PreloadScene } from "./src/scenes/PreloadScene.js";
-import { TitleScene } from "./src/scenes/TitleScene.js";
-import { PauseScene } from "./src/scenes/PauseScene.js";
-import { ConfirmScene } from "./src/scenes/ConfirmScene.js";
-import { GameCompleteScene } from "./src/scenes/GameCompleteScene.js";
+import { ManufacturerScene } from "./client/src/scenes/ManufacturerScene.js";
+import { PreloadScene } from "./client/src/scenes/PreloadScene.js";
+import { TitleScene } from "./client/src/scenes/TitleScene.js";
+import { PauseScene } from "./client/src/scenes/PauseScene.js";
+import { ConfirmScene } from "./client/src/scenes/ConfirmScene.js";
+import { GameCompleteScene } from "./client/src/scenes/GameCompleteScene.js";
 
-import { PlayScene } from "./src/scenes/PlayScene.js";
+import { PlayScene } from "./client/src/scenes/PlayScene.js";
 
 
 const GAME_WIDTH = screen.width*devicePixelRatio;

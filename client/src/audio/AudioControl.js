@@ -1,8 +1,8 @@
 export class AudioControl{
     constructor(scene){
         
-        this.playSong = scene.sound.add('playSong');
-        this.playSong.loop = true;
+        //this.playSong = scene.sound.add('playSong');
+        //this.playSong.loop = true;
         
         this.buttonClickSound = scene.sound.add('buttonClickSound');
         this.beginGameSound = scene.sound.add('beginGameSound');
@@ -12,15 +12,15 @@ export class AudioControl{
         this.undoSound = scene.sound.add('undoSound');
         this.shuffleSound = scene.sound.add('shuffleSound');
         this.popUpSound = scene.sound.add('popUpSound');
-        this.songs = [this.playSong];
+        //this.songs = [this.playSong];
         this.sounds = [this.buttonClickSound, this.beginGameSound, this.drawSound, this.dropSound, this.errorSound, this.undoSound, this.shuffleSound, this.popUpSound];
         //REDUCE VOLUME AT STARTUP, UNLESS OTHERWISE SPECIFIED BY USER
-        this.songs.forEach(song=>{song.volume = 0.2;});
+       // this.songs.forEach(song=>{song.volume = 0.2;});
         this.sounds.forEach(sound=>{sound.volume = 0.4;});
         this.errorSound.volume = 1;
         this.popUpSound.volume = 1;
         this.shuffleSound.volume = 0.1;
-        this.playSong.volume = 0.5;
+        //this.playSong.volume = 0.5;
     }
     
     play(audio){

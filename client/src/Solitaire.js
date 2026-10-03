@@ -141,7 +141,7 @@ export class Solitaire{
         this.scene.audio.shuffleSound.once('complete', ()=>{
             this.distributeDeckCardsToPiles();
 
-            this.scene.audio.playSong.play();
+           // this.scene.audio.playSong.play();
             //renderers: ui, canvas
             this.scene.showInterface();
             this.scene.watch.setUpWatch(this.scene.ui.timeText);

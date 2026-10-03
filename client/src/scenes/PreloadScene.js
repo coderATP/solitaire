@@ -15,15 +15,15 @@ export class PreloadScene extends BaseScene{
         let audioFileIndex = 0;
         this.text = "sounds";
         const audioFiles = [
-            ['playSong', "sounds/menu.mp3"],
-            ['buttonClickSound', 'sounds/click.wav'],
-            ['beginGameSound', "sounds/begin_game.wav"],
-            ['drawSound', "sounds/draw.wav"],
-            ['dropSound', "sounds/drop.wav"],
-            ['errorSound', "sounds/error_sound.wav"],
-            ['undoSound', "sounds/undo.wav"],
-            ['shuffleSound', "sounds/shuffle.wav"],
-            ['popUpSound', "sounds/pop_up.ogg"],
+            //['playSong', "/client/assets/audio/menu.mp3"],
+            ['buttonClickSound', '/client/assets/audio/click.wav'],
+            ['beginGameSound', "/client/assets/audio/begin_game.wav"],
+            ['drawSound', "/client/assets/audio/draw.wav"],
+            ['dropSound', "/client/assets/audio/drop.wav"],
+            ['errorSound', "/client/assets/audio/error_sound.wav"],
+            ['undoSound', "/client/assets/audio/undo.wav"],
+            ['shuffleSound', "/client/assets/audio/shuffle.wav"],
+            ['popUpSound', "/client/assets/audio/pop_up.ogg"],
         ]
         this.load.audio(...audioFiles[audioFileIndex]);
         this.load.on("filecomplete", ()=>{
@@ -33,9 +33,9 @@ export class PreloadScene extends BaseScene{
                 }
                 else{
                     this.text = "images";
-                    this.load.image("clickToStart", "../images/clickToStart.png");
-                    this.load.image("title", "../images/title.png");
-                    this.load.spritesheet("cards", "../images/cards.png",
+                    this.load.image("clickToStart", "/client/assets/images/clickToStart.png");
+                    this.load.image("title", "/client/assets/images/title.png");
+                    this.load.spritesheet("cards", "/client/assets/images/cards.png",
                         {frameWidth: 88, frameHeight: 128});
                 }
             })
