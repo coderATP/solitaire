@@ -4,56 +4,68 @@ import { TitleScene } from "./client/src/scenes/TitleScene.js";
 import { PauseScene } from "./client/src/scenes/PauseScene.js";
 import { ConfirmScene } from "./client/src/scenes/ConfirmScene.js";
 import { GameCompleteScene } from "./client/src/scenes/GameCompleteScene.js";
-
 import { PlayScene } from "./client/src/scenes/PlayScene.js";
 
 
-const GAME_WIDTH = screen.width*devicePixelRatio;
-const GAME_HEIGHT = screen.height*devicePixelRatio;
+const GAME_WIDTH = window.innerWidth * 2;
+const GAME_HEIGHT = window.innerHeight * 2;
 const ZOOM_FACTOR = 1;
 
 
 const SHARED_CONFIG = {
-    width: GAME_WIDTH, 
+    width: GAME_WIDTH,
     height: GAME_HEIGHT,
     zoomFactor: ZOOM_FACTOR,
+    
     topLeft: {
-        x: ( GAME_WIDTH - (GAME_WIDTH/ZOOM_FACTOR) ) / 2,
-        y: ( GAME_HEIGHT - (GAME_HEIGHT/ZOOM_FACTOR) ) / 2,
+        x: 0,
+        y: 0
     },
+    
     topRight: {
-        x: ( ( GAME_WIDTH - (GAME_WIDTH/ZOOM_FACTOR) ) / 2 ) + (GAME_WIDTH/ZOOM_FACTOR),
-        y: ( GAME_HEIGHT - (GAME_HEIGHT/ZOOM_FACTOR) ) / 2,
+        x: GAME_WIDTH,
+        y: 0
     },
+    
     bottomRight: {
-        x: ( ( GAME_WIDTH - (GAME_WIDTH/ZOOM_FACTOR) ) / 2 ) + (GAME_WIDTH/ZOOM_FACTOR),
-        y: ( (GAME_HEIGHT - (GAME_HEIGHT/ZOOM_FACTOR) ) / 2 ) + (GAME_HEIGHT/ZOOM_FACTOR),
+        x: GAME_WIDTH,
+        y: GAME_HEIGHT
     },
+    
     debug: true
 };
 
-const config= {
-    type: Phaser.CANVAS,
-    ...SHARED_CONFIG, 
-    parent: "gameWrapper",
-    backgroundColor: 0x00ff00,
-    transparent: true,
-    scale: {
-         mode: Phaser.Scale.Fit,
-         autoCenter: Phaser.Scale.CENTER_BOTH,
-         orientation: Phaser.Scale.Orientation.PORTRAIT
-    },
-    pixelArt: false, 
-    physics:{
-        default: 'arcade',
-        arcade:{
-            debug: SHARED_CONFIG.debug,
-        },
-        matter:{
-            debug: SHARED_CONFIG.debug,
-        },
 
+const config = {
+    type: Phaser.CANVAS,
+    
+    ...SHARED_CONFIG,
+    
+    parent: "gameWrapper",
+    
+    backgroundColor: 0x00ff00,
+    
+    transparent: true,
+    
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.NO_CENTER
     },
+    
+    pixelArt: false,
+    
+    physics: {
+        default: "arcade",
+        
+        arcade: {
+            debug: SHARED_CONFIG.debug
+        },
+        
+        matter: {
+            debug: SHARED_CONFIG.debug
+        }
+    },
+    
     scene: [
         new ManufacturerScene(SHARED_CONFIG),
         new PreloadScene(SHARED_CONFIG),
@@ -61,7 +73,9 @@ const config= {
         new PlayScene(SHARED_CONFIG),
         new PauseScene(SHARED_CONFIG),
         new ConfirmScene(SHARED_CONFIG),
-        new GameCompleteScene(SHARED_CONFIG) ],
+        new GameCompleteScene(SHARED_CONFIG)
+    ]
 };
+
 
 new Phaser.Game(config);

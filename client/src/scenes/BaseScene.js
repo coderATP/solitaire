@@ -40,6 +40,7 @@ export class BaseScene extends Phaser.Scene{
     }
     hideAllScreens(){
         this.screens.forEach(screen=>{
+            if(!screen) return;
             screen.style.zIndex = -1; 
             screen.style.display = "none";
         });

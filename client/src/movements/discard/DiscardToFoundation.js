@@ -1,92 +1,122 @@
 import { DiscardMovement } from "./DiscardMovement.js";
 
-
-export class DiscardToFoundation extends DiscardMovement{
-    constructor(scene, card, dropZone){
+export class DiscardToFoundation extends DiscardMovement {
+    
+    constructor(scene, card, dropZone) {
         super(scene, card, dropZone);
         this.id = "discardToFoundation";
+        this.originalCardData = null;
     }
     
-    execute(){
-        const pileIndex = this.card.getData("pileIndex");
-        const targetPileIndex = this.dropZone.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.discardPile.container;
-        const targetPile = this.scene.solitaire.foundationPile.cards[targetPileIndex];
+    execute() {
+        const targetPileIndex =
+            this.dropZone.getData("pileIndex");
         
-        this.isValid = this.scene.solitaire.discardPile.isCardValidToMoveToFoundation(this.card, this.dropZone);
+        const sourcePile =
+            this.scene.solitaire.discardPile.container;
         
-        if(!this.isValid){
+        const targetPile =
+            this.scene.solitaire.foundationPile.cards[
+                targetPileIndex
+            ];
+        
+        this.isValid =
+            this.scene.solitaire.discardPile
+            .isCardValidToMoveToFoundation(
+                this.card,
+                this.dropZone
+            );
+        
+        if (!this.isValid) {
             this.scene.audio.play(this.scene.audio.errorSound);
-            this.card.setPosition(0,0);
+            this.card.setPosition(0, 0);
             return;
         }
-        //increase score
-        this.scene.commandHandler.movementScore+=100;
-        //play sound
+        
+        this.scene.commandHandler.movementScore += 100;
         this.scene.audio.play(this.scene.audio.dropSound);
-        if(pileIndex === targetPileIndex ) return;
-        //TO-DO: move card from discard to foundation
-        //idea: create a new card, add it to the target pile and destroy the original card being moved
-        this.newCard = this.scene.createCard("foundationPileCard", 0, 0)
-        this.newCard
-        .setInteractive({draggable: true})
-        .setFrame(this.card.getData("frame"))
-        .setData({
-            frame: this.card.getData("frame"),
-            value: this.card.getData("value"),
-            suit: this.card.getData("suit"),
-            colour: this.card.getData("colour"),
-            x: this.newCard.x,
-            y: this.newCard.y,
-            pileIndex: targetPileIndex,
-            cardIndex: targetPile.length
-        })
         
         this.originalCardData = {
-            x: targetPile.x,
-            y: targetPile.y,
-            originalPileIndex: "it's discard",
-            targetPileIndex: targetPileIndex,
+            targetPileIndex,
             cardIndex: targetPile.length,
             frame: this.card.getData("frame"),
             value: this.card.getData("value"),
             suit: this.card.getData("suit"),
-            colour: this.card.getData("colour"), 
-        }
+            colour: this.card.getData("colour")
+        };
         
-        targetPile.add(this.newCard);
-        sourcePile.list.pop();
+        const newCard =
+            this.scene.createCard(
+                "foundationPileCard",
+                0,
+                0
+            )
+            .setInteractive({ draggable: true })
+            .setFrame(this.originalCardData.frame)
+            .setData({
+                frame: this.originalCardData.frame,
+                value: this.originalCardData.value,
+                suit: this.originalCardData.suit,
+                colour: this.originalCardData.colour,
+                x: 0,
+                y: 0,
+                pileIndex: targetPileIndex,
+                cardIndex: this.originalCardData.cardIndex
+            });
+        
+        targetPile.add(newCard);
+        sourcePile.remove(this.card, false);
+        this.card.destroy();
+        
         this.scene.commandHandler.checkWin();
+        
         return this;
     }
     
-    undo(command){
-        if(!command.originalCardData) return;
-        this.scene.commandHandler.movementScore-=1500; 
-        //const pileIndex = this.card.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.foundationPile.cards[command.originalCardData.targetPileIndex];
-        const targetPile = this.scene.solitaire.discardPile.container;
+    undo() {
+        if (!this.originalCardData) return;
         
-        //idea: create a new card, add it to the target pile and destroy the original card being moved
-        this.newCard = this.scene.createCard("discardPileCard", 0, 0)
-        this.newCard
-        .setInteractive({draggable: true})
-        .setFrame(command.originalCardData.frame)
-        .setData({
-            frame: command.originalCardData.frame,
-            value: command.originalCardData.value,
-            suit: command.originalCardData.suit,
-            colour: command.originalCardData.colour,
-            x: this.newCard.x,
-            y: this.newCard.y,
-            originalPileIndex: command.originalCardData.targetPileIndex,
-            targetPileIndex: command.originalCardData.originalPileIndex,
-            cardIndex: targetPile.list.length
-        })
+        this.scene.commandHandler.movementScore -= 100;
         
-        targetPile.add(this.newCard);
-        sourcePile.list.pop();
+        const sourcePile =
+            this.scene.solitaire.foundationPile.cards[
+                this.originalCardData.targetPileIndex
+            ];
+        
+        const targetPile =
+            this.scene.solitaire.discardPile.container;
+        
+        const movedCard =
+            sourcePile.list[sourcePile.list.length - 1];
+        
+        if (movedCard) {
+            sourcePile.remove(movedCard, false);
+            movedCard.destroy();
+        }
+        
+        const newCard =
+            this.scene.createCard(
+                "discardPileCard",
+                0,
+                0
+            )
+            .setInteractive({ draggable: true })
+            .setFrame(this.originalCardData.frame)
+            .setData({
+                frame: this.originalCardData.frame,
+                value: this.originalCardData.value,
+                suit: this.originalCardData.suit,
+                colour: this.originalCardData.colour,
+                x: 0,
+                y: 0,
+                cardIndex: targetPile.list.length
+            });
+        
+        targetPile.add(newCard);
+        this.card = newCard;
+        
         this.scene.commandHandler.checkWin();
-        return this; 
+        
+        return this;
     }
 }

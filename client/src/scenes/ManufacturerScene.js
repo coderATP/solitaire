@@ -36,8 +36,8 @@ export class ManufacturerScene extends BaseScene {
 
         this.load.font(
             "myOtherOtherFont",
-            "/client/assets/fonts/videotype.otf",
-            "opentype"
+            "/client/assets/fonts/angrybirds-regular.ttf",
+            "truetype"
         );
 
     }

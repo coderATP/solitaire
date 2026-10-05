@@ -1,140 +1,199 @@
 import { TableauMovement } from "./TableauMovement.js";
 
-export class TableauToTableau extends TableauMovement{
-    constructor (scene, card, dropZone){
+export class TableauToTableau extends TableauMovement {
+    
+    constructor(scene, card, dropZone) {
         super(scene, card, dropZone);
-        this.id = "tableauToTableau"
+        this.id = "tableauToTableau";
+        this.originalCardData = null;
+        this.sourcePileIndex = null;
+        this.targetPileIndex = null;
+        this.numberOfCardsToMove = null;
     }
     
-    execute(){
-        this.originalCardData = [];
-        const cardIndex = this.card.getData("cardIndex");
-        const pileIndex = this.card.getData("pileIndex");
-        const targetPileIndex = this.dropZone.getData("pileIndex");
-        const sourcePile = this.scene.solitaire.tableauPile.cards[pileIndex];
-        const targetPile = this.scene.solitaire.tableauPile.cards[targetPileIndex];
-        const numberOfCardsToMove = sourcePile.length - cardIndex;
-        let cardsToMove;
+    execute() {
+        const tableauPile = this.scene.solitaire.tableauPile;
         
-        this.isValid = this.scene.solitaire.tableauPile.isCardValidToMoveToTableau(this.card, this.dropZone);
-        
-        //if card(s) does/do not meet validity conditions to move to another pile, it/they is/are returned to the source pile
-        //code is returned early
-        //logic: simply reset the position of the card(s) 
-        if(!this.isValid){
-            this.scene.audio.play(this.scene.audio.errorSound);
-            for(let i = 0; i < numberOfCardsToMove; ++i){
-                cardsToMove = sourcePile.list[i+cardIndex];
-                cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
-                cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
+        if (!this.originalCardData) {
+            this.sourcePileIndex = this.card.getData("pileIndex");
+            this.targetPileIndex = this.dropZone.getData("pileIndex");
+            
+            const sourcePile = tableauPile.cards[this.sourcePileIndex];
+            const cardIndex = this.card.getData("cardIndex");
+            
+            this.numberOfCardsToMove = sourcePile.length - cardIndex;
+            
+            if (this.sourcePileIndex === this.targetPileIndex) {
+                this.isValid = true;
+                
+                for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+                    const card = sourcePile.list[cardIndex + i];
+                    
+                    card.setPosition(0, (cardIndex + i) * 40);
+                    card.setData({
+                        x: 0,
+                        y: (cardIndex + i) * 40
+                    });
+                }
+                
+                return this;
             }
+            
+            const wasPenultimateCardRevealed =
+                sourcePile.list[sourcePile.list.length - 2] &&
+                sourcePile.list[sourcePile.list.length - 2].getData("frame") > 51;
+            
+            this.originalCardData = [];
+            
+            for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+                const card = sourcePile.list[cardIndex + i];
+                
+                this.originalCardData.push({
+                    originalPileIndex: this.sourcePileIndex,
+                    originalCardIndex: cardIndex + i,
+                    frame: card.getData("frame"),
+                    value: card.getData("value"),
+                    suit: card.getData("suit"),
+                    colour: card.getData("colour"),
+                    wasPenultimateCardRevealed
+                });
+            }
+        }
+        
+        const sourcePile = tableauPile.cards[this.sourcePileIndex];
+        const targetPile = tableauPile.cards[this.targetPileIndex];
+        const cardIndex = this.originalCardData[0].originalCardIndex;
+        const currentCard = sourcePile.list[cardIndex];
+        
+        if (!currentCard) {
+            this.isValid = false;
             return;
         }
-        this.scene.audio.play(this.scene.audio.dropSound);
-        //VALID MOVEMENTS->
-        //1. but player drops on the same pile return its position
-        //logic: simply reset the position of the card(s)
-        if(pileIndex === targetPileIndex){
-            if(numberOfCardsToMove===1){
-                this.card.setPosition(0, cardIndex*40);
-                this.card.setData({x: 0, y: cardIndex*40})
-                return;
-            }
-            else{
-                for(let i = 0; i < numberOfCardsToMove; ++i){
-                    cardsToMove = sourcePile.list[i+cardIndex];
-                    cardsToMove.setPosition(0, cardsToMove.getData("cardIndex")*40 );
-                    cardsToMove.setData({x: 0, y: cardsToMove.getData("cardIndex")*40} );
-                }
-                return;
-            }
-        }
         
-        //2. player drops on a new pile
-        //TO-DO: move multiple cards at a time
-        //idea: create number of cards being moved, add them to the target pile and destroy the original (stack of) cards being moved
-
-        for(let i = 0; i < numberOfCardsToMove; ++i){
-            const cardGameObject = this.scene.createCard("tableauPileCard", 0, targetPile.length*40 )
-                .setInteractive({draggable: true})
+        this.isValid =
+            tableauPile.isCardValidToMoveToTableau(
+                currentCard,
+                this.dropZone
+            );
+        
+        if (!this.isValid) {
+            this.scene.audio.play(this.scene.audio.errorSound);
+            
+            for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+                const card = sourcePile.list[cardIndex + i];
                 
-            cardsToMove = sourcePile.list[i+cardIndex];
-
-             cardGameObject.setFrame(cardsToMove.getData("frame"))
-             cardGameObject.setData({
-                 x: cardGameObject.x,
-                 y: cardGameObject.y,
-                 frame: cardsToMove.getData("frame"),
-                 value: cardsToMove.getData("value"),
-                 suit: cardsToMove.getData("suit"),
-                 colour: cardsToMove.getData("colour"),
-                 pileIndex: targetPileIndex,
-                 cardIndex: targetPile.length
-             });
-             
-             const originalCardData = {
-                x: targetPile.x,
-                y: targetPile.y,
-                originalX: this.card.x,
-                originalY: this.card.y,
-                originalPileIndex: pileIndex,
-                currentPileIndex: targetPileIndex,
-                originalCardIndex: (sourcePile.length-1)+i,
-                currentCardIndex: targetPile.length+i,
-                frame: cardsToMove.getData("frame"),
-                value: cardsToMove.getData("value"),
-                suit: cardsToMove.getData("suit"),
-                colour: cardsToMove.getData("colour"),
-                numberOfCardsToMove,
-                wasPenultimateCardRevealed: sourcePile.list[sourcePile.list.length-2]&& sourcePile.list[sourcePile.list.length-2].getData("frame") > 51 
-             }
-             this.originalCardData.push(originalCardData);
-             targetPile.add(cardGameObject);
+                if (card) {
+                    card.setPosition(0, (cardIndex + i) * 40);
+                    card.setData({
+                        x: 0,
+                        y: (cardIndex + i) * 40
+                    });
+                }
+            }
+            
+            return;
         }
         
-        //remove card(s) from source pile
-        for(let i = 0; i < numberOfCardsToMove; ++i){
-            sourcePile.list.pop();
+        this.scene.audio.play(this.scene.audio.dropSound);
+        
+        const sourceCards = [];
+        
+        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+            const card = sourcePile.list[cardIndex + i];
+            
+            if (card) sourceCards.push(card);
         }
-        //reveal topmost card
-        this.scene.solitaire.tableauPile.showTopmostCardInTableau(sourcePile);
-        setTimeout(()=>{ this.scene.commandHandler.checkWin(); }, 120);
+        
+        for (let i = 0; i < sourceCards.length; ++i) {
+            const sourceCard = sourceCards[i];
+            const targetCardIndex = targetPile.length;
+            
+            const newCard =
+                this.scene.createCard(
+                    "tableauPileCard",
+                    0,
+                    targetCardIndex * 40
+                )
+                .setInteractive({ draggable: true })
+                .setFrame(sourceCard.getData("frame"))
+                .setData({
+                    x: 0,
+                    y: targetCardIndex * 40,
+                    frame: sourceCard.getData("frame"),
+                    value: sourceCard.getData("value"),
+                    suit: sourceCard.getData("suit"),
+                    colour: sourceCard.getData("colour"),
+                    pileIndex: this.targetPileIndex,
+                    cardIndex: targetCardIndex
+                });
+            
+            targetPile.add(newCard);
+            sourceCard.destroy();
+            
+            if (i === sourceCards.length - 1) {
+                this.card = newCard;
+            }
+        }
+        
+        tableauPile.showTopmostCardInTableau(sourcePile);
+        
+        setTimeout(() => {
+            this.scene.commandHandler.checkWin();
+        }, 120);
+        
         return this;
     }
     
-    undo(command){
-        if(!command.originalCardData[0]) return; 
-        const numberOfCardsToMove = command.originalCardData[0].numberOfCardsToMove;
+    undo() {
+        if (!this.originalCardData || !this.originalCardData[0]) return;
         
-        let cardToMove;
-        const currentCardIndex = command.originalCardData[0].currentCardIndex;
-        const sourcePile = this.scene.solitaire.tableauPile.cards[command.originalCardData[0].currentPileIndex];
-        const targetPile = this.scene.solitaire.tableauPile.cards[command.originalCardData[0].originalPileIndex];
+        const tableauPile = this.scene.solitaire.tableauPile;
+        const sourcePile = tableauPile.cards[this.targetPileIndex];
+        const targetPile = tableauPile.cards[this.sourcePileIndex];
         
-        //hide topmost card back
-        this.scene.solitaire.tableauPile.hideTopmostCardInTableau(targetPile);
-
-        for(let i = 0; i < numberOfCardsToMove; ++i){
-            cardToMove = sourcePile.list[i+currentCardIndex];
-            const cardGameObject = this.scene.createCard("tableauPileCard", 0, (targetPile.length)*40);
-            cardGameObject
-                .setFrame(cardToMove.getData("frame"))
-                .setInteractive({draggable: true})
-            cardGameObject.setData({
-                 x: cardGameObject.x,
-                 y: cardGameObject.y,
-                 frame: cardToMove.getData("frame"),
-                 value: cardToMove.getData("value"),
-                 suit: cardToMove.getData("suit"),
-                 colour: cardToMove.getData("colour"),
-                 pileIndex: command.originalCardData[0].originalPileIndex,
-                 cardIndex: targetPile.length+i
-            }); 
+        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+            const cardToRemove =
+                sourcePile.list[sourcePile.list.length - 1];
+            
+            if (cardToRemove) cardToRemove.destroy();
+        }
+        
+        if (!this.originalCardData[0].wasPenultimateCardRevealed) {
+            tableauPile.hideTopmostCardInTableau(targetPile);
+        }
+        
+        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+            const cardData = this.originalCardData[i];
+            
+            const cardGameObject =
+                this.scene.createCard(
+                    "tableauPileCard",
+                    0,
+                    cardData.originalCardIndex * 40
+                )
+                .setInteractive({ draggable: true })
+                .setFrame(cardData.frame)
+                .setData({
+                    x: 0,
+                    y: cardData.originalCardIndex * 40,
+                    frame: cardData.frame,
+                    value: cardData.value,
+                    suit: cardData.suit,
+                    colour: cardData.colour,
+                    pileIndex: cardData.originalPileIndex,
+                    cardIndex: cardData.originalCardIndex
+                });
+            
             targetPile.add(cardGameObject);
+            
+            if (i === this.numberOfCardsToMove - 1) {
+                this.card = cardGameObject;
+            }
         }
-        for(let i = 0; i < numberOfCardsToMove; ++i){
-            sourcePile.list.pop();
-        }
-        return this; 
+        
+        tableauPile.showTopmostCardInTableau(targetPile);
+        this.scene.commandHandler.checkWin();
+        
+        return this;
     }
 }

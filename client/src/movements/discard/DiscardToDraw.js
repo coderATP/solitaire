@@ -1,68 +1,117 @@
 import { DiscardMovement } from "./DiscardMovement.js";
 
 export class DiscardToDraw extends DiscardMovement{
+
     constructor(scene, card, dropZone){
         super(scene, card, dropZone);
         this.id = "discardToDraw";
+        this.originalCards = [];
     }
-    
-    execute(){
-        this.isValid = true;
-        const drawPile = this.scene.solitaire.drawPile;
-        const discardPile = this.scene.solitaire.discardPile; 
-        
-        if(drawPile.container.length > 0) return;
-        this.scene.audio.play(this.scene.audio.drawSound); 
 
-        for( let i =  0; i < discardPile.container.length; ++i){
-            const card = discardPile.container.list[i];
-            const newCard = this.scene.createCard("drawPileCard", 0, 0);
-            newCard
-            .setFrame(52)
-            .setInteractive({draggable: false})
-            .setDepth(5)
-            .setData({
+    execute(){
+        const drawPile =
+            this.scene.solitaire.drawPile.container;
+
+        const discardPile =
+            this.scene.solitaire.discardPile.container;
+
+        if(
+            drawPile.list.length > 0 ||
+            discardPile.list.length === 0
+        ){
+            this.isValid = false;
+            return;
+        }
+
+        this.isValid = true;
+
+        this.originalCards =
+            discardPile.list.map(card => ({
                 frame: card.getData("frame"),
                 value: card.getData("value"),
                 suit: card.getData("suit"),
-                colour: card.getData("colour"),
-                x: newCard.x,
-                y: newCard.y,
-            })
-            drawPile.container.add(newCard);
+                colour: card.getData("colour")
+            }));
+
+        while(discardPile.list.length > 0){
+            const card =
+                discardPile.list[discardPile.list.length - 1];
+
+            discardPile.remove(card, false);
+            card.destroy();
         }
-        discardPile.container.list = [];
-        drawPile.container.list.reverse();
-        drawPile.zone.setDepth(-1)
+
+        const recycledCards =
+            [...this.originalCards].reverse();
+
+        recycledCards.forEach(data => {
+            const newCard =
+                this.scene.createCard(
+                    "drawPileCard",
+                    0,
+                    0
+                )
+                .setInteractive({draggable: false})
+                .setFrame(52)
+                .setDepth(5)
+                .setData({
+                    frame: data.frame,
+                    value: data.value,
+                    suit: data.suit,
+                    colour: data.colour,
+                    x: 0,
+                    y: 0
+                });
+
+            drawPile.add(newCard);
+        });
+
+        this.scene.solitaire.drawPile
+            .updateTopmostTwoCardsPosition();
+
         return this;
     }
-    
-    undo(){
-        const drawPile = this.scene.solitaire.drawPile;
-        const discardPile = this.scene.solitaire.discardPile; 
 
-        for( let i =  0; i < drawPile.container.length; ++i){
-            const card = drawPile.container.list[i];
-            const newCard = this.scene.createCard("discardPileCard", 0, 0);
-            newCard
-            .setFrame(card.getData("frame"))
-            .setInteractive({draggable: true})
-            .setDepth(5)
-            .setData({
-                frame: card.getData("frame"),
-                value: card.getData("value"),
-                suit: card.getData("suit"),
-                colour: card.getData("colour"),
-                x: newCard.x,
-                y: newCard.y,
-            })
-            discardPile.container.add(newCard);
-        }
-        drawPile.container.list.forEach(card=>{
+    undo(){
+        if(this.originalCards.length === 0) return;
+
+        const drawPile =
+            this.scene.solitaire.drawPile.container;
+
+        const discardPile =
+            this.scene.solitaire.discardPile.container;
+
+        while(drawPile.list.length > 0){
+            const card =
+                drawPile.list[drawPile.list.length - 1];
+
+            drawPile.remove(card, false);
             card.destroy();
-        })
-        drawPile.container.list = [];
-        discardPile.container.list.reverse();
+        }
+
+        this.originalCards.forEach(data => {
+            const newCard =
+                this.scene.createCard(
+                    "discardPileCard",
+                    0,
+                    0
+                )
+                .setInteractive({draggable: true})
+                .setFrame(data.frame)
+                .setDepth(5)
+                .setData({
+                    frame: data.frame,
+                    value: data.value,
+                    suit: data.suit,
+                    colour: data.colour,
+                    x: 0,
+                    y: 0,
+                    cardIndex: discardPile.list.length
+                });
+
+            discardPile.add(newCard);
+        });
+
         return this;
     }
 }

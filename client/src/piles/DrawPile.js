@@ -1,38 +1,86 @@
-export class DrawPile{
-    constructor(scene){
-        this.scene = scene;
-        this.config = scene.config;
-        this.graphics = scene.graphics;
-        this.cards = [];
-        this.container = undefined;
-    }
+export class DrawPile {
     
-    create(){
-       
-       //pile rectangle 
-       this.rect = this.scene.createPileRect(this.getBiodata().x, this.getBiodata().y, this.getBiodata().displayWidth, this.getBiodata().displayHeight);
-       //drop zone
-       this.zone = this.scene.createDropZone("drawPileZone", this.getBiodata().x, this.getBiodata().y, this.getBiodata().displayWidth, this.getBiodata().displayHeight);
-       
-       return this;
-    }
+    constructor(scene) {
     
-    getBiodata(){
-        return{x: 10*devicePixelRatio,
-        y: 50*devicePixelRatio,
-        displayWidth: 88*this.config.zoomFactor,
-        displayHeight: 128*this.config.zoomFactor};
-    }
+    this.scene = scene;
+    this.config = scene.config;
+    this.graphics = scene.graphics;
     
-    updateTopmostTwoCardsPosition(){
-        if(this.container.list.length > 0){
-            if(this.container.list[1]){
-                this.container.list[1].setPosition(-6,0);
-            }
-            if(this.container.list[2]){
-                this.container.list[2].setPosition(-3,0);
-            } 
+    this.cards = [];
+    this.container = undefined;
+    
+    this.rect = null;
+    this.zone = null;
+}
+
+
+create() {
+    
+    this.rect =
+        this.scene.createPileRect(
+            0,
+            0,
+            1,
+            1
+        );
+    
+    this.zone =
+        this.scene.createDropZone(
+            "drawPileZone",
+            0,
+            0,
+            1,
+            1
+        );
+    
+    return this;
+}
+    
+    
+    updateTopmostTwoCardsPosition() {
+    
+    if (
+        this.container &&
+        this.container.list.length > 0
+    ) {
+        
+        if (this.container.list[1]) {
             
+            this.container.list[1].setPosition(
+                -6,
+                0
+            );
+        }
+        
+        if (this.container.list[2]) {
+            
+            this.container.list[2].setPosition(
+                -3,
+                0
+            );
         }
     }
+    
+    
+    this.updateZoneDepth();
+}
+    updateZoneDepth(){
+
+    if(!this.zone){
+        return;
+    }
+
+
+    if(
+        this.container &&
+        this.container.list.length === 0
+    ){
+
+        this.zone.setDepth(1);
+    }
+    else{
+
+        this.zone.setDepth(-2);
+    }
+}
 }
