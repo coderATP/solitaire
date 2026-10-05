@@ -1,0 +1,161 @@
+#solitaire-complete-screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #000000;
+  color: #ffffff;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#solitaire-complete-screen * {
+  box-sizing: border-box;
+  font-family: myOtherFont, sans-serif;
+}
+
+#solitaire-complete-panel {
+  width: min(92%, 620px);
+  padding: 38px;
+  background: #09103f;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+}
+
+#solitaire-complete-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#solitaire-complete-title {
+  color: #00d4ff;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+}
+
+#solitaire-complete-subtitle {
+  margin-top: 8px;
+  color: #00ff99;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+}
+
+#solitaire-complete-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.solitaire-complete-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 105px;
+  padding: 15px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.solitaire-complete-stat span {
+  margin-bottom: 8px;
+  color: #aaaaaa;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+}
+
+.solitaire-complete-stat strong {
+  color: #ffffff;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+}
+
+#solitaire-complete-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#solitaire-complete-buttons button {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 212, 255, 0.1);
+  color: #ffffff;
+  font-family: myOtherFont, sans-serif;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#solitaire-complete-buttons button:hover {
+  background: rgba(0, 212, 255, 0.25);
+}
+
+#solitaire-complete-new-game-btn {
+  background: rgba(0, 255, 153, 0.1) !important;
+  border-color: rgba(0, 255, 153, 0.35) !important;
+}
+
+#solitaire-complete-new-game-btn:hover {
+  background: rgba(0, 255, 153, 0.2) !important;
+}
+
+#solitaire-complete-replay-btn {
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+#solitaire-complete-menu-btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+@media (orientation: portrait) {
+  
+  #solitaire-complete-panel {
+    width: min(94%, 620px);
+    padding: 30px 24px;
+  }
+  
+  #solitaire-complete-stats {
+    gap: 8px;
+  }
+  
+  .solitaire-complete-stat {
+    min-height: 90px;
+  }
+}
+
+@media (max-width: 400px) {
+  
+  #solitaire-complete-screen {
+    padding: 12px;
+  }
+  
+  #solitaire-complete-panel {
+    width: 96%;
+    padding: 25px 16px;
+    border-radius: 14px;
+  }
+  
+  #solitaire-complete-header {
+    margin-bottom: 22px;
+  }
+  
+  #solitaire-complete-stats {
+    margin-bottom: 22px;
+  }
+  
+  .solitaire-complete-stat {
+    min-height: 80px;
+    padding: 10px 5px;
+  }
+}

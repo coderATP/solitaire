@@ -20,11 +20,13 @@ export class BaseScene extends Phaser.Scene{
         screen.style.zIndex = -1;
     }
     showOne(screen, display, zIndex = -1){
+        if(!screen) return;
         screen.style.display = display;
         screen.style.zIndex = zIndex;
     } 
     hideMultiple(screens){
         screens.forEach(screen=>{
+            if(!screen) return;
             screen.style.zIndex = -1;
             screen.style.display = "none";
         })
@@ -33,6 +35,7 @@ export class BaseScene extends Phaser.Scene{
     
     showMultiple(screens, display, zIndex = -1){
         screens.forEach(screen=>{
+            if(!screen) return;
             screen.style.zIndex = zIndex;
             screen.style.display = display;
         }) 

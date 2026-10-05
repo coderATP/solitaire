@@ -4,6 +4,7 @@ import { MenuScene } from "./client/src/scenes/MenuScene.js";
 import { PauseScene } from "./client/src/scenes/PauseScene.js";
 import { GameCompleteScene } from "./client/src/scenes/GameCompleteScene.js";
 import { PlayScene } from "./client/src/scenes/PlayScene.js";
+import { PlaybookScene } from "./client/src/scenes/PlaybookScene.js";
 
 
 const GAME_WIDTH = window.innerWidth * 2;
@@ -71,6 +72,7 @@ const config = {
         new MenuScene(SHARED_CONFIG),
         new PlayScene(SHARED_CONFIG),
         new PauseScene(SHARED_CONFIG),
+        new PlaybookScene(SHARED_CONFIG),
         new GameCompleteScene(SHARED_CONFIG)
     ]
 };

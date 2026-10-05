@@ -30,14 +30,16 @@ export class PauseScene extends BaseScene{
 
                 <div id="solitaire-pause-buttons">
 
-                    <button id="solitaire-pause-menu-btn">
-                        MENU
+                    <button id="solitaire-pause-playbook-btn">
+                        PLAYBOOK
                     </button>
 
                     <button id="solitaire-pause-restart-btn">
                         RESTART
                     </button>
-
+                    <button id="solitaire-pause-menu-btn">
+                        MENU
+                    </button>
                 </div>
 
             </section>
@@ -56,6 +58,10 @@ export class PauseScene extends BaseScene{
         this.restartBtn =
             this.dom.querySelector(
                 "#solitaire-pause-restart-btn"
+            );
+        this.playbookBtn =
+            this.dom.querySelector(
+                "#solitaire-pause-playbook-btn"
             );
     }
 
@@ -171,6 +177,12 @@ export class PauseScene extends BaseScene{
                 });
             }
         );
+        
+        this.playbookBtn.addEventListener('click', ()=>{
+            
+            this.scene.start('PlaybookScene');
+            
+        })
     }
 
     shutdown(){

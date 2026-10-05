@@ -775,7 +775,7 @@ export class PlayScene extends BaseScene{
 
                 this.audio.popUpSound.play();
 
-                this.audio.playSong.stop();
+                //this.audio.playSong.stop();
 
                 GameCompleteScene.gamePaused =
                     true;

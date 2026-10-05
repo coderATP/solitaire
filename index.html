@@ -1,63 +1,269 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="full-screen" content="yes" />
-    <meta name="screen-orientation" content="portrait" />
-    <script src="https://connect.facebook.net/en_US/fbinstant.6.3.js"></script>
 
-    <title>Klondike Solitaire</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/client/assets/images/game-icon.ico">
-    <link rel="stylesheet" href="style.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/client/styles/ManufacturerScene.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/client/styles/MenuScene.css" type="text/css" media="all" />
- 
-    <link rel="stylesheet" href="/client/styles/PauseScene.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/client/styles/PlayScene.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/client/styles/NotificationModal.c.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/client/styles/LevelCompleteScene.css" type="text/css" media="all" />
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <meta
+        name="description"
+        content="Klondike Solitaire is a remake of the classic solitaire card game by ATP Game Studio where players build four foundations by suit while organizing cards across the tableau."
+    >
+
+    <meta
+        name="author"
+        content="ATP Game Studio"
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <meta
+        name="theme-color"
+        content="#09103f"
+    >
+
+
+    <title>
+        Klondike Solitaire — Card Game
+    </title>
+
+
+    <!-- CANONICAL -->
+
+    <link
+        rel="canonical"
+        href="https://solitaire.atpgamestudio.com.ng/"
+    >
+
+
+    <!-- APP ICON -->
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="/client/assets/images/game-icon.ico"
+    >
+
+    <link
+        rel="shortcut icon"
+        type="image/x-icon"
+        href="/client/assets/images/game-icon.ico"
+    >
+
+
+    <!-- OPEN GRAPH -->
+
+    <meta
+        property="og:type"
+        content="website"
+    >
+
+    <meta
+        property="og:title"
+        content="Klondike Solitaire — Card Game"
+    >
+
+    <meta
+        property="og:description"
+        content="A classic Klondike Solitaire card game by ATP Game Studio where players build four foundations by suit while organizing cards across the tableau."
+    >
+
+    <meta
+        property="og:url"
+        content="https://solitaire.atpgamestudio.com.ng/"
+    >
+
+    <meta
+        property="og:site_name"
+        content="Klondike Solitaire"
+    >
+
+
+    <!-- TWITTER / X -->
+
+    <meta
+        name="twitter:card"
+        content="summary"
+    >
+
+    <meta
+        name="twitter:title"
+        content="Klondike Solitaire — Card Game"
+    >
+
+    <meta
+        name="twitter:description"
+        content="A classic Klondike Solitaire card game by ATP Game Studio."
+    >
+
+
+    <!-- FACEBOOK INSTANT GAMES -->
+
+    <script
+        src="https://connect.facebook.net/en_US/fbinstant.6.3.js"
+    ></script>
+
+
+    <!-- GAME STYLES -->
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/ManufacturerScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/MenuScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/PlaybookScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/GameCompleteScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/PauseScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/PlayScene.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/NotificationModal.c.css"
+        type="text/css"
+        media="all"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/client/styles/LevelCompleteScene.css"
+        type="text/css"
+        media="all"
+    >
+
+
+    <!-- SOLITAIRE STRUCTURED DATA -->
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "@id": "https://solitaire.atpgamestudio.com.ng/#game",
+        "name": "Klondike Solitaire",
+        "alternateName": "Solitaire",
+        "url": "https://solitaire.atpgamestudio.com.ng/",
+        "description": "A classic Klondike Solitaire card game by ATP Game Studio where players build four foundations by suit while organizing cards across the tableau.",
+        "applicationCategory": "Game",
+        "applicationSubCategory": "Card Game",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires a modern web browser with JavaScript enabled.",
+        "gamePlatform": "Web Browser",
+        "playMode": "SinglePlayer",
+        "isAccessibleForFree": true,
+        "inLanguage": "en",
+        "creator": {
+            "@type": "Organization",
+            "@id": "https://atpgamestudio.com.ng/#organization"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "@id": "https://atpgamestudio.com.ng/#organization"
+        },
+        "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://atpgamestudio.com.ng/#website",
+            "url": "https://atpgamestudio.com.ng/",
+            "name": "ATP Game Studio"
+        }
+    }
+    </script>
+
+
+    <!-- ATP GAME STUDIO ORGANIZATION -->
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://atpgamestudio.com.ng/#organization",
+        "name": "ATP Game Studio",
+        "url": "https://atpgamestudio.com.ng/"
+    }
+    </script>
+
+
+    <!-- ATP GAME STUDIO WEBSITE -->
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://atpgamestudio.com.ng/#website",
+        "name": "ATP Game Studio",
+        "url": "https://atpgamestudio.com.ng/",
+        "publisher": {
+            "@type": "Organization",
+            "@id": "https://atpgamestudio.com.ng/#organization"
+        }
+    }
+    </script>
+
 </head>
 
 <body>
+
     <div id="gameWrapper">
-        <!--MANUFACTURER SCREEN-->
-        <section id="manufacturerScreen">
-            
-        </section>
-        
-        <!--PRELOAD SCREEN-->
-        <section id="preloadScreen">
-            
-        </section>
-        <!--TITLE SCREEN-->
-        <section id="titleScreen">
-            
-        </section>  
-        <!--PLAY SCREEN-->
-        <section id="playScreen"> </section>
-        <!--END-OF-LEVEL SCREEN-->
-        <section id="levelCompleteScreen">
-            <div id="message">
-                <h1>Level Complete!</h1>
-                <div id="summary">
-                    <p id="total_moves">Moves: 0</p>  
-                    <p id="time_bonus">Time bonus: 0</p> 
-                    <p id="total_score">Total score: 0</p>
-                </div>
-            </div>
-            <div id="buttons">
-                <button id="levelComplete_replayBtn">Replay</button>
-                <button id="levelComplete_menuBtn">Menu</button> 
-                <button id="levelComplete_newGameBtn">New Game</button>
-            </div>
-            
-        </section>
+
+        <section id="playScreen"></section>
+
     </div>
-    <script src="/client/lib/phaser_v87/phaser.min.js"></script>
-    <script type = "module" src="script.js"></script>
+
+
+    <script
+        src="/client/lib/phaser_v87/phaser.min.js"
+    ></script>
+
+    <script
+        type="module"
+        src="/script.js"
+    ></script>
+
 </body>
 
 </html>

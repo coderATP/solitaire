@@ -1,0 +1,376 @@
+#solitaire-playbook-screen {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    color: #ffffff;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#solitaire-playbook-screen * {
+    box-sizing: border-box;
+    font-family: myOtherFont, sans-serif;
+}
+
+#solitaire-playbook-panel {
+    width: min(94%, 900px);
+    height: min(94%, 850px);
+    display: flex;
+    flex-direction: column;
+    background: #09103f;
+    border: 1px solid rgba(0,255,255,0.25);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0,255,255,0.15);
+}
+
+#solitaire-playbook-header {
+    flex-shrink: 0;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+#solitaire-playbook-header h2 {
+    margin: 0 0 6px;
+    color: #ffffff;
+    font-size: clamp(1.4rem,4vw,2rem);
+    letter-spacing: 1px;
+}
+
+#solitaire-playbook-header span {
+    color: #00d4ff;
+    font-size: clamp(0.9rem,2.5vw,1.15rem);
+}
+
+#solitaire-playbook-slider-wrapper {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#solitaire-playbook-slider {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s ease-in-out;
+}
+
+.solitaire-playbook-section {
+    min-width: 100%;
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    padding: 28px 55px;
+    overflow-y: auto;
+    text-align: left;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+
+.solitaire-playbook-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.solitaire-playbook-section::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.25);
+    border-radius: 5px;
+}
+
+.solitaire-playbook-section h3 {
+    margin: 0 0 22px;
+    color: #00d4ff;
+    font-size: clamp(1.3rem,3.5vw,1.7rem);
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0,212,255,0.35);
+}
+
+.solitaire-playbook-card {
+    margin-bottom: 16px;
+    padding: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+}
+
+.solitaire-playbook-card h4 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: clamp(1.05rem,3vw,1.3rem);
+}
+
+.solitaire-playbook-card p,
+.solitaire-playbook-card ul,
+.solitaire-playbook-card li,
+.solitaire-playbook-rule,
+.solitaire-playbook-example,
+.solitaire-playbook-score-list,
+.solitaire-playbook-score-list strong,
+.solitaire-playbook-win,
+.solitaire-playbook-tips span,
+.solitaire-playbook-reference strong {
+    font-family: Georgia, "Times New Roman", serif !important;
+}
+
+.solitaire-playbook-card p {
+    margin: 0 0 11px;
+    color: #dddddd;
+    font-size: clamp(0.95rem,2.8vw,1.15rem);
+    line-height: 1.55;
+}
+
+.solitaire-playbook-card p:last-child {
+    margin-bottom: 0;
+}
+
+.solitaire-playbook-card ul {
+    margin: 9px 0 0;
+    padding-left: 22px;
+    color: #dddddd;
+    font-size: clamp(0.95rem,2.8vw,1.15rem);
+    line-height: 1.55;
+}
+
+.solitaire-playbook-card li {
+    margin-bottom: 7px;
+}
+
+.solitaire-playbook-rule {
+    margin-top: 14px;
+    padding: 12px 14px;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.08);
+    border-left: 3px solid #00d4ff;
+    border-radius: 5px;
+    font-size: clamp(0.9rem,2.5vw,1.05rem);
+    line-height: 1.5;
+}
+
+.solitaire-playbook-example {
+    margin-top: 11px;
+    padding: 12px;
+    text-align: center;
+    color: #ffffff;
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    font-size: clamp(1rem,2.8vw,1.15rem);
+    letter-spacing: 1px;
+}
+
+.solitaire-playbook-score-list {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 9px 15px;
+    margin-top: 11px;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    color: #dddddd;
+    font-size: clamp(0.9rem,2.5vw,1.05rem);
+}
+
+.solitaire-playbook-score-list strong {
+    color: #00ff99;
+}
+
+.solitaire-playbook-win {
+    margin-top: 14px;
+    padding: 16px;
+    text-align: center;
+    color: #00ff99;
+    background: rgba(0,255,153,0.08);
+    border: 1px solid rgba(0,255,153,0.2);
+    border-radius: 10px;
+    font-size: clamp(1.05rem,3vw,1.25rem);
+    line-height: 1.7;
+}
+
+.solitaire-playbook-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.solitaire-playbook-tips div {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+
+.solitaire-playbook-tips strong {
+    flex-shrink: 0;
+    color: #00d4ff;
+    font-size: 0.95rem;
+}
+
+.solitaire-playbook-tips span {
+    color: #dddddd;
+    font-size: clamp(0.9rem,2.5vw,1.05rem);
+    line-height: 1.5;
+}
+
+.solitaire-playbook-reference {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.solitaire-playbook-reference div {
+    display: grid;
+    grid-template-columns: 135px 1fr;
+    gap: 15px;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.solitaire-playbook-reference span {
+    color: #00d4ff;
+    font-size: clamp(0.8rem,2.2vw,0.95rem);
+}
+
+.solitaire-playbook-reference strong {
+    color: #ffffff;
+    font-size: clamp(0.9rem,2.5vw,1.05rem);
+}
+
+.solitaire-playbook-slide-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 50%;
+    background: rgba(0,0,0,0.45);
+    color: #ffffff;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.solitaire-playbook-slide-btn:hover {
+    background: rgba(0,212,255,0.2);
+}
+
+#solitaire-playbook-prev {
+    left: 10px;
+}
+
+#solitaire-playbook-next {
+    right: 10px;
+}
+
+#solitaire-playbook-footer {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 18px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    color: #999999;
+    font-size: clamp(0.8rem,2.2vw,0.95rem);
+}
+
+#solitaire-playbook-back {
+    padding: 9px 16px;
+    border: 1px solid rgba(0,212,255,0.35);
+    border-radius: 7px;
+    background: rgba(0,212,255,0.12);
+    color: #ffffff;
+    font-family: myOtherFont, sans-serif !important;
+    font-size: clamp(0.85rem,2.3vw,1rem);
+    cursor: pointer;
+}
+
+#solitaire-playbook-back:hover {
+    background: rgba(0,212,255,0.25);
+}
+
+@media (orientation: portrait){
+
+    #solitaire-playbook-panel {
+        width: 96%;
+        height: 96%;
+        border-radius: 14px;
+    }
+
+    #solitaire-playbook-header {
+        padding: 16px 12px;
+    }
+
+    .solitaire-playbook-section {
+        padding: 22px 38px;
+    }
+
+    .solitaire-playbook-slide-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 19px;
+    }
+
+    #solitaire-playbook-prev {
+        left: 5px;
+    }
+
+    #solitaire-playbook-next {
+        right: 5px;
+    }
+
+    .solitaire-playbook-reference div {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    #solitaire-playbook-footer {
+        padding: 10px 12px;
+    }
+}
+
+@media (orientation: landscape){
+
+    #solitaire-playbook-panel {
+        max-width: 900px;
+    }
+
+    .solitaire-playbook-section {
+        padding-left: 55px;
+        padding-right: 55px;
+    }
+}
+
+@media (max-width: 400px){
+
+    .solitaire-playbook-section {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+    .solitaire-playbook-card {
+        padding: 14px;
+    }
+
+    #solitaire-playbook-footer span {
+        display: none;
+    }
+
+    #solitaire-playbook-footer {
+        justify-content: flex-end;
+    }
+}
