@@ -21,15 +21,21 @@ export class TableauToTableau extends TableauMovement {
             const sourcePile = tableauPile.cards[this.sourcePileIndex];
             const cardIndex = this.card.getData("cardIndex");
             
-            this.numberOfCardsToMove = sourcePile.length - cardIndex;
+            this.numberOfCardsToMove =
+                sourcePile.length - cardIndex;
             
             if (this.sourcePileIndex === this.targetPileIndex) {
                 this.isValid = true;
                 
                 for (let i = 0; i < this.numberOfCardsToMove; ++i) {
-                    const card = sourcePile.list[cardIndex + i];
+                    const card =
+                        sourcePile.list[cardIndex + i];
                     
-                    card.setPosition(0, (cardIndex + i) * 40);
+                    card.setPosition(
+                        0,
+                        (cardIndex + i) * 40
+                    );
+                    
                     card.setData({
                         x: 0,
                         y: (cardIndex + i) * 40
@@ -41,12 +47,15 @@ export class TableauToTableau extends TableauMovement {
             
             const wasPenultimateCardRevealed =
                 sourcePile.list[sourcePile.list.length - 2] &&
-                sourcePile.list[sourcePile.list.length - 2].getData("frame") > 51;
+                sourcePile.list[
+                    sourcePile.list.length - 2
+                ].getData("frame") > 51;
             
             this.originalCardData = [];
             
             for (let i = 0; i < this.numberOfCardsToMove; ++i) {
-                const card = sourcePile.list[cardIndex + i];
+                const card =
+                    sourcePile.list[cardIndex + i];
                 
                 this.originalCardData.push({
                     originalPileIndex: this.sourcePileIndex,
@@ -60,30 +69,54 @@ export class TableauToTableau extends TableauMovement {
             }
         }
         
-        const sourcePile = tableauPile.cards[this.sourcePileIndex];
-        const targetPile = tableauPile.cards[this.targetPileIndex];
-        const cardIndex = this.originalCardData[0].originalCardIndex;
-        const currentCard = sourcePile.list[cardIndex];
+        const sourcePile =
+            tableauPile.cards[this.sourcePileIndex];
+        
+        const targetPile =
+            tableauPile.cards[this.targetPileIndex];
+        
+        const cardIndex =
+            this.originalCardData[0].originalCardIndex;
+        
+        const currentCard =
+            sourcePile.list[cardIndex];
         
         if (!currentCard) {
             this.isValid = false;
             return;
         }
         
+        const hasHiddenCard =
+            this.originalCardData.some(cardData =>
+                cardData.frame >= 52
+            );
+        
         this.isValid =
+            !hasHiddenCard &&
             tableauPile.isCardValidToMoveToTableau(
                 currentCard,
                 this.dropZone
             );
         
         if (!this.isValid) {
-            this.scene.audio.play(this.scene.audio.errorSound);
+            this.scene.audio.play(
+                this.scene.audio.errorSound
+            );
             
-            for (let i = 0; i < this.numberOfCardsToMove; ++i) {
-                const card = sourcePile.list[cardIndex + i];
+            for (
+                let i = 0;
+                i < this.numberOfCardsToMove;
+                ++i
+            ) {
+                const card =
+                    sourcePile.list[cardIndex + i];
                 
                 if (card) {
-                    card.setPosition(0, (cardIndex + i) * 40);
+                    card.setPosition(
+                        0,
+                        (cardIndex + i) * 40
+                    );
+                    
                     card.setData({
                         x: 0,
                         y: (cardIndex + i) * 40
@@ -94,14 +127,23 @@ export class TableauToTableau extends TableauMovement {
             return;
         }
         
-        this.scene.audio.play(this.scene.audio.dropSound);
+        this.scene.audio.play(
+            this.scene.audio.dropSound
+        );
         
         const sourceCards = [];
         
-        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
-            const card = sourcePile.list[cardIndex + i];
+        for (
+            let i = 0;
+            i < this.numberOfCardsToMove;
+            ++i
+        ) {
+            const card =
+                sourcePile.list[cardIndex + i];
             
-            if (card) sourceCards.push(card);
+            if (card) {
+                sourceCards.push(card);
+            }
         }
         
         for (let i = 0; i < sourceCards.length; ++i) {
@@ -114,8 +156,12 @@ export class TableauToTableau extends TableauMovement {
                     0,
                     targetCardIndex * 40
                 )
-                .setInteractive({ draggable: true })
-                .setFrame(sourceCard.getData("frame"))
+                .setInteractive({
+                    draggable: true
+                })
+                .setFrame(
+                    sourceCard.getData("frame")
+                )
                 .setData({
                     x: 0,
                     y: targetCardIndex * 40,
@@ -135,7 +181,9 @@ export class TableauToTableau extends TableauMovement {
             }
         }
         
-        tableauPile.showTopmostCardInTableau(sourcePile);
+        tableauPile.showTopmostCardInTableau(
+            sourcePile
+        );
         
         setTimeout(() => {
             this.scene.commandHandler.checkWin();
@@ -145,25 +193,53 @@ export class TableauToTableau extends TableauMovement {
     }
     
     undo() {
-        if (!this.originalCardData || !this.originalCardData[0]) return;
+        if (
+            !this.originalCardData ||
+            !this.originalCardData[0]
+        ) {
+            return;
+        }
         
-        const tableauPile = this.scene.solitaire.tableauPile;
-        const sourcePile = tableauPile.cards[this.targetPileIndex];
-        const targetPile = tableauPile.cards[this.sourcePileIndex];
+        const tableauPile =
+            this.scene.solitaire.tableauPile;
         
-        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
+        const sourcePile =
+            tableauPile.cards[this.targetPileIndex];
+        
+        const targetPile =
+            tableauPile.cards[this.sourcePileIndex];
+        
+        for (
+            let i = 0;
+            i < this.numberOfCardsToMove;
+            ++i
+        ) {
             const cardToRemove =
-                sourcePile.list[sourcePile.list.length - 1];
+                sourcePile.list[
+                    sourcePile.list.length - 1
+                ];
             
-            if (cardToRemove) cardToRemove.destroy();
+            if (cardToRemove) {
+                cardToRemove.destroy();
+            }
         }
         
-        if (!this.originalCardData[0].wasPenultimateCardRevealed) {
-            tableauPile.hideTopmostCardInTableau(targetPile);
+        if (
+            !this.originalCardData[0]
+                .wasPenultimateCardRevealed
+        ) {
+            tableauPile.hideTopmostCardInTableau(
+                targetPile
+            );
         }
         
-        for (let i = 0; i < this.numberOfCardsToMove; ++i) {
-            const cardData = this.originalCardData[i];
+        for (
+            let i = 0;
+            i < this.numberOfCardsToMove;
+            ++i
+        ) {
+            const cardData =
+                this.originalCardData[i];
             
             const cardGameObject =
                 this.scene.createCard(
@@ -171,7 +247,9 @@ export class TableauToTableau extends TableauMovement {
                     0,
                     cardData.originalCardIndex * 40
                 )
-                .setInteractive({ draggable: true })
+                .setInteractive({
+                    draggable: true
+                })
                 .setFrame(cardData.frame)
                 .setData({
                     x: 0,
@@ -186,12 +264,18 @@ export class TableauToTableau extends TableauMovement {
             
             targetPile.add(cardGameObject);
             
-            if (i === this.numberOfCardsToMove - 1) {
+            if (
+                i ===
+                this.numberOfCardsToMove - 1
+            ) {
                 this.card = cardGameObject;
             }
         }
         
-        tableauPile.showTopmostCardInTableau(targetPile);
+        tableauPile.showTopmostCardInTableau(
+            targetPile
+        );
+        
         this.scene.commandHandler.checkWin();
         
         return this;
