@@ -90,7 +90,7 @@ export class PreloadScene extends BaseScene{
  
             this.input.once("pointerdown", ()=>{
                 this.toggleFullscreen();
-                setTimeout(()=>{this.scene.start("TitleScene")}, 500);
+                setTimeout(()=>{this.scene.start("MenuScene")}, 500);
             }); 
         })
         this.loadFiles(); 

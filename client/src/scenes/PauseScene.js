@@ -1,57 +1,179 @@
 import { BaseScene } from "./BaseScene.js";
 import { eventEmitter } from "../events/EventEmitter.js";
+import domUI from "../ui/domUIManager.js";
+import NotificationModal from "../ui/NotificationModal.js";
 
 export class PauseScene extends BaseScene{
+
     constructor(config){
         super("PauseScene", config);
+
         this.config = config;
-        this.gamePaused = true;
+        this.gamePaused = false;
     }
-    
-    showInterface(){
-        this.hideOne(this.confirmScreen);
-        this.showOne(this.pauseScreen, "grid", 0);
+
+    injectUI(){
+        this.dom = domUI.show(`
+            <section id="solitaire-pause-root">
+
+                <div id="solitaire-pause-header">
+
+                    <div id="solitaire-pause-title">
+                        PAUSED
+                    </div>
+
+                    <button id="solitaire-pause-resume-btn">
+                        X
+                    </button>
+
+                </div>
+
+                <div id="solitaire-pause-buttons">
+
+                    <button id="solitaire-pause-menu-btn">
+                        MENU
+                    </button>
+
+                    <button id="solitaire-pause-restart-btn">
+                        RESTART
+                    </button>
+
+                </div>
+
+            </section>
+        `);
+
+        this.resumeBtn =
+            this.dom.querySelector(
+                "#solitaire-pause-resume-btn"
+            );
+
+        this.menuBtn =
+            this.dom.querySelector(
+                "#solitaire-pause-menu-btn"
+            );
+
+        this.restartBtn =
+            this.dom.querySelector(
+                "#solitaire-pause-restart-btn"
+            );
     }
 
     create(){
-        //this.gamePaused = true;
-        this.showInterface();
+        domUI.clear();
+
+        this.injectUI();
+
         this.handleGamePause();
-        this.processEvents();
     }
-    processEvents(){
-        const { PlayScene } = this.game.scene.keys;
-        eventEmitter.once("PauseToConfirm", ()=>{
-            PlayScene.audio.popUpSound.play();
-            this.scene.start("ConfirmScene");
-        })
-    }
+
     handleGamePause(){
-        const { PlayScene } = this.game.scene.keys;
+        const { PlayScene } =
+            this.game.scene.keys;
+
         PlayScene.watch.stopWatch();
-        this.confirmText = document.getElementById("confirmText");
-        //RESUME
-        pause_resumeBtn.addEventListener('click', ()=>{
-            if(this.gamePaused){
-                PlayScene.watch.resumeWatch(PlayScene.ui.timeText);
+
+        this.gamePaused = true;
+
+        this.resumeBtn.addEventListener(
+            "click",
+            () => {
+
+                if(!this.gamePaused){
+                    return;
+                }
+
+                domUI.clear();
+
+                this.gamePaused = false;
+
                 this.scene.stop();
-                if(this.scene.isPaused("PlayScene")) this.scene.resume("PlayScene");
-                PlayScene.audio.play(PlayScene.audio.buttonClickSound);
-                PlayScene.showInterface();
-                this.gamePaused = false; 
+
+                if(
+                    this.scene.isPaused(
+                        "PlayScene"
+                    )
+                ){
+                    this.scene.resume(
+                        "PlayScene"
+                    );
+                }
+
+                PlayScene.audio.play(
+                    PlayScene.audio.buttonClickSound
+                );
+            },
+            { once: true }
+        );
+
+        this.menuBtn.addEventListener(
+            "click",
+            () => {
+
+                NotificationModal.open({
+                    title: "RETURN TO MENU?",
+                    message:
+                        "Are you sure you want to return to the menu?",
+                    type: "warning",
+                    showCancel: true,
+                    confirmText: "Yes",
+                    cancelText: "No",
+
+                    onConfirm: () => {
+
+                        domUI.clear();
+
+                        this.gamePaused = false;
+
+                        this.scene.stop();
+
+                        this.scene.stop(
+                            "PlayScene"
+                        );
+
+                        this.scene.start(
+                            "MenuScene"
+                        );
+                    }
+                });
             }
-            
-        })
-        //menu
-        pause_menuBtn.addEventListener('click', ()=>{
-            this.confirmText.innerText = "Return to Menu?" 
-            eventEmitter.emit("PauseToConfirm");
-        })
-        //RESTART
-        pause_restartBtn.addEventListener('click', ()=>{
-            this.confirmText.innerText = "Restart?"
-            eventEmitter.emit("PauseToConfirm");
-        })
-        
+        );
+
+        this.restartBtn.addEventListener(
+            "click",
+            () => {
+
+                NotificationModal.open({
+                    title: "RESTART GAME?",
+                    message:
+                        "Are you sure you want to restart the game?",
+                    type: "warning",
+                    showCancel: true,
+                    confirmText: "Yes",
+                    cancelText: "No",
+
+                    onConfirm: () => {
+
+                        domUI.clear();
+
+                        this.gamePaused = false;
+
+                        this.scene.stop();
+
+                        this.scene.stop(
+                            "PlayScene"
+                        );
+
+                        this.scene.start(
+                            "PlayScene"
+                        );
+                    }
+                });
+            }
+        );
+    }
+
+    shutdown(){
+        domUI.clear();
     }
 }

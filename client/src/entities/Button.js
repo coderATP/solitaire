@@ -96,71 +96,80 @@ export class Button extends Phaser.GameObjects.Container {
   
   
   updateLayout() {
-    
-    this.setPosition(
-      this.rect.centerX,
-      this.rect.centerY
+  
+  this.setPosition(
+    this.rect.centerX,
+    this.rect.centerY
+  );
+  
+  this.setSize(
+    this.rect.width,
+    this.rect.height
+  );
+  
+  this.hitArea.setPosition(
+    0,
+    0
+  );
+  
+  this.hitArea.setSize(
+    this.rect.width,
+    this.rect.height
+  );
+  
+  const iconSize =
+    Math.min(
+      this.rect.width * 0.30,
+      this.rect.height * 0.30
     );
-    
-    
-    this.setSize(
-      this.rect.width,
-      this.rect.height
-    );
-    
-    
-    this.hitArea.setPosition(
+  
+  if (this.icon) {
+    this.icon.setPosition(
       0,
-      0
+      -this.rect.height * 0.16
     );
     
-    
-    this.hitArea.setSize(
-      this.rect.width,
-      this.rect.height
-    );
-    
-    
-    const iconSize =
+    const scale =
       Math.min(
-        this.rect.width * 0.30,
-        this.rect.height * 0.30
+        iconSize / this.icon.width,
+        iconSize / this.icon.height
       );
     
-    
-    if (this.icon) {
-      
-      this.icon.setPosition(
-        0,
-        -this.rect.height * 0.16
-      );
-      
-      
-      const scale =
-        Math.min(
-          iconSize /
-          this.icon.width,
-          
-          iconSize /
-          this.icon.height
-        );
-      
-      
-      this.icon.setScale(
-        scale
-      );
-    }
-    
-    
-    const labelY =
-      this.rect.height * 0.30;
-    
-    
-    this.label.setPosition(
-      0,
-      labelY
-    );
+    this.icon.setScale(scale);
   }
+  
+  const maxFontSize = 24;
+  const minFontSize = 12;
+  const horizontalPadding = 12;
+  
+  this.label.setFontSize(maxFontSize);
+  
+  const availableWidth =
+    Math.max(
+      1,
+      this.rect.width - horizontalPadding * 2
+    );
+  
+  if (this.label.width > availableWidth) {
+    const fontSize =
+      Math.max(
+        minFontSize,
+        maxFontSize *
+        availableWidth /
+        this.label.width
+      );
+    
+    this.label.setFontSize(fontSize);
+  }
+  
+  const labelY =
+    this.rect.height * 0.30;
+  
+  this.label.setPosition(
+    0,
+    labelY
+  );
+}
   
   
   setLabel(text) {

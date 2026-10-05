@@ -34,8 +34,8 @@ export class PlayScene extends BaseScene{
         this.commandHandler =
             new CommandHandler(this);
         
-        this.handleOrientationChange =
-            this.handleOrientationChange.bind(this);
+        this.handleOrientationChange = this.handleOrientationChange.bind(this);
+        this.handleResume = this.handleResume.bind(this);
     }
 
 
@@ -73,6 +73,12 @@ export class PlayScene extends BaseScene{
             );
         }
     }
+    
+    handleResume() {
+    if (this.watch) {
+        this.watch.resumeWatch();
+    }
+}
 
 
     getCardMetrics(){
@@ -700,32 +706,6 @@ export class PlayScene extends BaseScene{
             }
         );
 
-
-        this.ui.redoBtn.hitArea.on(
-            "pointerdown",
-            () => {
-
-                if(
-                    this.commandHandler
-                        .undoneActions.length > 0
-                ){
-
-                    this.audio.play(
-                        this.audio.undoSound
-                    );
-
-                    this.commandHandler.redo();
-                }
-                else{
-
-                    this.audio.play(
-                        this.audio.errorSound
-                    );
-                }
-            }
-        );
-
-
         this.ui.pauseBtn.hitArea.on(
             "pointerdown",
             () => {
@@ -758,7 +738,7 @@ export class PlayScene extends BaseScene{
                         "PlayScene"
                     )
                 ){
-
+                    this.watch.stopWatch();
                     if(!PauseScene.gamePaused){
                         this.scene.pause();
                     }
@@ -779,7 +759,7 @@ export class PlayScene extends BaseScene{
         eventEmitter.on(
             "PlayToGameComplete",
             () => {
-
+                this.watch.stopWatch();
                 if(
                     !this.scene.isPaused(
                         "PlayScene"
@@ -855,39 +835,38 @@ export class PlayScene extends BaseScene{
                 }
             });
 
-
-        this.solitaire =
-            new Solitaire(this);
-
-
-        this.ui =
-            new GameplayUI(this);
-
-
+        this.solitaire = new Solitaire(this);
+        this.ui = new GameplayUI(this);
         this.solitaire.newGame();
-
+        this.watch.setUpWatch();
 
         this.handleDragEvent()
             .handleDropEvent()
             .handleClickEvent();
 
         this.processEvents();
+        this.events.on("resume", this.handleResume);
 
-
-        window.addEventListener(
-            "resize",
-            this.handleOrientationChange
-        );
+        window.addEventListener("resize", this.handleOrientationChange);
     }
 
 
-    shutdown(){
-
-        window.removeEventListener(
-            "resize",
-            this.handleOrientationChange
-        );
+    shutdown() {
+    
+    if (this.watch) {
+        this.watch.stopWatch();
     }
+    
+    this.events.off(
+        "resume",
+        this.handleResume
+    );
+    
+    window.removeEventListener(
+        "resize",
+        this.handleOrientationChange
+    );
+}
 
 
     update(time, delta){

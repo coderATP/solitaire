@@ -1,53 +1,244 @@
-/* PAUSE */
-section#pauseScreen{
+#solitaire-pause-root {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid green;
-    border-radius: 3%;
-    width: 50%;
-    height: 40%;
-    z-index : 10;
-    display: none;
-}
+    inset: 0;
 
-section#pauseScreen div#resume{
-    position: absolute ;
     width: 100%;
-    height: 7%;
-}
-section#pauseScreen div#resume button#pause_resumeBtn{
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    right: 0;
-    z-index: 10;
-}
-section#pauseScreen div#resume button#title{
-    font-family: myFont;
-    height: 30px;
-    position: absolute;
-    left: 50%;
-    top: -30px;
-    transform: translate(-50%);
-    z-index: 10;
-}
-section#pauseScreen div#others{
-    position: absolute;
     height: 100%;
-    width: 100%;
-    display: grid;
-}
-section#pauseScreen div#others button{
-    font-family: myOtherFont;
-    font-size: 2rem ;
-}
-section#pauseScreen button{
-    background-color: rgba(0, 0, 0, 0.5);
-    color: gold;
+
+    z-index: 20;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 2rem;
+
+    background: rgba(2, 2, 5, 0.7);
+
+    box-sizing: border-box;
+
+    animation:
+        solitaire-pause-fade-in
+        0.35s ease-out
+        forwards;
 }
 
-section#pauseScreen button:hover{
-    background-color: rgba(0, 0, 255, 0.5);
+#solitaire-pause-header {
+    width: min(70%, 900px);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 2rem;
+
+    position: relative;
+
+    animation:
+        solitaire-pause-grow
+        0.4s
+        cubic-bezier(0.2, 0.8, 0.2, 1)
+        forwards;
+}
+
+#solitaire-pause-title {
+    color: #00d4ff;
+
+    font-family: myOtherFont;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+
+    letter-spacing: 0.25rem;
+
+    text-align: center;
+
+    text-shadow:
+        0 0 10px rgba(0, 212, 255, 0.8),
+        0 0 25px rgba(0, 180, 255, 0.4);
+}
+
+#solitaire-pause-resume-btn {
+    width: 3.5rem;
+    height: 3.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-left: 1.25rem;
+    padding: 0;
+
+    color: #00d4ff;
+
+    font-family: Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: bold;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 0.6rem;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 10px rgba(0, 212, 255, 0.35);
+
+    animation:
+        solitaire-pause-resume-glow
+        2s
+        ease-in-out
+        infinite;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease;
+}
+
+#solitaire-pause-resume-btn:hover {
+    color: white;
+
+    background: rgba(0, 212, 255, 0.12);
+
+    border-color: rgba(0, 212, 255, 0.9);
+
+    box-shadow:
+        0 0 18px rgba(0, 212, 255, 0.7);
+}
+
+#solitaire-pause-resume-btn:active {
+    transform: scale(0.97);
+}
+
+#solitaire-pause-buttons {
+    width: min(70%, 900px);
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 1rem;
+
+    padding: 2rem;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 1.5rem;
+
+    box-shadow:
+        0 0 25px rgba(0, 212, 255, 0.2);
+
+    box-sizing: border-box;
+
+    animation:
+        solitaire-pause-grow
+        0.4s
+        cubic-bezier(0.2, 0.8, 0.2, 1)
+        forwards;
+}
+
+#solitaire-pause-buttons button {
+    min-height: 4rem;
+
+    padding: 0.75rem;
+
+    color: #00d4ff;
+
+    font-family: myOtherFont;
+    font-size: clamp(0.75rem, 1.4vw, 1.1rem);
+
+    letter-spacing: 0.05rem;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 0.6rem;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease;
+}
+
+#solitaire-pause-buttons button:hover {
+    color: white;
+
+    background: rgba(0, 212, 255, 0.12);
+
+    border-color: rgba(0, 212, 255, 0.8);
+
+    box-shadow:
+        0 0 18px rgba(0, 212, 255, 0.35);
+}
+
+#solitaire-pause-buttons button:active {
+    transform: scale(0.97);
+}
+
+@keyframes solitaire-pause-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes solitaire-pause-grow {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes solitaire-pause-resume-glow {
+    0%,
+    100% {
+        box-shadow:
+            0 0 8px rgba(0, 212, 255, 0.25);
+    }
+
+    50% {
+        box-shadow:
+            0 0 18px rgba(0, 212, 255, 0.7),
+            0 0 30px rgba(0, 180, 255, 0.3);
+    }
+}
+
+@media (orientation: portrait) {
+
+    #solitaire-pause-header {
+        width: min(88%, 600px);
+    }
+
+    #solitaire-pause-buttons {
+        width: min(88%, 600px);
+
+        grid-template-columns: 1fr;
+
+        padding: 1.5rem;
+    }
+
+    #solitaire-pause-buttons button {
+        min-height: 3.5rem;
+    }
+
+    #solitaire-pause-resume-btn {
+        width: 3rem;
+        height: 3rem;
+    }
 }

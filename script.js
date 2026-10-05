@@ -1,8 +1,7 @@
 import { ManufacturerScene } from "./client/src/scenes/ManufacturerScene.js";
 import { PreloadScene } from "./client/src/scenes/PreloadScene.js";
-import { TitleScene } from "./client/src/scenes/TitleScene.js";
+import { MenuScene } from "./client/src/scenes/MenuScene.js";
 import { PauseScene } from "./client/src/scenes/PauseScene.js";
-import { ConfirmScene } from "./client/src/scenes/ConfirmScene.js";
 import { GameCompleteScene } from "./client/src/scenes/GameCompleteScene.js";
 import { PlayScene } from "./client/src/scenes/PlayScene.js";
 
@@ -69,10 +68,9 @@ const config = {
     scene: [
         new ManufacturerScene(SHARED_CONFIG),
         new PreloadScene(SHARED_CONFIG),
-        new TitleScene(SHARED_CONFIG),
+        new MenuScene(SHARED_CONFIG),
         new PlayScene(SHARED_CONFIG),
         new PauseScene(SHARED_CONFIG),
-        new ConfirmScene(SHARED_CONFIG),
         new GameCompleteScene(SHARED_CONFIG)
     ]
 };

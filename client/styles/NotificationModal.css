@@ -1,0 +1,149 @@
+.ps-notify-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 24px;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+
+    animation: notifyFadeIn 0.25s ease forwards;
+}
+
+@keyframes notifyFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* CONTAINER */
+.ps-notify-container {
+    width: 92%;
+    max-width: 360px;
+
+    border-radius: 18px;
+    overflow: hidden;
+
+    background: linear-gradient(
+        145deg,
+        rgba(35, 35, 45, 0.98),
+        rgba(20, 20, 30, 0.98)
+    );
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    transform: translateY(-10px);
+    animation: popIn 0.25s ease forwards;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* HEADER */
+.ps-notify-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 14px;
+    color: #fff;
+
+    font-weight: 600;
+
+    background: linear-gradient(90deg, #2c2c2c, #1f1f1f);
+}
+
+.ps-notify-icon {
+    font-size: 1.4rem;
+    margin-right: 8px;
+}
+
+.ps-notify-title {
+    font-family: myOtherFont;
+    flex: 1;
+    font-size: 1rem;
+}
+
+/* CLOSE BUTTON */
+.ps-notify-header button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    padding: 4px 10px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.ps-notify-header button:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* BODY */
+.ps-notify-body {
+    font-family: myOtherFont;
+    padding: 16px;
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.ps-notify-body p {
+    word-break: break-word;
+}
+
+/* ACTIONS */
+.ps-notify-actions {
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+    justify-content: center;
+}
+
+.ps-notify-actions button {
+    font-family: myOtherFont;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    color: #fff;
+
+    transition: all 0.2s ease;
+}
+
+.ps-notify-actions button:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(145deg, #4a4a4a, #333);
+}
+
+/* TYPE THEMES */
+.ps-notify-container.success {
+    border-top: 3px solid #2ecc71;
+}
+
+.ps-notify-container.error {
+    border-top: 3px solid #e74c3c;
+}
+
+.ps-notify-container.warning {
+    border-top: 3px solid #f1c40f;
+}
+
+.ps-notify-container.info {
+    border-top: 3px solid #3498db;
+}

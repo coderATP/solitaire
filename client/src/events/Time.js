@@ -1,59 +1,95 @@
 export class Time{
+
     constructor(scene){
         this.scene = scene;
         const { PlayScene } = scene.game.scene.keys;
         this.playScene = PlayScene;
     }
-    
+
     createTimeVariables(){
         this.min = 0;
         this.sec = 0;
-        this.secText = undefined;
-        this.minText = undefined;
+        this.stopwatch = null;
         this.paused = true;
-        this.canPlayTickSound = true;
     }
-    startWatch(renderer){
-        this.sec+=1;
+
+    getTime(){
+        const minutes =
+            this.min < 10
+                ? "0" + this.min
+                : this.min;
+
+        const seconds =
+            this.sec < 10
+                ? "0" + this.sec
+                : this.sec;
+
+        return minutes + ":" + seconds;
+    }
+
+    startWatch(){
+        if(this.paused) return;
+
+        this.sec += 1;
+
         if(this.sec > 59){
             this.sec = 0;
-            this.min+=1;
+            this.min += 1;
         }
-        if(this.sec < 10) this.secText = "0"+this.sec; else this.secText = this.sec;
-        if(this.min < 10) this.minText = "0"+this.min; else this.minText = this.min;
-        renderer.innerText = (this.minText+":"+this.secText);
-        this.paused = false;
-        return this;
+
+        if(this.playScene.ui){
+            this.playScene.ui.setTime(
+                this.getTime()
+            );
+        }
     }
-    setUpWatch(renderer){
+
+    setUpWatch(){
         this.createTimeVariables();
-        this.stopwatch = setInterval(()=>{
-            this.startWatch(renderer);
-        }, 1000);
+
+        this.paused = false;
+
+        this.stopwatch =
+            setInterval(() => {
+                this.startWatch();
+            }, 1000);
+
         return this;
     }
-    resumeWatch(renderer){
-        this.stopwatch = setInterval(()=>{
-            this.startWatch(renderer);
-        }, 1000);
+
+    resumeWatch(){
+        if(this.stopwatch) return;
+
+        this.paused = false;
+
+        this.stopwatch =
+            setInterval(() => {
+                this.startWatch();
+            }, 1000);
+
+        return this;
     }
+
     stopWatch(){
         clearInterval(this.stopwatch);
+        this.stopwatch = null;
         this.paused = true;
+
         return this;
     }
-    resetWatch(renderer){
+
+    resetWatch(){
         clearInterval(this.stopwatch);
+
+        this.stopwatch = null;
         this.createTimeVariables();
-        renderer.innerText = "00:00"; 
-        this.paused = true;
-        return this;
-    }
-    
-    getRemainingTime(){
-        const totalTime = 600; //seconds
-        const timeElapsed = (this.min*60) + this.sec;
-        return timeElapsed < totalTime ? totalTime - timeElapsed : 0;
+
+        if(this.playScene.ui){
+            this.playScene.ui.setTime(
+                "00:00"
+            );
+        }
+
         return this;
     }
 }
