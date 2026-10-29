@@ -16,14 +16,14 @@ export class PreloadScene extends BaseScene{
         this.text = "sounds";
         const audioFiles = [
             //['playSong', "/client/assets/audio/menu.mp3"],
-            ['buttonClickSound', '/client/assets/audio/click.wav'],
-            ['beginGameSound', "/client/assets/audio/begin_game.wav"],
-            ['drawSound', "/client/assets/audio/draw.wav"],
-            ['dropSound', "/client/assets/audio/drop.wav"],
-            ['errorSound', "/client/assets/audio/error_sound.wav"],
-            ['undoSound', "/client/assets/audio/undo.wav"],
-            ['shuffleSound', "/client/assets/audio/shuffle.wav"],
-            ['popUpSound', "/client/assets/audio/pop_up.ogg"],
+            ['buttonClickSound', 'client/assets/audio/click.wav'],
+            ['beginGameSound', "client/assets/audio/begin_game.wav"],
+            ['drawSound', "client/assets/audio/draw.wav"],
+            ['dropSound', "client/assets/audio/drop.wav"],
+            ['errorSound', "client/assets/audio/error_sound.wav"],
+            ['undoSound', "client/assets/audio/undo.wav"],
+            ['shuffleSound', "client/assets/audio/shuffle.wav"],
+            ['popUpSound', "client/assets/audio/pop_up.ogg"],
         ]
         this.load.audio(...audioFiles[audioFileIndex]);
         this.load.on("filecomplete", ()=>{
@@ -33,22 +33,22 @@ export class PreloadScene extends BaseScene{
                 }
                 else{
                     this.text = "images";
-                    this.load.image("clickToStart", "/client/assets/images/clickToStart.png");
-                    this.load.image("title", "/client/assets/images/title.png");
-                    this.load.spritesheet("cards", "/client/assets/images/cards.png",
+                    this.load.image("clickToStart", "client/assets/images/clickToStart.png");
+                    this.load.image("title", "client/assets/images/title.png");
+                    this.load.spritesheet("cards", "client/assets/images/cards.png",
                         {frameWidth: 88, frameHeight: 128});
-                    this.load.image("instructions", "/client/assets/images/instructions.png");
-                    this.load.image("score", "/client/assets/images/score.png");
-                    this.load.image("calculator", "/client/assets/images/calculator.png");
-                    this.load.image("hint", "/client/assets/images/hint.png");
-                    this.load.image("home", "/client/assets/images/home.png");
-                    this.load.image("leaderboard", "/client/assets/images/leaderboard.png");
-                    this.load.image("moves", "/client/assets/images/moves.png");
-                    this.load.image("time", "/client/assets/images/time.png");
-                    this.load.image("undo", "/client/assets/images/undo.png");
-                    this.load.image("redo", "/client/assets/images/undo.png");
-                    this.load.image("settings", "/client/assets/images/settings.png");
-                    this.load.image("pause", "/client/assets/images/pause.png");
+                    this.load.image("instructions", "client/assets/images/instructions.png");
+                    this.load.image("score", "client/assets/images/score.png");
+                    this.load.image("calculator", "client/assets/images/calculator.png");
+                    this.load.image("hint", "client/assets/images/hint.png");
+                    this.load.image("home", "client/assets/images/home.png");
+                    this.load.image("leaderboard", "client/assets/images/leaderboard.png");
+                    this.load.image("moves", "client/assets/images/moves.png");
+                    this.load.image("time", "client/assets/images/time.png");
+                    this.load.image("undo", "client/assets/images/undo.png");
+                    this.load.image("redo", "client/assets/images/undo.png");
+                    this.load.image("settings", "client/assets/images/settings.png");
+                    this.load.image("pause", "client/assets/images/pause.png");
 
                 }
             })
