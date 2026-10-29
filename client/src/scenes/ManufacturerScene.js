@@ -14,7 +14,7 @@ export class ManufacturerScene extends BaseScene {
             <div class="manufacturer-screen">
 
                 <img
-                    src="/client/assets/images/atp_logo.png"
+                    src="client/assets/images/atp_logo.png"
                     class="manufacturer-logo"
                     alt="ATP Game Studio"
                 />
@@ -24,19 +24,19 @@ export class ManufacturerScene extends BaseScene {
 
         this.load.font(
             "myFont",
-            "/client/assets/fonts/MarioWorldPixelColor-3zBwX.ttf",
+            "client/assets/fonts/MarioWorldPixelColor-3zBwX.ttf",
             "truetype"
         );
 
         this.load.font(
             "myOtherFont",
-            "/client/assets/fonts/Planes_ValMore.ttf",
+            "client/assets/fonts/Planes_ValMore.ttf",
             "truetype"
         );
 
         this.load.font(
             "myOtherOtherFont",
-            "/client/assets/fonts/angrybirds-regular.ttf",
+            "client/assets/fonts/angrybirds-regular.ttf",
             "truetype"
         );
 
