@@ -16,7 +16,7 @@ export class MenuScene extends BaseScene{
                 <div id="solitaire-menu-content">
                     <img
                         id="solitaire-menu-title"
-                        src="/client/assets/images/title.png"
+                        src="client/assets/images/title.png"
                         alt="Solitaire"
                     >
                     <div id="solitaire-menu-start">
